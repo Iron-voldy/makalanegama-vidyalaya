@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makalanegama School - Excellence in Education | Galgamuwa, Sri Lanka</title>
+    <meta name="description" content="Makalanegama School (Makalanegama Vidyalaya) - A leading educational institution in Galgamuwa, North Western Province, Sri Lanka. Grades 1-11, Sinhala medium education with modern facilities.">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Makalanegama School - Excellence in Education">
+    <meta property="og:description" content="Leading educational institution in Galgamuwa, Sri Lanka offering quality education from Grade 1-11">
+    <meta property="og:image" content="assets/images/logo/logo.png">
+    <meta property="og:url" content="https://makalanegamaschool.lk">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Sinhala:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="school-logo">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School Logo">
+            </div>
+            <div class="loading-text">මාකලනේගම විද්‍යාලය</div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School" class="logo">
+                <span class="school-name">
+                    <span class="primary-name">Makalanegama School</span>
+                    <span class="secondary-name">මාකලනේගම විද්‍යාලය</span>
+                </span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">About Us</a></li>
+                            <li><a class="dropdown-item" href="curriculum.html">Curriculum</a></li>
+                            <li><a class="dropdown-item" href="student-life.html">Student Life</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teachers.html">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="achievements.html">Achievements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admissions.html">Admissions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+            <div class="hero-pattern"></div>
+        </div>
+        
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <div class="hero-badge" data-aos="fade-up">
+                            <i class="fas fa-graduation-cap"></i>
+                            Excellence in Education Since 1888
+                        </div>
+                        
+                        <h1 class="hero-title" data-aos="fade-up" data-aos-delay="200">
+                            Welcome to <span class="text-maroon">Makalanegama</span> School
+                        </h1>
+                        
+                        <h2 class="hero-subtitle-sinhala" data-aos="fade-up" data-aos-delay="300">
+                            මාකලනේගම විද්‍යාලයට ආයුබෝවන්
+                        </h2>
+                        
+                        <p class="hero-description" data-aos="fade-up" data-aos-delay="400">
+                            Nurturing young minds with wisdom, virtue, and excellence. Located in the heart of Galgamuwa, 
+                            we provide quality education from Grade 1-11 with modern facilities and dedicated teachers.
+                        </p>
+                        
+                        <div class="hero-stats" data-aos="fade-up" data-aos-delay="500">
+                            <div class="stat-item">
+                                <div class="stat-number">500+</div>
+                                <div class="stat-label">Students</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">25+</div>
+                                <div class="stat-label">Teachers</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">11</div>
+                                <div class="stat-label">Grades</div>
+                            </div>
+                        </div>
+                        
+                        <div class="hero-buttons" data-aos="fade-up" data-aos-delay="600">
+                            <a href="about.html" class="btn btn-maroon btn-lg">
+                                <i class="fas fa-school"></i>
+                                Learn More About Us
+                            </a>
+                            <a href="admissions.html" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-user-plus"></i>
+                                Apply Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="hero-visual" data-aos="fade-left" data-aos-delay="700">
+                        <div class="school-building-container">
+                            <img src="assets/images/heroes/school-building.jpg" alt="Makalanegama School Building" class="school-building-img">
+                            <div class="floating-elements">
+                                <div class="floating-card achievement-card">
+                                    <i class="fas fa-trophy"></i>
+                                    <span>Excellence Awards</span>
+                                </div>
+                                <div class="floating-card facilities-card">
+                                    <i class="fas fa-laptop"></i>
+                                    <span>Computer Lab</span>
+                                </div>
+                                <div class="floating-card sports-card">
+                                    <i class="fas fa-running"></i>
+                                    <span>Sports Programs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-scroll-indicator">
+            <div class="scroll-line"></div>
+            <div class="scroll-text">Scroll to explore</div>
+        </div>
+    </section>
+
+    <!-- Quick Links Section -->
+    <section class="quick-links-section py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="quick-link-card">
+                        <div class="card-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h4>Our Teachers</h4>
+                        <p>Meet our dedicated and qualified teaching staff</p>
+                        <a href="teachers.html" class="card-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="quick-link-card">
+                        <div class="card-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h4>Achievements</h4>
+                        <p>Celebrating our students' academic and extracurricular success</p>
+                        <a href="achievements.html" class="card-link">View Achievements <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="quick-link-card">
+                        <div class="card-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h4>Events</h4>
+                        <p>Stay updated with school events and important dates</p>
+                        <a href="events.html" class="card-link">View Events <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="quick-link-card">
+                        <div class="card-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h4>Admissions</h4>
+                        <p>Join our school community and start your educational journey</p>
+                        <a href="admissions.html" class="card-link">Apply Now <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Preview Section -->
+    <section class="about-preview-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="about-content">
+                        <div class="section-badge">
+                            About Our School
+                        </div>
+                        <h2 class="section-title">
+                            Building Tomorrow's <span class="text-maroon">Leaders</span>
+                        </h2>
+                        <p class="section-description">
+                            Makalanegama Vidyalaya, established in the heart of Galgamuwa, has been a cornerstone of education 
+                            in the North Western Province. As a Provincial Type 2 school offering education from Grade 1-11, 
+                            we are committed to providing quality Sinhala-medium education while embracing modern teaching methodologies.
+                        </p>
+                        
+                        <div class="about-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h5>Co-Educational Excellence</h5>
+                                    <p>Mixed-gender education fostering diverse perspectives and collaboration</p>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-laptop-code"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h5>Modern Facilities</h5>
+                                    <p>Recently upgraded computer lab with support from Wire Academy & Technology</p>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-leaf"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h5>Environmental Programs</h5>
+                                    <p>Gardening and sustainability projects connecting students with nature</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <a href="about.html" class="btn btn-maroon btn-lg mt-4">
+                            Discover Our Story <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="about-visual">
+                        <div class="main-image">
+                            <img src="assets/images/gallery/students-learning.jpg" alt="Students Learning" class="img-fluid rounded">
+                        </div>
+                        <div class="overlay-stats">
+                            <div class="stat-card">
+                                <div class="stat-number">4.0</div>
+                                <div class="stat-label">Google Rating</div>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pattern-overlay"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Achievements Section -->
+    <section class="latest-achievements-section py-5 bg-light">
+        <div class="container">
+            <div class="section-header text-center mb-5" data-aos="fade-up">
+                <div class="section-badge">
+                    Recent Achievements
+                </div>
+                <h2 class="section-title">
+                    Celebrating Our <span class="text-maroon">Success Stories</span>
+                </h2>
+                <p class="section-description">
+                    Discover the latest achievements and milestones of our students and school community
+                </p>
+            </div>
+            
+            <div class="row g-4" id="latest-achievements">
+                <!-- Achievements will be loaded dynamically from Telegram -->
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="achievement-card">
+                        <div class="achievement-image">
+                            <img src="assets/images/achievements/academic-award.jpg" alt="Academic Excellence Award">
+                            <div class="achievement-category">Academic</div>
+                        </div>
+                        <div class="achievement-content">
+                            <div class="achievement-date">January 15, 2024</div>
+                            <h4>Excellence in Mathematics</h4>
+                            <p>Our Grade 10 students achieved outstanding results in the provincial mathematics competition...</p>
+                            <a href="achievements.html" class="achievement-link">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="achievement-card">
+                        <div class="achievement-image">
+                            <img src="assets/images/achievements/sports-victory.jpg" alt="Sports Championship">
+                            <div class="achievement-category sports">Sports</div>
+                        </div>
+                        <div class="achievement-content">
+                            <div class="achievement-date">December 20, 2023</div>
+                            <h4>Inter-School Cricket Champions</h4>
+                            <p>Our cricket team secured first place in the zonal inter-school tournament...</p>
+                            <a href="achievements.html" class="achievement-link">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="achievement-card">
+                        <div class="achievement-image">
+                            <img src="assets/images/achievements/environmental-project.jpg" alt="Environmental Project">
+                            <div class="achievement-category environmental">Environment</div>
+                        </div>
+                        <div class="achievement-content">
+                            <div class="achievement-date">November 10, 2023</div>
+                            <h4>Green School Initiative</h4>
+                            <p>Recognition for our successful gardening and environmental conservation programs...</p>
+                            <a href="achievements.html" class="achievement-link">Read More <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="achievements.html" class="btn btn-maroon btn-lg">
+                    View All Achievements <i class="fas fa-trophy"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Events Section -->
+    <section class="upcoming-events-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="section-header">
+                        <div class="section-badge">
+                            Upcoming Events
+                        </div>
+                        <h2 class="section-title">
+                            Don't Miss Our <span class="text-maroon">Events</span>
+                        </h2>
+                        <p class="section-description">
+                            Stay informed about important school events, celebrations, and academic activities
+                        </p>
+                    </div>
+                    
+                    <div class="events-list" id="upcoming-events">
+                        <!-- Events will be loaded dynamically from Telegram -->
+                        <div class="event-item">
+                            <div class="event-date">
+                                <div class="date-number">15</div>
+                                <div class="date-month">Mar</div>
+                            </div>
+                            <div class="event-content">
+                                <h5>Parent-Teacher Meeting</h5>
+                                <p class="event-time"><i class="fas fa-clock"></i> 2:00 PM - 5:00 PM</p>
+                                <p class="event-location"><i class="fas fa-map-marker-alt"></i> School Hall</p>
+                            </div>
+                        </div>
+                        
+                        <div class="event-item">
+                            <div class="event-date">
+                                <div class="date-number">10</div>
+                                <div class="date-month">Apr</div>
+                            </div>
+                            <div class="event-content">
+                                <h5>Science Fair 2024</h5>
+                                <p class="event-time"><i class="fas fa-clock"></i> 9:00 AM - 3:00 PM</p>
+                                <p class="event-location"><i class="fas fa-map-marker-alt"></i> Computer Lab</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="events.html" class="btn btn-outline-maroon btn-lg mt-4">
+                        View All Events <i class="fas fa-calendar-alt"></i>
+                    </a>
+                </div>
+                
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="events-calendar">
+                        <div class="calendar-header">
+                            <h4>February 2024</h4>
+                            <div class="calendar-nav">
+                                <button class="btn-nav prev"><i class="fas fa-chevron-left"></i></button>
+                                <button class="btn-nav next"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day header">Sun</div>
+                            <div class="calendar-day header">Mon</div>
+                            <div class="calendar-day header">Tue</div>
+                            <div class="calendar-day header">Wed</div>
+                            <div class="calendar-day header">Thu</div>
+                            <div class="calendar-day header">Fri</div>
+                            <div class="calendar-day header">Sat</div>
+                            
+                            <!-- Calendar days will be generated by JavaScript -->
+                            <div class="calendar-day">1</div>
+                            <div class="calendar-day">2</div>
+                            <div class="calendar-day">3</div>
+                            <div class="calendar-day">4</div>
+                            <div class="calendar-day">5</div>
+                            <div class="calendar-day">6</div>
+                            <div class="calendar-day">7</div>
+                            <div class="calendar-day">8</div>
+                            <div class="calendar-day">9</div>
+                            <div class="calendar-day">10</div>
+                            <div class="calendar-day">11</div>
+                            <div class="calendar-day">12</div>
+                            <div class="calendar-day">13</div>
+                            <div class="calendar-day">14</div>
+                            <div class="calendar-day">15</div>
+                            <div class="calendar-day">16</div>
+                            <div class="calendar-day">17</div>
+                            <div class="calendar-day">18</div>
+                            <div class="calendar-day">19</div>
+                            <div class="calendar-day">20</div>
+                            <div class="calendar-day">21</div>
+                            <div class="calendar-day">22</div>
+                            <div class="calendar-day">23</div>
+                            <div class="calendar-day">24</div>
+                            <div class="calendar-day event-day">25</div>
+                            <div class="calendar-day">26</div>
+                            <div class="calendar-day">27</div>
+                            <div class="calendar-day">28</div>
+                            <div class="calendar-day">29</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest News Section -->
+    <section class="latest-news-section py-5 bg-light">
+        <div class="container">
+            <div class="section-header text-center mb-5" data-aos="fade-up">
+                <div class="section-badge">
+                    Latest News
+                </div>
+                <h2 class="section-title">
+                    Stay Updated with <span class="text-maroon">School News</span>
+                </h2>
+                <p class="section-description">
+                    Get the latest updates, announcements, and important information from our school
+                </p>
+            </div>
+            
+            <div class="row g-4" id="latest-news">
+                <!-- News will be loaded dynamically from Telegram -->
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                    <article class="news-card featured">
+                        <div class="news-image">
+                            <img src="assets/images/news/computer-lab-opening.jpg" alt="Computer Lab Opening">
+                            <div class="news-category">Facilities</div>
+                        </div>
+                        <div class="news-content">
+                            <div class="news-meta">
+                                <span class="news-date"><i class="fas fa-calendar"></i> February 10, 2024</span>
+                                <span class="news-author"><i class="fas fa-user"></i> Principal</span>
+                            </div>
+                            <h3>New Computer Lab Officially Opens</h3>
+                            <p>We are proud to announce the official opening of our state-of-the-art computer laboratory, made possible through the generous support of Wire Academy & Technology for Village...</p>
+                            <a href="news.html" class="news-link">Read Full Article <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="news-sidebar">
+                        <div class="news-item" data-aos="fade-up" data-aos-delay="200">
+                            <div class="news-item-image">
+                                <img src="assets/images/news/admission-2024.jpg" alt="Admissions 2024">
+                            </div>
+                            <div class="news-item-content">
+                                <div class="news-date">February 5, 2024</div>
+                                <h5>2024 Admissions Now Open</h5>
+                                <p>Applications for Grade 1 admissions for the 2024 academic year are now being accepted...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="news-item" data-aos="fade-up" data-aos-delay="300">
+                            <div class="news-item-image">
+                                <img src="assets/images/news/teacher-training.jpg" alt="Teacher Training">
+                            </div>
+                            <div class="news-item-content">
+                                <div class="news-date">January 28, 2024</div>
+                                <h5>Professional Development Workshop</h5>
+                                <p>Our teachers participated in a comprehensive training program on modern teaching methodologies...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="news-item" data-aos="fade-up" data-aos-delay="400">
+                            <div class="news-item-image">
+                                <img src="assets/images/news/cultural-program.jpg" alt="Cultural Program">
+                            </div>
+                            <div class="news-item-content">
+                                <div class="news-date">January 20, 2024</div>
+                                <h5>Annual Cultural Festival</h5>
+                                <p>Students showcased their talents in traditional music, dance, and drama performances...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="news.html" class="btn btn-maroon btn-lg">
+                    View All News <i class="fas fa-newspaper"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Preview Section -->
+    <section class="gallery-preview-section py-5">
+        <div class="container">
+            <div class="section-header text-center mb-5" data-aos="fade-up">
+                <div class="section-badge">
+                    School Gallery
+                </div>
+                <h2 class="section-title">
+                    Life at <span class="text-maroon">Makalanegama School</span>
+                </h2>
+                <p class="section-description">
+                    Explore our vibrant school community through images of daily activities, events, and achievements
+                </p>
+            </div>
+            
+            <div class="gallery-grid" data-aos="fade-up">
+                <div class="gallery-item large">
+                    <img src="assets/images/gallery/classroom-activity.jpg" alt="Classroom Activity" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h5>Interactive Learning</h5>
+                            <p>Modern teaching methods in action</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="assets/images/gallery/science-experiment.jpg" alt="Science Experiment" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h5>Science Lab</h5>
+                            <p>Hands-on experiments</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="assets/images/gallery/sports-day.jpg" alt="Sports Day" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h5>Sports Day</h5>
+                            <p>Athletic competitions</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="assets/images/gallery/cultural-dance.jpg" alt="Cultural Dance" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h5>Cultural Programs</h5>
+                            <p>Traditional performances</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="assets/images/gallery/gardening-project.jpg" alt="Gardening Project" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h5>Environmental Projects</h5>
+                            <p>Sustainability initiatives</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <img src="assets/images/gallery/computer-class.jpg" alt="Computer Class" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h5>Technology Integration</h5>
+                            <p>Computer literacy programs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="student-life.html" class="btn btn-outline-maroon btn-lg">
+                    View Full Gallery <i class="fas fa-images"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8" data-aos="fade-right">
+                    <div class="cta-content">
+                        <h2>Ready to Join Our School Community?</h2>
+                        <p>Experience quality education in a nurturing environment. Apply for admissions today and become part of the Makalanegama School family.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-lg-end" data-aos="fade-left">
+                    <div class="cta-buttons">
+                        <a href="admissions.html" class="btn btn-light btn-lg">
+                            <i class="fas fa-user-plus"></i>
+                            Apply for Admission
+                        </a>
+                        <a href="contact.html" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-phone"></i>
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-main">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="footer-brand">
+                            <img src="assets/images/logo/logo-white.png" alt="Makalanegama School" class="footer-logo">
+                            <h4>Makalanegama School</h4>
+                            <p class="footer-tagline">Excellence in Education Since 1888</p>
+                            <p>Nurturing young minds with wisdom, virtue, and excellence in the heart of Galgamuwa, North Western Province.</p>
+                            
+                            <div class="social-links">
+                                <a href="https://web.facebook.com/people/Makalanegama-kv/100063734032649/" target="_blank" class="social-link">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-link">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-link">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5>Quick Links</h5>
+                            <ul>
+                                <li><a href="about.html">About Us</a></li>
+                                <li><a href="teachers.html">Our Teachers</a></li>
+                                <li><a href="curriculum.html">Curriculum</a></li>
+                                <li><a href="student-life.html">Student Life</a></li>
+                                <li><a href="admissions.html">Admissions</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5>Information</h5>
+                            <ul>
+                                <li><a href="achievements.html">Achievements</a></li>
+                                <li><a href="events.html">Events</a></li>
+                                <li><a href="news.html">News</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                                <li><a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="footer-contact">
+                            <h5>Contact Information</h5>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <strong>Address:</strong><br>
+                                    X8X5+VGH, Galgamuwa-Nikawewa Rd,<br>
+                                    Galgamuwa, North Western Province,<br>
+                                    Sri Lanka
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <strong>Phone:</strong><br>
+                                    <a href="tel:+94372050000">+94 37 205 0000</a>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <strong>Email:</strong><br>
+                                    <a href="mailto:info@makalanegamaschool.lk">info@makalanegamaschool.lk</a>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <strong>School Hours:</strong><br>
+                                    Monday - Friday: 7:30 AM - 1:30 PM
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p>&copy; 2024 Makalanegama School. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p>Designed with ❤️ for educational excellence</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/animations.js"></script>
+    <script src="assets/js/telegram-api.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+        
+        // Load dynamic content from Telegram
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLatestAchievements();
+            loadUpcomingEvents();
+            loadLatestNews();
+        });
+    </script>
+</body>
+</html>
