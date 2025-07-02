@@ -329,13 +329,21 @@ $required_constants = [
     'TELEGRAM_BOT_TOKEN'
 ];
 
+$config_errors = [];
 foreach ($required_constants as $constant) {
     if (!defined($constant) || empty(constant($constant))) {
-        if (ENVIRONMENT === 'development') {
-            die("Error: Required configuration constant '{$constant}' is not defined or empty.");
-        } else {
-            logMessage('ERROR', "Missing required configuration: {$constant}");
-        }
+        $config_errors[] = $constant;
+        logMessage('ERROR', "Missing required configuration: {$constant}");
+    }
+}
+
+// Handle configuration errors
+if (!empty($config_errors)) {
+    $error_message = "Missing configuration constants: " . implode(', ', $config_errors);
+    
+    if (ENVIRONMENT === 'development') {
+        error_log($error_message);
+        echo "<!-- Configuration Error: " . htmlspecialchars($error_message) . " -->";
     }
 }
 
