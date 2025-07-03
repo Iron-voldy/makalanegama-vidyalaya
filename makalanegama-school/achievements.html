@@ -35,8 +35,45 @@
     <link rel="stylesheet" href="assets/css/responsive.css">
     
     <style>
-        /* Include the achievements CSS here or link to a separate file */
-        /* Achievement Cards */
+        /* Achievements Page Specific Styles */
+        .page-header {
+            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-dark) 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="trophy-pattern" patternUnits="userSpaceOnUse" width="40" height="40"><path d="M20 10 C15 15, 15 25, 20 30 C25 25, 25 15, 20 10 Z" fill="rgba(255,215,0,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23trophy-pattern)"/></svg>');
+            opacity: 0.3;
+        }
+
         .achievements-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -63,6 +100,10 @@
             position: relative;
             height: 250px;
             overflow: hidden;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .achievement-image img {
@@ -70,6 +111,11 @@
             height: 100%;
             object-fit: cover;
             transition: var(--transition-slow);
+        }
+
+        .achievement-image .no-image {
+            color: #6c757d;
+            font-size: 3rem;
         }
 
         .achievement-card:hover .achievement-image img {
@@ -89,25 +135,13 @@
             background: var(--maroon-primary);
         }
 
-        .achievement-category.academic {
-            background: var(--success);
-        }
-
-        .achievement-category.sports {
-            background: var(--info);
-        }
-
-        .achievement-category.cultural {
-            background: var(--warning);
-        }
-
-        .achievement-category.environmental {
-            background: var(--success);
-        }
-
-        .achievement-category.technology {
-            background: var(--deep-blue);
-        }
+        .achievement-category.academic { background: var(--success); }
+        .achievement-category.sports { background: var(--info); }
+        .achievement-category.cultural { background: var(--warning); }
+        .achievement-category.environmental { background: var(--success); }
+        .achievement-category.technology { background: var(--deep-blue); }
+        .achievement-category.arts { background: #e91e63; }
+        .achievement-category.science { background: #009688; }
 
         .featured-badge {
             position: absolute;
@@ -163,20 +197,16 @@
             flex-wrap: wrap;
         }
 
-        /* Filter Section */
         .filter-section {
             background: var(--light-gray);
             border-bottom: 1px solid rgba(128, 0, 32, 0.1);
-        }
-
-        .filter-controls {
-            gap: 2rem;
         }
 
         .filter-tabs {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .filter-btn {
@@ -222,7 +252,29 @@
             border-left: none;
         }
 
-        /* Featured Achievements */
+        .loading-indicator {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .spinner-border.text-maroon {
+            color: var(--maroon-primary) !important;
+        }
+
+        .no-achievements {
+            background: var(--light-gray);
+            border-radius: var(--radius-large);
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .no-achievements i {
+            font-size: 4rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
         .featured-achievement-card {
             background: var(--white);
             border-radius: var(--radius-large);
@@ -239,152 +291,53 @@
             box-shadow: var(--shadow-heavy);
         }
 
-        .featured-image {
-            position: relative;
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .featured-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition-slow);
-        }
-
-        .featured-achievement-card:hover .featured-image img {
-            transform: scale(1.1);
-        }
-
-        .featured-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(255, 215, 0, 0.8), rgba(255, 215, 0, 0.6));
+        .page-stats {
             display: flex;
-            align-items: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
             justify-content: center;
-            opacity: 0;
-            transition: var(--transition-medium);
         }
 
-        .featured-achievement-card:hover .featured-overlay {
-            opacity: 1;
+        .stat-item {
+            text-align: center;
         }
 
-        .featured-icon {
-            background: var(--white);
+        .stat-item .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
             color: var(--gold-accent);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+            display: block;
+            line-height: 1;
         }
 
-        .featured-content {
-            padding: 2rem;
-        }
-
-        .featured-category {
-            color: var(--gold-accent);
-            font-weight: 600;
+        .stat-item .stat-label {
             font-size: 0.875rem;
             text-transform: uppercase;
-            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        .featured-content h3 {
-            color: var(--black);
-            margin-bottom: 1rem;
-            line-height: 1.3;
+        .api-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin: 1rem 0;
         }
 
-        .featured-content p {
-            color: var(--medium-gray);
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .featured-date {
-            color: var(--medium-gray);
+        .debug-info {
+            background: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin: 1rem 0;
+            font-family: monospace;
             font-size: 0.875rem;
-            border-top: 1px solid var(--light-gray);
-            padding-top: 1rem;
-        }
-
-        /* Statistics Cards */
-        .stat-card {
-            background: var(--white);
-            padding: 2.5rem 2rem;
-            border-radius: var(--radius-large);
-            text-align: center;
-            box-shadow: var(--shadow-light);
-            transition: var(--transition-medium);
-            height: 100%;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-        }
-
-        .stat-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-light));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 2rem;
-            color: var(--white);
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--maroon-primary);
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--black);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-description {
-            color: var(--medium-gray);
-            font-size: 0.875rem;
-        }
-
-        /* Loading and No Results */
-        .loading-indicator {
-            text-align: center;
-            padding: 3rem 0;
-        }
-
-        .spinner-border.text-maroon {
-            color: var(--maroon-primary) !important;
-        }
-
-        #no-results {
-            background: var(--light-gray);
-            border-radius: var(--radius-large);
-            padding: 3rem;
-            margin: 2rem 0;
-        }
-
-        #no-results i {
-            opacity: 0.5;
         }
 
         /* Responsive Design */
@@ -394,31 +347,24 @@
                 gap: 1.5rem;
             }
             
-            .filter-controls {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
             .filter-tabs {
                 justify-content: center;
+                gap: 0.25rem;
+            }
+            
+            .filter-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
             }
             
             .search-box {
                 min-width: auto;
                 width: 100%;
+                margin-top: 1rem;
             }
             
             .page-stats {
-                justify-content: center;
                 gap: 2rem;
-            }
-            
-            .achievement-actions {
-                flex-direction: column;
-            }
-            
-            .achievement-actions .btn {
-                width: 100%;
             }
         }
     </style>
@@ -486,7 +432,7 @@
         </div>
         
         <div class="container">
-            <div class="row align-items-center min-vh-50">
+            <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="header-content">
                         <nav aria-label="breadcrumb" data-aos="fade-up">
@@ -541,12 +487,34 @@
         </div>
     </section>
 
+    <!-- Debug Information -->
+    <div id="debug-info" class="container" style="display: none;">
+        <div class="debug-info">
+            <h5><i class="fas fa-bug"></i> Debug Information</h5>
+            <div id="debug-content"></div>
+        </div>
+    </div>
+
     <!-- Loading Indicator -->
     <div id="loading-indicator" class="loading-indicator" style="display: none;">
         <div class="spinner-border text-maroon" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
-        <p class="mt-3">Loading achievements...</p>
+        <p class="mt-3">Loading achievements from database...</p>
+    </div>
+
+    <!-- API Error Display -->
+    <div id="api-error" class="container" style="display: none;">
+        <div class="api-error">
+            <h5><i class="fas fa-exclamation-triangle"></i> Unable to Load Achievements</h5>
+            <p id="error-message">There was an error connecting to the database. Please try refreshing the page.</p>
+            <button onclick="window.location.reload()" class="btn btn-primary btn-sm">
+                <i class="fas fa-refresh"></i> Refresh Page
+            </button>
+            <button onclick="toggleDebugInfo()" class="btn btn-secondary btn-sm">
+                <i class="fas fa-bug"></i> Show Debug Info
+            </button>
+        </div>
     </div>
 
     <!-- Achievement Categories Filter -->
@@ -554,7 +522,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-12">
-                    <div class="filter-controls d-flex flex-wrap justify-content-between align-items-center mb-3">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                         <div class="filter-tabs" data-aos="fade-up">
                             <button class="filter-btn active" data-filter="all">
                                 <i class="fas fa-trophy"></i>
@@ -579,6 +547,14 @@
                             <button class="filter-btn" data-filter="Technology">
                                 <i class="fas fa-laptop-code"></i>
                                 Technology
+                            </button>
+                            <button class="filter-btn" data-filter="Arts">
+                                <i class="fas fa-palette"></i>
+                                Arts
+                            </button>
+                            <button class="filter-btn" data-filter="Science">
+                                <i class="fas fa-flask"></i>
+                                Science
                             </button>
                         </div>
                         
@@ -612,7 +588,7 @@
             </div>
             
             <div class="row g-4" id="featured-achievements">
-                <!-- Featured achievements will be loaded here -->
+                <!-- Featured achievements will be loaded here from database -->
             </div>
         </div>
     </section>
@@ -632,11 +608,12 @@
                 </p>
             </div>
             
-            <!-- No Results Message -->
-            <div id="no-results" class="text-center py-5" style="display: none;">
-                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                <h4 class="text-muted">No achievements found</h4>
-                <p class="text-muted">Try adjusting your search or filter criteria</p>
+            <!-- No Achievements Message -->
+            <div id="no-achievements" class="no-achievements" style="display: none;">
+                <i class="fas fa-trophy"></i>
+                <h4>No Achievements Found</h4>
+                <p>There are currently no achievements in the database matching your criteria.</p>
+                <p>Check back later or contact the school administration.</p>
             </div>
             
             <div class="achievements-grid" id="achievements-grid">
@@ -649,55 +626,6 @@
                     <i class="fas fa-plus"></i>
                     Load More Achievements
                 </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Achievement Statistics -->
-    <section class="achievement-stats py-5 bg-light">
-        <div class="container">
-            <div class="section-header text-center mb-5" data-aos="fade-up">
-                <div class="section-badge">
-                    Our Impact in Numbers
-                </div>
-                <h2 class="section-title">
-                    Measuring Our <span class="text-maroon">Success</span>
-                </h2>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <div class="stat-number" data-count="0" id="stat-academic">0</div>
-                        <div class="stat-label">Academic Achievements</div>
-                        <div class="stat-description">Excellence in education</div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-medal"></i>
-                        </div>
-                        <div class="stat-number" data-count="0" id="stat-sports">0</div>
-                        <div class="stat-label">Sports Medals</div>
-                        <div class="stat-description">In various sports competitions</div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-number" data-count="0" id="stat-featured">0</div>
-                        <div class="stat-label">Featured Achievements</div>
-                        <div class="stat-description">Our proudest moments</div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -880,20 +808,741 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/animations.js"></script>
     
+    <!-- Achievements JavaScript - MULTIPLE API PATH TESTING -->
     <script>
+        /**
+         * Debug function to toggle debug info
+         */
+        function toggleDebugInfo() {
+            const debugDiv = document.getElementById('debug-info');
+            if (debugDiv.style.display === 'none') {
+                debugDiv.style.display = 'block';
+            } else {
+                debugDiv.style.display = 'none';
+            }
+        }
+
+        /**
+         * Achievements Manager - FIXED WITH MULTIPLE API PATH TESTING
+         */
+        class AchievementsManager {
+            constructor() {
+                this.achievements = [];
+                this.filteredAchievements = [];
+                this.currentFilter = 'all';
+                this.currentPage = 1;
+                this.achievementsPerPage = 9;
+                this.isLoading = false;
+                this.searchTerm = '';
+                this.debugInfo = [];
+                
+                this.initializeElements();
+                this.bindEvents();
+                console.log('AchievementsManager initialized - FIXED VERSION');
+                this.init();
+            }
+
+            /**
+             * Initialize DOM elements
+             */
+            initializeElements() {
+                this.achievementsGrid = document.getElementById('achievements-grid');
+                this.featuredSection = document.getElementById('featured-section');
+                this.featuredContainer = document.getElementById('featured-achievements');
+                this.loadMoreBtn = document.getElementById('load-more-achievements');
+                this.loadingIndicator = document.getElementById('loading-indicator');
+                this.noAchievementsDiv = document.getElementById('no-achievements');
+                this.apiErrorDiv = document.getElementById('api-error');
+                this.errorMessageEl = document.getElementById('error-message');
+                this.debugDiv = document.getElementById('debug-info');
+                this.debugContentEl = document.getElementById('debug-content');
+                this.searchInput = document.getElementById('achievement-search');
+                this.filterButtons = document.querySelectorAll('.filter-btn');
+                
+                // Stats elements
+                this.totalAchievementsEl = document.getElementById('total-achievements');
+                this.featuredCountEl = document.getElementById('featured-count');
+                this.categoriesCountEl = document.getElementById('categories-count');
+                
+                console.log('Elements initialized:', {
+                    grid: !!this.achievementsGrid,
+                    featured: !!this.featuredContainer,
+                    buttons: this.filterButtons.length
+                });
+            }
+
+            /**
+             * Bind event listeners
+             */
+            bindEvents() {
+                // Filter buttons
+                this.filterButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.handleFilterChange(btn.getAttribute('data-filter'));
+                    });
+                });
+
+                // Search functionality
+                if (this.searchInput) {
+                    this.searchInput.addEventListener('input', this.debounce((e) => {
+                        this.handleSearch(e.target.value);
+                    }, 300));
+                }
+
+                // Load more button
+                if (this.loadMoreBtn) {
+                    this.loadMoreBtn.addEventListener('click', () => {
+                        this.loadMoreAchievements();
+                    });
+                }
+
+                // Search button
+                const searchBtn = document.getElementById('search-btn');
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', () => {
+                        this.handleSearch(this.searchInput.value);
+                    });
+                }
+            }
+
+            /**
+             * Initialize the achievements manager
+             */
+            async init() {
+                console.log('Loading achievements from database...');
+                await this.loadAchievements();
+                this.updateStatistics();
+                this.displayAchievements();
+                this.displayFeaturedAchievements();
+            }
+
+            /**
+             * Test multiple API paths to find the working one
+             */
+            async testApiPaths() {
+                const currentUrl = window.location.href;
+                const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
+                
+                // Multiple possible API paths to test
+                const apiPaths = [
+                    'api/achievements.php',
+                    './api/achievements.php',
+                    '/api/achievements.php',
+                    '../api/achievements.php',
+                    baseUrl + '/api/achievements.php',
+                    'admin/../api/achievements.php'
+                ];
+
+                this.debugInfo.push('Testing API paths...');
+                this.debugInfo.push('Current URL: ' + currentUrl);
+                this.debugInfo.push('Base URL: ' + baseUrl);
+
+                for (const path of apiPaths) {
+                    try {
+                        this.debugInfo.push(`Testing: ${path}`);
+                        console.log(`Testing API path: ${path}`);
+                        
+                        const response = await fetch(path + '?limit=100');
+                        console.log(`Response status for ${path}:`, response.status);
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            
+                            if (data.error) {
+                                this.debugInfo.push(`${path} - API Error: ${data.error}`);
+                                continue;
+                            }
+                            
+                            if (Array.isArray(data)) {
+                                this.debugInfo.push(`${path} - SUCCESS! Found ${data.length} achievements`);
+                                console.log(`SUCCESS: Working API path found: ${path}`);
+                                return { success: true, data: data, path: path };
+                            } else {
+                                this.debugInfo.push(`${path} - Invalid data format`);
+                            }
+                        } else {
+                            this.debugInfo.push(`${path} - HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        
+                    } catch (error) {
+                        this.debugInfo.push(`${path} - Error: ${error.message}`);
+                        console.log(`Error testing ${path}:`, error.message);
+                    }
+                }
+                
+                return { success: false, data: [], path: null };
+            }
+
+            /**
+             * Load achievements from database API - TESTS MULTIPLE PATHS
+             */
+            async loadAchievements() {
+                try {
+                    this.showLoading(true);
+                    this.hideError();
+                    this.debugInfo = []; // Reset debug info
+                    
+                    console.log('Testing multiple API paths...');
+                    
+                    const result = await this.testApiPaths();
+                    
+                    if (result.success) {
+                        this.achievements = result.data;
+                        this.filteredAchievements = [...this.achievements];
+                        console.log('Successfully loaded achievements from database:', this.achievements.length);
+                        this.debugInfo.push(`Final result: ${this.achievements.length} achievements loaded successfully`);
+                        
+                        if (this.achievements.length === 0) {
+                            console.log('Database returned empty results - no achievements found');
+                            this.showNoAchievements('No achievements have been added to the database yet.');
+                        } else {
+                            this.hideNoAchievements();
+                        }
+                    } else {
+                        throw new Error('All API paths failed - no working API endpoint found');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error loading achievements:', error);
+                    this.debugInfo.push(`Final error: ${error.message}`);
+                    this.showError(`Failed to load achievements: ${error.message}`);
+                    this.achievements = [];
+                    this.filteredAchievements = [];
+                } finally {
+                    this.showLoading(false);
+                    this.updateDebugInfo();
+                }
+            }
+
+            /**
+             * Update debug information display
+             */
+            updateDebugInfo() {
+                if (this.debugContentEl) {
+                    this.debugContentEl.innerHTML = this.debugInfo.map(info => `<div>${info}</div>`).join('');
+                }
+            }
+
+            /**
+             * Handle filter changes
+             */
+            handleFilterChange(filter) {
+                this.currentFilter = filter;
+                this.currentPage = 1;
+                
+                // Update active filter button
+                this.filterButtons.forEach(btn => btn.classList.remove('active'));
+                const activeBtn = document.querySelector(`[data-filter="${filter}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.add('active');
+                }
+                
+                this.applyFilters();
+                this.displayAchievements();
+                this.animateFilterChange();
+            }
+
+            /**
+             * Handle search functionality
+             */
+            handleSearch(searchTerm) {
+                this.searchTerm = searchTerm.toLowerCase().trim();
+                this.currentPage = 1;
+                this.applyFilters();
+                this.displayAchievements();
+            }
+
+            /**
+             * Apply current filters and search
+             */
+            applyFilters() {
+                this.filteredAchievements = this.achievements.filter(achievement => {
+                    const matchesFilter = this.currentFilter === 'all' || achievement.category === this.currentFilter;
+                    const matchesSearch = !this.searchTerm || 
+                        achievement.title.toLowerCase().includes(this.searchTerm) ||
+                        achievement.description.toLowerCase().includes(this.searchTerm) ||
+                        achievement.category.toLowerCase().includes(this.searchTerm);
+                    
+                    return matchesFilter && matchesSearch;
+                });
+            }
+
+            /**
+             * Display achievements in grid
+             */
+            displayAchievements() {
+                if (!this.achievementsGrid) {
+                    console.error('Achievements grid not found');
+                    return;
+                }
+
+                const startIndex = 0;
+                const endIndex = this.currentPage * this.achievementsPerPage;
+                const achievementsToShow = this.filteredAchievements.slice(startIndex, endIndex);
+
+                console.log('Displaying achievements:', achievementsToShow.length, 'of', this.filteredAchievements.length);
+
+                if (achievementsToShow.length === 0) {
+                    if (this.achievements.length === 0) {
+                        this.showNoAchievements('No achievements found in the database. Please check back later.');
+                    } else {
+                        this.showNoAchievements('No achievements match your search criteria. Try adjusting your filters.');
+                    }
+                    this.achievementsGrid.innerHTML = '';
+                    this.updateLoadMoreButton();
+                    return;
+                }
+
+                this.hideNoAchievements();
+                this.achievementsGrid.innerHTML = '';
+
+                achievementsToShow.forEach((achievement, index) => {
+                    const achievementCard = this.createAchievementCard(achievement, index);
+                    this.achievementsGrid.appendChild(achievementCard);
+                });
+
+                this.updateLoadMoreButton();
+                this.animateCards();
+            }
+
+            /**
+             * Display featured achievements
+             */
+            displayFeaturedAchievements() {
+                if (!this.featuredContainer) return;
+
+                const featuredAchievements = this.achievements.filter(a => a.is_featured || a.featured).slice(0, 3);
+                
+                console.log('Featured achievements found:', featuredAchievements.length);
+
+                if (featuredAchievements.length === 0) {
+                    if (this.featuredSection) {
+                        this.featuredSection.style.display = 'none';
+                    }
+                    return;
+                }
+
+                if (this.featuredSection) {
+                    this.featuredSection.style.display = 'block';
+                }
+                this.featuredContainer.innerHTML = '';
+
+                featuredAchievements.forEach((achievement, index) => {
+                    const featuredCard = this.createFeaturedCard(achievement, index);
+                    this.featuredContainer.appendChild(featuredCard);
+                });
+            }
+
+            /**
+             * Create achievement card element
+             */
+            createAchievementCard(achievement, index) {
+                const card = document.createElement('div');
+                card.className = 'col-lg-4 col-md-6';
+                card.setAttribute('data-aos', 'fade-up');
+                card.setAttribute('data-aos-delay', (index * 100).toString());
+
+                const formattedDate = this.formatDate(achievement.created_at);
+                const isFeatured = achievement.is_featured || achievement.featured;
+                
+                // Handle image
+                const imageHtml = achievement.image_url ? 
+                    `<img src="${achievement.image_url}" alt="${achievement.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                     <div class="no-image" style="display: none;"><i class="fas fa-trophy"></i></div>` :
+                    `<div class="no-image"><i class="fas fa-trophy"></i></div>`;
+
+                card.innerHTML = `
+                    <div class="achievement-card" onclick="window.achievementsManager.showAchievementModal(${achievement.id})">
+                        <div class="achievement-image">
+                            ${imageHtml}
+                            <div class="achievement-category ${achievement.category.toLowerCase()}">${achievement.category}</div>
+                            ${isFeatured ? '<div class="featured-badge"><i class="fas fa-star"></i></div>' : ''}
+                        </div>
+                        <div class="achievement-content">
+                            <div class="achievement-date"><i class="fas fa-calendar"></i> ${formattedDate}</div>
+                            <h4>${achievement.title}</h4>
+                            <p>${this.truncateText(achievement.description, 120)}</p>
+                            <div class="achievement-actions">
+                                <button class="btn btn-maroon btn-sm" onclick="event.stopPropagation(); window.achievementsManager.showAchievementModal(${achievement.id})">
+                                    <i class="fas fa-eye"></i> View Details
+                                </button>
+                                <button class="btn btn-outline-maroon btn-sm" onclick="event.stopPropagation(); window.achievementsManager.shareAchievement(${achievement.id})">
+                                    <i class="fas fa-share"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                return card;
+            }
+
+            /**
+             * Create featured achievement card
+             */
+            createFeaturedCard(achievement, index) {
+                const card = document.createElement('div');
+                card.className = 'col-lg-4 col-md-6';
+                card.setAttribute('data-aos', 'fade-up');
+                card.setAttribute('data-aos-delay', (index * 200).toString());
+
+                const formattedDate = this.formatDate(achievement.created_at);
+                
+                // Handle image for featured cards
+                const imageHtml = achievement.image_url ? 
+                    `<img src="${achievement.image_url}" alt="${achievement.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                     <div class="no-image" style="display: none;"><i class="fas fa-trophy"></i></div>` :
+                    `<div class="no-image"><i class="fas fa-trophy"></i></div>`;
+
+                card.innerHTML = `
+                    <div class="featured-achievement-card" onclick="window.achievementsManager.showAchievementModal(${achievement.id})">
+                        <div class="featured-image">
+                            ${imageHtml}
+                            <div class="featured-overlay">
+                                <div class="featured-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="featured-content">
+                            <div class="featured-category">${achievement.category}</div>
+                            <h3>${achievement.title}</h3>
+                            <p>${this.truncateText(achievement.description, 100)}</p>
+                            <div class="featured-date">${formattedDate}</div>
+                        </div>
+                    </div>
+                `;
+
+                return card;
+            }
+
+            /**
+             * Show achievement modal with details
+             */
+            showAchievementModal(achievementId) {
+                const achievement = this.achievements.find(a => a.id == achievementId);
+                if (!achievement) {
+                    console.error('Achievement not found:', achievementId);
+                    return;
+                }
+
+                const modal = document.getElementById('achievementModal');
+                const modalLabel = document.getElementById('achievementModalLabel');
+                const modalBody = document.getElementById('achievementModalBody');
+
+                if (!modal || !modalLabel || !modalBody) {
+                    console.error('Modal elements not found');
+                    return;
+                }
+
+                modalLabel.textContent = achievement.title;
+
+                const formattedDate = this.formatDate(achievement.created_at);
+                const isFeatured = achievement.is_featured || achievement.featured;
+                
+                // Handle image in modal
+                const imageHtml = achievement.image_url ? 
+                    `<img src="${achievement.image_url}" alt="${achievement.title}" class="img-fluid rounded mb-3" onerror="this.style.display='none';">` :
+                    `<div class="text-center mb-3"><i class="fas fa-trophy fa-5x text-muted"></i></div>`;
+
+                modalBody.innerHTML = `
+                    <div class="achievement-modal-content">
+                        <div class="row">
+                            <div class="col-md-6">
+                                ${imageHtml}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="achievement-details">
+                                    <div class="badge bg-primary mb-2">${achievement.category}</div>
+                                    ${isFeatured ? '<div class="badge bg-warning mb-2 ms-2"><i class="fas fa-star"></i> Featured</div>' : ''}
+                                    <p class="text-muted mb-3"><i class="fas fa-calendar"></i> ${formattedDate}</p>
+                                    <p class="achievement-description">${achievement.description}</p>
+                                    <div class="achievement-stats mt-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-database"></i> Database ID: ${achievement.id}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Store current achievement for sharing
+                this.currentAchievement = achievement;
+
+                const bsModal = new bootstrap.Modal(modal);
+                bsModal.show();
+            }
+
+            /**
+             * Share achievement
+             */
+            shareAchievement(achievementId) {
+                const achievement = this.achievements.find(a => a.id == achievementId);
+                if (!achievement) return;
+
+                const shareData = {
+                    title: `${achievement.title} - Makalanegama School`,
+                    text: achievement.description,
+                    url: window.location.href + `#achievement-${achievement.id}`
+                };
+
+                if (navigator.share) {
+                    navigator.share(shareData).catch(console.error);
+                } else {
+                    // Fallback to copying URL
+                    const url = shareData.url;
+                    navigator.clipboard.writeText(url).then(() => {
+                        this.showToast('Achievement link copied to clipboard!');
+                    }).catch(() => {
+                        // Final fallback
+                        prompt('Copy this link to share the achievement:', url);
+                    });
+                }
+            }
+
+            /**
+             * Load more achievements
+             */
+            loadMoreAchievements() {
+                if (this.isLoading) return;
+
+                this.isLoading = true;
+                this.currentPage++;
+
+                const startIndex = (this.currentPage - 1) * this.achievementsPerPage;
+                const endIndex = this.currentPage * this.achievementsPerPage;
+                const newAchievements = this.filteredAchievements.slice(startIndex, endIndex);
+
+                newAchievements.forEach((achievement, index) => {
+                    const achievementCard = this.createAchievementCard(achievement, index);
+                    this.achievementsGrid.appendChild(achievementCard);
+                });
+
+                this.updateLoadMoreButton();
+                this.animateCards();
+                this.isLoading = false;
+            }
+
+            /**
+             * Update load more button visibility
+             */
+            updateLoadMoreButton() {
+                if (!this.loadMoreBtn) return;
+
+                const totalShown = this.currentPage * this.achievementsPerPage;
+                const hasMore = totalShown < this.filteredAchievements.length;
+
+                this.loadMoreBtn.style.display = hasMore ? 'inline-flex' : 'none';
+            }
+
+            /**
+             * Update statistics
+             */
+            updateStatistics() {
+                const total = this.achievements.length;
+                const featured = this.achievements.filter(a => a.is_featured || a.featured).length;
+                const categories = [...new Set(this.achievements.map(a => a.category))].length;
+
+                // Update header stats
+                this.animateCounter(this.totalAchievementsEl, total);
+                this.animateCounter(this.featuredCountEl, featured);
+                this.animateCounter(this.categoriesCountEl, categories);
+            }
+
+            /**
+             * Animate counter from 0 to target value
+             */
+            animateCounter(element, target) {
+                if (!element) return;
+
+                let current = 0;
+                const increment = target / 30;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        element.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = Math.floor(current);
+                    }
+                }, 50);
+            }
+
+            /**
+             * Show/hide loading indicator
+             */
+            showLoading(show) {
+                if (this.loadingIndicator) {
+                    this.loadingIndicator.style.display = show ? 'block' : 'none';
+                }
+            }
+
+            /**
+             * Show error message
+             */
+            showError(message) {
+                if (this.apiErrorDiv && this.errorMessageEl) {
+                    this.errorMessageEl.textContent = message;
+                    this.apiErrorDiv.style.display = 'block';
+                }
+            }
+
+            /**
+             * Hide error message
+             */
+            hideError() {
+                if (this.apiErrorDiv) {
+                    this.apiErrorDiv.style.display = 'none';
+                }
+            }
+
+            /**
+             * Show no achievements message
+             */
+            showNoAchievements(message) {
+                if (this.noAchievementsDiv) {
+                    const messageEl = this.noAchievementsDiv.querySelector('p');
+                    if (messageEl) {
+                        messageEl.textContent = message;
+                    }
+                    this.noAchievementsDiv.style.display = 'block';
+                }
+            }
+
+            /**
+             * Hide no achievements message
+             */
+            hideNoAchievements() {
+                if (this.noAchievementsDiv) {
+                    this.noAchievementsDiv.style.display = 'none';
+                }
+            }
+
+            /**
+             * Animate cards on display
+             */
+            animateCards() {
+                if (typeof gsap !== 'undefined') {
+                    gsap.from('.achievement-card', {
+                        y: 30,
+                        opacity: 0,
+                        duration: 0.6,
+                        stagger: 0.1,
+                        ease: "power2.out"
+                    });
+                }
+            }
+
+            /**
+             * Animate filter change
+             */
+            animateFilterChange() {
+                if (typeof gsap !== 'undefined') {
+                    gsap.from('.filter-btn', {
+                        scale: 0.95,
+                        duration: 0.2,
+                        stagger: 0.05,
+                        ease: "power2.out"
+                    });
+                }
+            }
+
+            /**
+             * Show toast notification
+             */
+            showToast(message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast-notification';
+                toast.textContent = message;
+                toast.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--success);
+                    color: white;
+                    padding: 1rem;
+                    border-radius: 5px;
+                    z-index: 9999;
+                    animation: slideIn 0.3s ease-out;
+                `;
+
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+
+            /**
+             * Format date for display
+             */
+            formatDate(dateString) {
+                if (!dateString) return 'No date';
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                } catch (error) {
+                    console.error('Error formatting date:', error);
+                    return 'Invalid date';
+                }
+            }
+
+            /**
+             * Truncate text to specified length
+             */
+            truncateText(text, maxLength) {
+                if (!text) return 'No description available';
+                if (text.length <= maxLength) return text;
+                return text.substring(0, maxLength).trim() + '...';
+            }
+
+            /**
+             * Debounce function for search
+             */
+            debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+        }
+
         // Initialize AOS
         AOS.init({
             duration: 1000,
             once: true,
             offset: 100
         });
-        
-        // Load achievements directly without fallback data
+
+        // Initialize achievements manager when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing achievements manager...');
             window.achievementsManager = new AchievementsManager();
         });
+
+        // Handle share achievement button in modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const shareBtn = document.getElementById('shareAchievementBtn');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', function() {
+                    if (window.achievementsManager && window.achievementsManager.currentAchievement) {
+                        window.achievementsManager.shareAchievement(window.achievementsManager.currentAchievement.id);
+                    }
+                });
+            }
+        });
     </script>
-    
-    <script src="assets/js/achievements.js"></script>
 </body>
 </html>

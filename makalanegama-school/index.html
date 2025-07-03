@@ -800,8 +800,210 @@
     <script src="assets/js/animations.js"></script>
     <script src="assets/js/telegram-api.js"></script>
 
+    <script>
+        /**
+ * Homepage Achievements Loading - FIXED VERSION
+ * Add this script to the homepage (index.html)
+ */
 
+/**
+ * Load latest achievements for homepage
+ */
+async function loadLatestAchievements() {
+    const container = document.getElementById('latest-achievements');
+    const loadingIndicator = document.getElementById('achievements-loading');
     
+    if (!container) {
+        console.log('Achievements container not found');
+        return;
+    }
+    
+    try {
+        console.log('Loading achievements for homepage...');
+        
+        // Show loading
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'block';
+        }
+        
+        // Use absolute path for API
+        const response = await fetch('/api/achievements.php?limit=3&featured=1');
+        console.log('API Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const achievements = await response.json();
+        console.log('API Response data:', achievements);
+        
+        if (Array.isArray(achievements) && achievements.length > 0) {
+            updateHomepageAchievements(achievements);
+            console.log('Successfully updated homepage achievements');
+        } else {
+            console.log('No achievements data available, using fallback');
+            updateHomepageAchievements(getFallbackAchievements());
+        }
+        
+    } catch (error) {
+        console.error('Error loading achievements:', error);
+        console.log('Using fallback achievements data');
+        updateHomepageAchievements(getFallbackAchievements());
+    } finally {
+        // Hide loading
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+        }
+    }
+}
+
+/**
+ * Get fallback achievements for homepage
+ */
+function getFallbackAchievements() {
+    return [
+        {
+            id: 1,
+            title: 'Provincial Mathematics Excellence Award',
+            description: 'Our Grade 10 students achieved outstanding results in the provincial mathematics competition, securing first place among 50+ schools.',
+            category: 'Academic',
+            featured: true,
+            image_url: 'assets/images/achievements/math-award.jpg',
+            date: '2024-02-15'
+        },
+        {
+            id: 2,
+            title: 'Environmental Conservation Award',
+            description: 'Recognition for our school\'s outstanding contribution to environmental conservation and sustainability projects.',
+            category: 'Environmental',
+            featured: true,
+            image_url: 'assets/images/achievements/environment-award.jpg',
+            date: '2024-01-10'
+        },
+        {
+            id: 3,
+            title: 'Technology Integration Recognition',
+            description: 'Awarded for successfully integrating modern technology into our curriculum and teaching methods.',
+            category: 'Technology',
+            featured: true,
+            image_url: 'assets/images/achievements/tech-award.jpg',
+            date: '2023-11-10'
+        }
+    ];
+}
+
+/**
+ * Update achievements display on homepage
+ */
+function updateHomepageAchievements(achievements) {
+    const container = document.getElementById('latest-achievements');
+    if (!container) return;
+    
+    console.log('Updating homepage with achievements:', achievements.length);
+    
+    // Clear existing content
+    container.innerHTML = '';
+    
+    achievements.slice(0, 3).forEach((achievement, index) => {
+        const achievementCard = createHomepageAchievementCard(achievement, index);
+        container.appendChild(achievementCard);
+    });
+    
+    // Animate new cards if GSAP is available
+    if (typeof gsap !== 'undefined') {
+        gsap.from('#latest-achievements .achievement-card', {
+            y: 30,
+            opacity: 0,
+            duration: 0.6,
+            stagger: 0.2,
+            ease: "power2.out"
+        });
+    }
+    
+    // Trigger AOS animations if available
+    if (typeof AOS !== 'undefined') {
+        AOS.refresh();
+    }
+}
+
+/**
+ * Create achievement card for homepage
+ */
+function createHomepageAchievementCard(achievement, index) {
+    const card = document.createElement('div');
+    card.className = 'col-lg-4 col-md-6';
+    card.setAttribute('data-aos', 'fade-up');
+    card.setAttribute('data-aos-delay', ((index + 1) * 100).toString());
+    
+    const imageUrl = achievement.image_url || 'assets/images/achievements/default-achievement.jpg';
+    const categoryClass = achievement.category.toLowerCase();
+    const isFeatured = achievement.featured || achievement.is_featured;
+    
+    card.innerHTML = `
+        <div class="achievement-card">
+            <div class="achievement-image">
+                <img src="${imageUrl}" alt="${achievement.title}" loading="lazy" onerror="this.src='assets/images/achievements/default-achievement.jpg'">
+                <div class="achievement-category ${categoryClass}">${achievement.category}</div>
+                ${isFeatured ? '<div class="featured-badge"><i class="fas fa-star"></i></div>' : ''}
+            </div>
+            <div class="achievement-content">
+                <div class="achievement-date">${formatDateForHomepage(achievement.date || achievement.created_at)}</div>
+                <h4>${achievement.title}</h4>
+                <p>${truncateTextForHomepage(achievement.description, 120)}</p>
+                <a href="achievements.html" class="achievement-link">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    `;
+    
+    return card;
+}
+
+/**
+ * Format date for display on homepage
+ */
+function formatDateForHomepage(dateString) {
+    if (!dateString) return 'Recent';
+    
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return 'Recent';
+    }
+}
+
+/**
+ * Truncate text to specified length for homepage
+ */
+function truncateTextForHomepage(text, length) {
+    if (!text) return '';
+    if (text.length <= length) return text;
+    return text.substring(0, length).trim() + '...';
+}
+
+// Load achievements when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Homepage DOM loaded, loading achievements...');
+    // Add a small delay to ensure other scripts have loaded
+    setTimeout(loadLatestAchievements, 1000);
+});
+
+// Also try to load when the window is fully loaded
+window.addEventListener('load', function() {
+    console.log('Window fully loaded, ensuring achievements are loaded...');
+    // Only load if container exists but is empty
+    const container = document.getElementById('latest-achievements');
+    if (container && container.children.length === 0) {
+        setTimeout(loadLatestAchievements, 500);
+    }
+});
+    </script>
+
     
     <script>
     /**

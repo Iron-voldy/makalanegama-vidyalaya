@@ -1,16 +1,39 @@
 <?php
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Set headers
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Headers: Content-Type');
 
-require_once '../admin/config.php';
-require_once '../admin/database.php';
+// Log the request
+error_log("Achievements API called from: " . $_SERVER['REQUEST_URI']);
 
 try {
+    // Check if the admin files exist
+    $configPath = dirname(__FILE__) . '/../admin/config.php';
+    $databasePath = dirname(__FILE__) . '/../admin/database.php';
+    
+    if (!file_exists($configPath)) {
+        throw new Exception("Config file not found at: $configPath");
+    }
+    
+    if (!file_exists($databasePath)) {
+        throw new Exception("Database file not found at: $databasePath");
+    }
+    
+    // Include the admin configuration and database
+    require_once $configPath;
+    require_once $databasePath;
+    
+    // Create database instance
     $db = new Database();
     
-    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+    // Get parameters
+    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
     $category = isset($_GET['category']) ? sanitizeInput($_GET['category']) : null;
     $featured = isset($_GET['featured']) ? true : false;
     
@@ -34,9 +57,14 @@ try {
         $sql .= " WHERE " . implode(" AND ", $conditions);
     }
     
-    $sql .= " ORDER BY created_at DESC LIMIT ?";
-    $params[] = $limit;
+    $sql .= " ORDER BY created_at DESC";
     
+    if ($limit > 0) {
+        $sql .= " LIMIT ?";
+        $params[] = $limit;
+    }
+    
+    // Execute query
     $stmt = $db->getPDO()->prepare($sql);
     
     // Bind parameters with proper types
@@ -46,7 +74,10 @@ try {
     }
     
     $stmt->execute();
-    $achievements = $stmt->fetchAll();
+    $achievements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Log the results
+    error_log("Found " . count($achievements) . " achievements");
     
     // Format the response
     $response = [];
@@ -58,14 +89,41 @@ try {
             'image_url' => $achievement['image_url'],
             'category' => $achievement['category'],
             'featured' => (bool)$achievement['is_featured'],
-            'date' => $achievement['created_at']
+            'is_featured' => (bool)$achievement['is_featured'],
+            'date' => $achievement['created_at'],
+            'created_at' => $achievement['created_at']
         ];
     }
     
-    echo json_encode($response);
+    // Return JSON response
+    echo json_encode($response, JSON_PRETTY_PRINT);
+    
+} catch (PDOException $e) {
+    error_log("Database error: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'error' => 'Database connection failed',
+        'message' => $e->getMessage(),
+        'debug' => [
+            'config_path' => $configPath ?? 'not set',
+            'database_path' => $databasePath ?? 'not set',
+            'config_exists' => file_exists($configPath ?? ''),
+            'database_exists' => file_exists($databasePath ?? '')
+        ]
+    ], JSON_PRETTY_PRINT);
     
 } catch (Exception $e) {
+    error_log("General error: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['error' => 'Internal server error']);
+    echo json_encode([
+        'error' => 'API Error',
+        'message' => $e->getMessage(),
+        'debug' => [
+            'current_dir' => __DIR__,
+            'script_path' => __FILE__,
+            'config_path' => $configPath ?? 'not set',
+            'database_path' => $databasePath ?? 'not set'
+        ]
+    ], JSON_PRETTY_PRINT);
 }
 ?>
