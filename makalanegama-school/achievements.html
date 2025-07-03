@@ -33,6 +33,395 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        /* Include the achievements CSS here or link to a separate file */
+        /* Achievement Cards */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .achievement-card {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition-medium);
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .achievement-image {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .achievement-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .achievement-card:hover .achievement-image img {
+            transform: scale(1.1);
+        }
+
+        .achievement-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--white);
+            background: var(--maroon-primary);
+        }
+
+        .achievement-category.academic {
+            background: var(--success);
+        }
+
+        .achievement-category.sports {
+            background: var(--info);
+        }
+
+        .achievement-category.cultural {
+            background: var(--warning);
+        }
+
+        .achievement-category.environmental {
+            background: var(--success);
+        }
+
+        .achievement-category.technology {
+            background: var(--deep-blue);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--gold-accent);
+            color: var(--black);
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .achievement-content {
+            padding: 2rem;
+        }
+
+        .achievement-date {
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .achievement-content h4 {
+            color: var(--black);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            font-size: 1.25rem;
+        }
+
+        .achievement-content p {
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .achievement-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--light-gray);
+            border-bottom: 1px solid rgba(128, 0, 32, 0.1);
+        }
+
+        .filter-controls {
+            gap: 2rem;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            color: var(--medium-gray);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-medium);
+            font-weight: 500;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--maroon-primary);
+            color: var(--maroon-primary);
+            background: var(--cream-background);
+        }
+
+        .filter-btn.active {
+            background: var(--maroon-primary);
+            border-color: var(--maroon-primary);
+            color: var(--white);
+        }
+
+        .search-box {
+            min-width: 300px;
+        }
+
+        .search-box .form-control {
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius-medium) 0 0 var(--radius-medium);
+            padding: 0.75rem 1rem;
+        }
+
+        .search-box .btn {
+            border-radius: 0 var(--radius-medium) var(--radius-medium) 0;
+            border: 2px solid var(--maroon-primary);
+            border-left: none;
+        }
+
+        /* Featured Achievements */
+        .featured-achievement-card {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            transition: var(--transition-medium);
+            height: 100%;
+            cursor: pointer;
+            border: 2px solid var(--gold-accent);
+        }
+
+        .featured-achievement-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .featured-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .featured-achievement-card:hover .featured-image img {
+            transform: scale(1.1);
+        }
+
+        .featured-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.8), rgba(255, 215, 0, 0.6));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+
+        .featured-achievement-card:hover .featured-overlay {
+            opacity: 1;
+        }
+
+        .featured-icon {
+            background: var(--white);
+            color: var(--gold-accent);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .featured-content {
+            padding: 2rem;
+        }
+
+        .featured-category {
+            color: var(--gold-accent);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-content h3 {
+            color: var(--black);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .featured-content p {
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .featured-date {
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--light-gray);
+            padding-top: 1rem;
+        }
+
+        /* Statistics Cards */
+        .stat-card {
+            background: var(--white);
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-large);
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition-medium);
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .stat-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--maroon-primary);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-description {
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+        }
+
+        /* Loading and No Results */
+        .loading-indicator {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .spinner-border.text-maroon {
+            color: var(--maroon-primary) !important;
+        }
+
+        #no-results {
+            background: var(--light-gray);
+            border-radius: var(--radius-large);
+            padding: 3rem;
+            margin: 2rem 0;
+        }
+
+        #no-results i {
+            opacity: 0.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .achievements-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .filter-tabs {
+                justify-content: center;
+            }
+            
+            .search-box {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .page-stats {
+                justify-content: center;
+                gap: 2rem;
+            }
+            
+            .achievement-actions {
+                flex-direction: column;
+            }
+            
+            .achievement-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -122,16 +511,16 @@
                         
                         <div class="page-stats" data-aos="fade-up" data-aos-delay="500">
                             <div class="stat-item">
-                                <div class="stat-number">50+</div>
-                                <div class="stat-label">Awards Won</div>
+                                <div class="stat-number" id="total-achievements">0</div>
+                                <div class="stat-label">Total Achievements</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number">15</div>
-                                <div class="stat-label">Provincial Championships</div>
+                                <div class="stat-number" id="featured-count">0</div>
+                                <div class="stat-label">Featured</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number">100+</div>
-                                <div class="stat-label">Student Recognitions</div>
+                                <div class="stat-number" id="categories-count">0</div>
+                                <div class="stat-label">Categories</div>
                             </div>
                         </div>
                     </div>
@@ -152,34 +541,42 @@
         </div>
     </section>
 
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" class="loading-indicator" style="display: none;">
+        <div class="spinner-border text-maroon" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Loading achievements...</p>
+    </div>
+
     <!-- Achievement Categories Filter -->
     <section class="filter-section py-4 bg-light">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-10">
+                <div class="col-lg-12">
                     <div class="filter-controls d-flex flex-wrap justify-content-between align-items-center mb-3">
                         <div class="filter-tabs" data-aos="fade-up">
                             <button class="filter-btn active" data-filter="all">
                                 <i class="fas fa-trophy"></i>
                                 All Achievements
                             </button>
-                            <button class="filter-btn" data-filter="academic">
+                            <button class="filter-btn" data-filter="Academic">
                                 <i class="fas fa-graduation-cap"></i>
                                 Academic
                             </button>
-                            <button class="filter-btn" data-filter="sports">
+                            <button class="filter-btn" data-filter="Sports">
                                 <i class="fas fa-running"></i>
                                 Sports
                             </button>
-                            <button class="filter-btn" data-filter="cultural">
+                            <button class="filter-btn" data-filter="Cultural">
                                 <i class="fas fa-theater-masks"></i>
                                 Cultural
                             </button>
-                            <button class="filter-btn" data-filter="environmental">
+                            <button class="filter-btn" data-filter="Environmental">
                                 <i class="fas fa-leaf"></i>
                                 Environmental
                             </button>
-                            <button class="filter-btn" data-filter="technology">
+                            <button class="filter-btn" data-filter="Technology">
                                 <i class="fas fa-laptop-code"></i>
                                 Technology
                             </button>
@@ -188,7 +585,7 @@
                         <div class="search-box" data-aos="fade-up" data-aos-delay="200">
                             <div class="input-group">
                                 <input type="text" id="achievement-search" class="form-control" placeholder="Search achievements...">
-                                <button class="btn btn-outline-maroon" type="button">
+                                <button class="btn btn-outline-maroon" type="button" id="search-btn">
                                     <i class="fas fa-search"></i>
                                 </button>
                             </div>
@@ -200,7 +597,7 @@
     </section>
 
     <!-- Featured Achievements -->
-    <section class="featured-achievements py-5">
+    <section class="featured-achievements py-5" id="featured-section" style="display: none;">
         <div class="container">
             <div class="section-header text-center mb-5" data-aos="fade-up">
                 <div class="section-badge">
@@ -215,95 +612,13 @@
             </div>
             
             <div class="row g-4" id="featured-achievements">
-                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="featured-achievement-card">
-                        <div class="achievement-badge">
-                            <i class="fas fa-star"></i>
-                            Featured
-                        </div>
-                        <div class="achievement-image">
-                            <img src="assets/images/achievements/math-competition.jpg" alt="Mathematics Competition">
-                            <div class="achievement-category academic">Academic</div>
-                        </div>
-                        <div class="achievement-content">
-                            <div class="achievement-meta">
-                                <span class="achievement-date">
-                                    <i class="fas fa-calendar"></i>
-                                    February 15, 2024
-                                </span>
-                                <span class="achievement-level">
-                                    <i class="fas fa-medal"></i>
-                                    Provincial Level
-                                </span>
-                            </div>
-                            <h3>Provincial Mathematics Excellence</h3>
-                            <p>Our Grade 10 students achieved outstanding results in the provincial mathematics competition, securing first place among 50 participating schools from across the North Western Province.</p>
-                            <div class="achievement-highlights">
-                                <span class="highlight-tag">1st Place</span>
-                                <span class="highlight-tag">50 Schools</span>
-                                <span class="highlight-tag">Grade 10</span>
-                            </div>
-                            <div class="achievement-actions">
-                                <button class="btn btn-maroon" data-achievement-id="1">
-                                    <i class="fas fa-eye"></i>
-                                    View Details
-                                </button>
-                                <button class="btn btn-outline-maroon" data-share-achievement="1">
-                                    <i class="fas fa-share"></i>
-                                    Share
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="featured-achievement-card">
-                        <div class="achievement-badge">
-                            <i class="fas fa-star"></i>
-                            Featured
-                        </div>
-                        <div class="achievement-image">
-                            <img src="assets/images/achievements/cricket-championship.jpg" alt="Cricket Championship">
-                            <div class="achievement-category sports">Sports</div>
-                        </div>
-                        <div class="achievement-content">
-                            <div class="achievement-meta">
-                                <span class="achievement-date">
-                                    <i class="fas fa-calendar"></i>
-                                    January 20, 2024
-                                </span>
-                                <span class="achievement-level">
-                                    <i class="fas fa-medal"></i>
-                                    Zonal Level
-                                </span>
-                            </div>
-                            <h3>Inter-School Cricket Championship</h3>
-                            <p>Our cricket team emerged victorious in the zonal inter-school cricket championship after a thrilling final match, demonstrating exceptional teamwork and sportsmanship.</p>
-                            <div class="achievement-highlights">
-                                <span class="highlight-tag">Champions</span>
-                                <span class="highlight-tag">Zonal Level</span>
-                                <span class="highlight-tag">Team Spirit</span>
-                            </div>
-                            <div class="achievement-actions">
-                                <button class="btn btn-maroon" data-achievement-id="2">
-                                    <i class="fas fa-eye"></i>
-                                    View Details
-                                </button>
-                                <button class="btn btn-outline-maroon" data-share-achievement="2">
-                                    <i class="fas fa-share"></i>
-                                    Share
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Featured achievements will be loaded here -->
             </div>
         </div>
     </section>
 
     <!-- All Achievements Grid -->
-    <section class="achievements-grid-section py-5 bg-light">
+    <section class="achievements-grid-section py-5">
         <div class="container">
             <div class="section-header text-center mb-5" data-aos="fade-up">
                 <div class="section-badge">
@@ -317,246 +632,20 @@
                 </p>
             </div>
             
+            <!-- No Results Message -->
+            <div id="no-results" class="text-center py-5" style="display: none;">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No achievements found</h4>
+                <p class="text-muted">Try adjusting your search or filter criteria</p>
+            </div>
+            
             <div class="achievements-grid" id="achievements-grid">
-                <!-- Achievements will be loaded dynamically from Telegram -->
-                <div class="achievement-card" data-category="academic" data-aos="fade-up" data-aos-delay="100">
-                    <div class="achievement-image">
-                        <img src="assets/images/achievements/science-fair.jpg" alt="Science Fair Achievement">
-                        <div class="achievement-category academic">Academic</div>
-                        <div class="achievement-overlay">
-                            <div class="overlay-actions">
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Quick View">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Share">
-                                    <i class="fas fa-share"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Like">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="achievement-content">
-                        <div class="achievement-meta">
-                            <span class="achievement-date">November 10, 2023</span>
-                            <span class="achievement-type">Science Fair</span>
-                        </div>
-                        <h4>Innovation in Science Projects</h4>
-                        <p>Students demonstrated exceptional creativity and scientific thinking in the annual science fair, with three projects advancing to the national level competition.</p>
-                        <div class="achievement-stats">
-                            <div class="stat">
-                                <i class="fas fa-users"></i>
-                                <span>15 Students</span>
-                            </div>
-                            <div class="stat">
-                                <i class="fas fa-trophy"></i>
-                                <span>3 National Qualifiers</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="achievement-card" data-category="environmental" data-aos="fade-up" data-aos-delay="200">
-                    <div class="achievement-image">
-                        <img src="assets/images/achievements/environmental-award.jpg" alt="Environmental Conservation Award">
-                        <div class="achievement-category environmental">Environmental</div>
-                        <div class="achievement-overlay">
-                            <div class="overlay-actions">
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Quick View">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Share">
-                                    <i class="fas fa-share"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Like">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="achievement-content">
-                        <div class="achievement-meta">
-                            <span class="achievement-date">January 10, 2024</span>
-                            <span class="achievement-type">Conservation</span>
-                        </div>
-                        <h4>Environmental Conservation Award</h4>
-                        <p>Recognition for our school's outstanding contribution to environmental conservation through innovative gardening and sustainability projects.</p>
-                        <div class="achievement-stats">
-                            <div class="stat">
-                                <i class="fas fa-seedling"></i>
-                                <span>500+ Trees Planted</span>
-                            </div>
-                            <div class="stat">
-                                <i class="fas fa-recycle"></i>
-                                <span>Waste Management</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="achievement-card" data-category="technology" data-aos="fade-up" data-aos-delay="300">
-                    <div class="achievement-image">
-                        <img src="assets/images/achievements/computer-lab.jpg" alt="Technology Achievement">
-                        <div class="achievement-category technology">Technology</div>
-                        <div class="achievement-overlay">
-                            <div class="overlay-actions">
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Quick View">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Share">
-                                    <i class="fas fa-share"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Like">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="achievement-content">
-                        <div class="achievement-meta">
-                            <span class="achievement-date">December 15, 2023</span>
-                            <span class="achievement-type">Infrastructure</span>
-                        </div>
-                        <h4>Modern Computer Lab Launch</h4>
-                        <p>Successfully inaugurated our state-of-the-art computer laboratory with support from Wire Academy & Technology for Village, enhancing digital education.</p>
-                        <div class="achievement-stats">
-                            <div class="stat">
-                                <i class="fas fa-desktop"></i>
-                                <span>25 Computers</span>
-                            </div>
-                            <div class="stat">
-                                <i class="fas fa-wifi"></i>
-                                <span>High-Speed Internet</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="achievement-card" data-category="cultural" data-aos="fade-up" data-aos-delay="400">
-                    <div class="achievement-image">
-                        <img src="assets/images/achievements/cultural-performance.jpg" alt="Cultural Performance">
-                        <div class="achievement-category cultural">Cultural</div>
-                        <div class="achievement-overlay">
-                            <div class="overlay-actions">
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Quick View">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Share">
-                                    <i class="fas fa-share"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Like">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="achievement-content">
-                        <div class="achievement-meta">
-                            <span class="achievement-date">November 25, 2023</span>
-                            <span class="achievement-type">Cultural Arts</span>
-                        </div>
-                        <h4>Traditional Dance Excellence</h4>
-                        <p>Our students showcased exceptional talent in traditional Sri Lankan dance at the provincial cultural festival, earning standing ovations and recognition.</p>
-                        <div class="achievement-stats">
-                            <div class="stat">
-                                <i class="fas fa-music"></i>
-                                <span>20 Performers</span>
-                            </div>
-                            <div class="stat">
-                                <i class="fas fa-award"></i>
-                                <span>Best Performance</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="achievement-card" data-category="sports" data-aos="fade-up" data-aos-delay="500">
-                    <div class="achievement-image">
-                        <img src="assets/images/achievements/athletics.jpg" alt="Athletics Championship">
-                        <div class="achievement-category sports">Sports</div>
-                        <div class="achievement-overlay">
-                            <div class="overlay-actions">
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Quick View">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Share">
-                                    <i class="fas fa-share"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Like">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="achievement-content">
-                        <div class="achievement-meta">
-                            <span class="achievement-date">October 18, 2023</span>
-                            <span class="achievement-type">Athletics</span>
-                        </div>
-                        <h4>Track and Field Excellence</h4>
-                        <p>Outstanding performance in the zonal athletics championship with multiple medal wins in various track and field events.</p>
-                        <div class="achievement-stats">
-                            <div class="stat">
-                                <i class="fas fa-medal"></i>
-                                <span>8 Medals Won</span>
-                            </div>
-                            <div class="stat">
-                                <i class="fas fa-users"></i>
-                                <span>12 Athletes</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="achievement-card" data-category="academic" data-aos="fade-up" data-aos-delay="600">
-                    <div class="achievement-image">
-                        <img src="assets/images/achievements/debate-competition.jpg" alt="Debate Competition">
-                        <div class="achievement-category academic">Academic</div>
-                        <div class="achievement-overlay">
-                            <div class="overlay-actions">
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Quick View">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Share">
-                                    <i class="fas fa-share"></i>
-                                </button>
-                                <button class="action-btn" data-bs-toggle="tooltip" title="Like">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="achievement-content">
-                        <div class="achievement-meta">
-                            <span class="achievement-date">September 22, 2023</span>
-                            <span class="achievement-type">Debate</span>
-                        </div>
-                        <h4>Inter-School Debate Victory</h4>
-                        <p>Our debate team secured first place in the inter-school debate competition, demonstrating exceptional critical thinking and public speaking skills.</p>
-                        <div class="achievement-stats">
-                            <div class="stat">
-                                <i class="fas fa-microphone"></i>
-                                <span>6 Debaters</span>
-                            </div>
-                            <div class="stat">
-                                <i class="fas fa-trophy"></i>
-                                <span>1st Place</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Achievements will be loaded dynamically from database -->
             </div>
             
             <!-- Load More Button -->
             <div class="text-center mt-5" data-aos="fade-up">
-                <button id="load-more-achievements" class="btn btn-maroon btn-lg">
+                <button id="load-more-achievements" class="btn btn-maroon btn-lg" style="display: none;">
                     <i class="fas fa-plus"></i>
                     Load More Achievements
                 </button>
@@ -564,184 +653,8 @@
         </div>
     </section>
 
-    <!-- Achievement Timeline -->
-    <section class="achievement-timeline py-5">
-        <div class="container">
-            <div class="section-header text-center mb-5" data-aos="fade-up">
-                <div class="section-badge">
-                    Timeline
-                </div>
-                <h2 class="section-title">
-                    Our Journey of <span class="text-maroon">Excellence</span>
-                </h2>
-                <p class="section-description">
-                    A chronological view of our most significant achievements over the years
-                </p>
-            </div>
-            
-            <div class="timeline" data-aos="fade-up">
-                <div class="timeline-item" data-aos="fade-right" data-aos-delay="100">
-                    <div class="timeline-date">
-                        <div class="date-circle">
-                            <span class="date-month">Feb</span>
-                            <span class="date-year">2024</span>
-                        </div>
-                    </div>
-                    <div class="timeline-content">
-                        <div class="timeline-category academic">Academic</div>
-                        <h4>Provincial Mathematics Excellence</h4>
-                        <p>First place in provincial mathematics competition among 50 schools.</p>
-                        <div class="timeline-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> North Western Province</span>
-                            <span><i class="fas fa-users"></i> Grade 10 Students</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="timeline-item" data-aos="fade-left" data-aos-delay="200">
-                    <div class="timeline-date">
-                        <div class="date-circle">
-                            <span class="date-month">Jan</span>
-                            <span class="date-year">2024</span>
-                        </div>
-                    </div>
-                    <div class="timeline-content">
-                        <div class="timeline-category sports">Sports</div>
-                        <h4>Cricket Championship Victory</h4>
-                        <p>Won the zonal inter-school cricket championship with outstanding teamwork.</p>
-                        <div class="timeline-meta">
-                            <span><i class="fas fa-trophy"></i> Zonal Champions</span>
-                            <span><i class="fas fa-users"></i> School Cricket Team</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="timeline-item" data-aos="fade-right" data-aos-delay="300">
-                    <div class="timeline-date">
-                        <div class="date-circle">
-                            <span class="date-month">Dec</span>
-                            <span class="date-year">2023</span>
-                        </div>
-                    </div>
-                    <div class="timeline-content">
-                        <div class="timeline-category technology">Technology</div>
-                        <h4>Computer Lab Inauguration</h4>
-                        <p>Launched state-of-the-art computer laboratory with 25 modern computers.</p>
-                        <div class="timeline-meta">
-                            <span><i class="fas fa-laptop"></i> 25 Computers</span>
-                            <span><i class="fas fa-handshake"></i> Wire Academy Support</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="timeline-item" data-aos="fade-left" data-aos-delay="400">
-                    <div class="timeline-date">
-                        <div class="date-circle">
-                            <span class="date-month">Nov</span>
-                            <span class="date-year">2023</span>
-                        </div>
-                    </div>
-                    <div class="timeline-content">
-                        <div class="timeline-category cultural">Cultural</div>
-                        <h4>Traditional Dance Recognition</h4>
-                        <p>Excellence in traditional Sri Lankan dance at provincial cultural festival.</p>
-                        <div class="timeline-meta">
-                            <span><i class="fas fa-music"></i> 20 Performers</span>
-                            <span><i class="fas fa-award"></i> Best Performance Award</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- DestinyLab Integration Section -->
-    <section class="destinylab-section py-5 bg-light">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6" data-aos="fade-right">
-                    <div class="destinylab-content">
-                        <div class="section-badge">
-                            DestinyLab Projects
-                        </div>
-                        <h2 class="section-title">
-                            Community Impact through <span class="text-maroon">DestinyLab</span>
-                        </h2>
-                        <p class="section-description">
-                            Our school's active participation in DestinyLab initiatives has created meaningful 
-                            impact in our community through innovative projects and collaborative efforts.
-                        </p>
-                        
-                        <div class="destinylab-highlights">
-                            <div class="highlight-item">
-                                <div class="highlight-icon">
-                                    <i class="fas fa-seedling"></i>
-                                </div>
-                                <div class="highlight-content">
-                                    <h5>Sustainable Agriculture</h5>
-                                    <p>Students leading coconut growing and organic farming initiatives</p>
-                                </div>
-                            </div>
-                            
-                            <div class="highlight-item">
-                                <div class="highlight-icon">
-                                    <i class="fas fa-laptop-code"></i>
-                                </div>
-                                <div class="highlight-content">
-                                    <h5>Technology Integration</h5>
-                                    <p>Digital literacy programs enhancing educational outcomes</p>
-                                </div>
-                            </div>
-                            
-                            <div class="highlight-item">
-                                <div class="highlight-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="highlight-content">
-                                    <h5>Community Engagement</h5>
-                                    <p>Collaborative projects connecting school with local community</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <a href="https://web.facebook.com/people/Makalanegama-kv/100063734032649/" 
-                           target="_blank" class="btn btn-maroon btn-lg mt-4">
-                            <i class="fab fa-facebook"></i>
-                            Visit DestinyLab Facebook
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="col-lg-6" data-aos="fade-left">
-                    <div class="destinylab-gallery">
-                        <div class="gallery-grid">
-                            <div class="gallery-item large">
-                                <img src="assets/images/achievements/destinylab-main.jpg" alt="DestinyLab Main Project">
-                                <div class="gallery-overlay">
-                                    <h5>Community Garden Project</h5>
-                                </div>
-                            </div>
-                            <div class="gallery-item">
-                                <img src="assets/images/achievements/coconut-growing.jpg" alt="Coconut Growing">
-                                <div class="gallery-overlay">
-                                    <h5>Coconut Cultivation</h5>
-                                </div>
-                            </div>
-                            <div class="gallery-item">
-                                <img src="assets/images/achievements/tech-training.jpg" alt="Technology Training">
-                                <div class="gallery-overlay">
-                                    <h5>Tech Skills Development</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Achievement Statistics -->
-    <section class="achievement-stats py-5">
+    <section class="achievement-stats py-5 bg-light">
         <div class="container">
             <div class="section-header text-center mb-5" data-aos="fade-up">
                 <div class="section-badge">
@@ -753,25 +666,14 @@
             </div>
             
             <div class="row g-4">
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <div class="stat-number" data-count="52">0</div>
-                        <div class="stat-label">Total Awards</div>
-                        <div class="stat-description">Across all categories and levels</div>
-                    </div>
-                </div>
-                
                 <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="stat-card">
                         <div class="stat-icon">
                             <i class="fas fa-graduation-cap"></i>
                         </div>
-                        <div class="stat-number" data-count="89">0</div>
+                        <div class="stat-number" data-count="0" id="stat-academic">0</div>
                         <div class="stat-label">Academic Achievements</div>
-                        <div class="stat-description">Scholarships and academic recognitions</div>
+                        <div class="stat-description">Excellence in education</div>
                     </div>
                 </div>
                 
@@ -780,7 +682,7 @@
                         <div class="stat-icon">
                             <i class="fas fa-medal"></i>
                         </div>
-                        <div class="stat-number" data-count="34">0</div>
+                        <div class="stat-number" data-count="0" id="stat-sports">0</div>
                         <div class="stat-label">Sports Medals</div>
                         <div class="stat-description">In various sports competitions</div>
                     </div>
@@ -791,9 +693,9 @@
                         <div class="stat-icon">
                             <i class="fas fa-users"></i>
                         </div>
-                        <div class="stat-number" data-count="156">0</div>
-                        <div class="stat-label">Students Recognized</div>
-                        <div class="stat-description">Individual student achievements</div>
+                        <div class="stat-number" data-count="0" id="stat-featured">0</div>
+                        <div class="stat-label">Featured Achievements</div>
+                        <div class="stat-description">Our proudest moments</div>
                     </div>
                 </div>
             </div>
@@ -943,21 +845,11 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Achievement Details</h5>
+                    <h5 class="modal-title" id="achievementModalLabel">Achievement Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="achievement-modal-content">
-                        <div class="achievement-modal-image">
-                            <img src="" alt="" class="img-fluid rounded">
-                        </div>
-                        <div class="achievement-modal-details">
-                            <div class="achievement-modal-meta"></div>
-                            <h3 class="achievement-modal-title"></h3>
-                            <p class="achievement-modal-description"></p>
-                            <div class="achievement-modal-stats"></div>
-                        </div>
-                    </div>
+                <div class="modal-body" id="achievementModalBody">
+                    <!-- Achievement details will be loaded here -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-maroon" data-bs-dismiss="modal">Close</button>
@@ -987,8 +879,6 @@
     <!-- Custom JS -->
     <script src="assets/js/main.js"></script>
     <script src="assets/js/animations.js"></script>
-    <script src="assets/js/telegram-api.js"></script>
-    <script src="assets/js/achievements.js"></script>
     
     <script>
         // Initialize AOS
@@ -998,128 +888,12 @@
             offset: 100
         });
         
-        // Initialize tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-        
-        // Load achievements on page load
+        // Load achievements directly without fallback data
         document.addEventListener('DOMContentLoaded', function() {
-            loadLatestAchievements();
-            initializeAchievementFilters();
-            initializeAchievementSearch();
-            animateStatsCounters();
+            window.achievementsManager = new AchievementsManager();
         });
-        
-        // Animate statistics counters
-        function animateStatsCounters() {
-            const counters = document.querySelectorAll('.stat-number[data-count]');
-            
-            counters.forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-count'));
-                const duration = 2000; // 2 seconds
-                const increment = target / (duration / 16); // 60fps
-                let current = 0;
-                
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        current = target;
-                        clearInterval(timer);
-                    }
-                    counter.textContent = Math.floor(current);
-                }, 16);
-            });
-        }
-        
-        // Initialize achievement filters
-        function initializeAchievementFilters() {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const achievementCards = document.querySelectorAll('.achievement-card');
-            
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Remove active class from all buttons
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
-                    button.classList.add('active');
-                    
-                    const filter = button.getAttribute('data-filter');
-                    
-                    achievementCards.forEach(card => {
-                        const category = card.getAttribute('data-category');
-                        
-                        if (filter === 'all' || category === filter) {
-                            card.style.display = 'block';
-                            // Animate in
-                            gsap.from(card, {
-                                opacity: 0,
-                                y: 30,
-                                duration: 0.5,
-                                ease: "power2.out"
-                            });
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            });
-        }
-        
-        // Initialize achievement search
-        function initializeAchievementSearch() {
-            const searchInput = document.getElementById('achievement-search');
-            
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const achievementCards = document.querySelectorAll('.achievement-card');
-                
-                achievementCards.forEach(card => {
-                    const title = card.querySelector('h4').textContent.toLowerCase();
-                    const description = card.querySelector('p').textContent.toLowerCase();
-                    
-                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        }
-        
-        // Achievement modal functionality
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('[data-achievement-id]')) {
-                const achievementId = e.target.closest('[data-achievement-id]').getAttribute('data-achievement-id');
-                showAchievementModal(achievementId);
-            }
-            
-            if (e.target.closest('[data-share-achievement]')) {
-                const achievementId = e.target.closest('[data-share-achievement]').getAttribute('data-share-achievement');
-                shareAchievement(achievementId);
-            }
-        });
-        
-        function showAchievementModal(id) {
-            // This would load achievement details from API or local data
-            const modal = new bootstrap.Modal(document.getElementById('achievementModal'));
-            modal.show();
-        }
-        
-        function shareAchievement(id) {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Makalanegama School Achievement',
-                    text: 'Check out this amazing achievement from Makalanegama School!',
-                    url: window.location.href
-                });
-            } else {
-                // Fallback to copying link
-                navigator.clipboard.writeText(window.location.href);
-                alert('Link copied to clipboard!');
-            }
-        }
     </script>
+    
+    <script src="assets/js/achievements.js"></script>
 </body>
 </html>

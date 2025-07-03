@@ -323,74 +323,55 @@
 
     <!-- Latest Achievements Section -->
     <section class="latest-achievements-section py-5 bg-light">
-        <div class="container">
-            <div class="section-header text-center mb-5" data-aos="fade-up">
-                <div class="section-badge">
-                    Recent Achievements
-                </div>
-                <h2 class="section-title">
-                    Celebrating Our <span class="text-maroon">Success Stories</span>
-                </h2>
-                <p class="section-description">
-                    Discover the latest achievements and milestones of our students and school community
-                </p>
+    <div class="container">
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <div class="section-badge">
+                Recent Achievements
             </div>
-            
-            <div class="row g-4" id="latest-achievements">
-                <!-- Achievements will be loaded dynamically from Telegram -->
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <h2 class="section-title">
+                Celebrating Our <span class="text-maroon">Success Stories</span>
+            </h2>
+            <p class="section-description">
+                Discover the latest achievements and milestones of our students and school community
+            </p>
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div id="achievements-loading" class="text-center py-4" style="display: none;">
+            <div class="spinner-border text-maroon" role="status">
+                <span class="visually-hidden">Loading achievements...</span>
+            </div>
+            <p class="mt-2 text-muted">Loading latest achievements...</p>
+        </div>
+        
+        <div class="row g-4" id="latest-achievements">
+            <!-- Achievements will be loaded dynamically from database -->
+            <!-- Fallback content for when JavaScript is disabled -->
+            <noscript>
+                <div class="col-lg-4 col-md-6">
                     <div class="achievement-card">
                         <div class="achievement-image">
                             <img src="assets/images/achievements/academic-award.jpg" alt="Academic Excellence Award">
                             <div class="achievement-category">Academic</div>
                         </div>
                         <div class="achievement-content">
-                            <div class="achievement-date">January 15, 2024</div>
-                            <h4>Excellence in Mathematics</h4>
-                            <p>Our Grade 10 students achieved outstanding results in the provincial mathematics competition...</p>
+                            <div class="achievement-date">Recent</div>
+                            <h4>Excellence in Education</h4>
+                            <p>Our students continue to achieve outstanding results in academic competitions...</p>
                             <a href="achievements.html" class="achievement-link">Read More <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="achievement-card">
-                        <div class="achievement-image">
-                            <img src="assets/images/achievements/sports-victory.jpg" alt="Sports Championship">
-                            <div class="achievement-category sports">Sports</div>
-                        </div>
-                        <div class="achievement-content">
-                            <div class="achievement-date">December 20, 2023</div>
-                            <h4>Inter-School Cricket Champions</h4>
-                            <p>Our cricket team secured first place in the zonal inter-school tournament...</p>
-                            <a href="achievements.html" class="achievement-link">Read More <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="achievement-card">
-                        <div class="achievement-image">
-                            <img src="assets/images/achievements/environmental-project.jpg" alt="Environmental Project">
-                            <div class="achievement-category environmental">Environment</div>
-                        </div>
-                        <div class="achievement-content">
-                            <div class="achievement-date">November 10, 2023</div>
-                            <h4>Green School Initiative</h4>
-                            <p>Recognition for our successful gardening and environmental conservation programs...</p>
-                            <a href="achievements.html" class="achievement-link">Read More <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-5" data-aos="fade-up">
-                <a href="achievements.html" class="btn btn-maroon btn-lg">
-                    View All Achievements <i class="fas fa-trophy"></i>
-                </a>
-            </div>
+            </noscript>
         </div>
-    </section>
+        
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="achievements.html" class="btn btn-maroon btn-lg">
+                View All Achievements <i class="fas fa-trophy"></i>
+            </a>
+        </div>
+    </div>
+</section>
 
     <!-- Upcoming Events Section -->
     <section class="upcoming-events-section py-5">
@@ -818,7 +799,140 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/animations.js"></script>
     <script src="assets/js/telegram-api.js"></script>
+
+
     
+    
+    <script>
+    /**
+     * Load latest achievements for homepage
+     */
+    async function loadLatestAchievements() {
+        const container = document.getElementById('latest-achievements');
+        const loadingIndicator = document.getElementById('achievements-loading');
+        
+        if (!container) return;
+        
+        try {
+            // Show loading
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'block';
+            }
+            
+            const response = await fetch('api/achievements.php?limit=3&featured=1');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const achievements = await response.json();
+            
+            if (Array.isArray(achievements) && achievements.length > 0) {
+                updateAchievementsDisplay(achievements);
+            } else {
+                // Keep existing content if no data
+                console.log('No achievements data available');
+            }
+            
+        } catch (error) {
+            console.error('Error loading achievements:', error);
+            // Keep existing content on error
+        } finally {
+            // Hide loading
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+    }
+
+    /**
+     * Update achievements display on homepage
+     */
+    function updateAchievementsDisplay(achievements) {
+        const container = document.getElementById('latest-achievements');
+        if (!container) return;
+        
+        // Clear existing content
+        container.innerHTML = '';
+        
+        achievements.slice(0, 3).forEach((achievement, index) => {
+            const achievementCard = createHomeAchievementCard(achievement, index);
+            container.appendChild(achievementCard);
+        });
+        
+        // Animate new cards
+        if (typeof gsap !== 'undefined') {
+            gsap.from('#latest-achievements .achievement-card', {
+                y: 30,
+                opacity: 0,
+                duration: 0.6,
+                stagger: 0.2,
+                ease: "power2.out"
+            });
+        }
+    }
+
+    /**
+     * Create achievement card for homepage
+     */
+    function createHomeAchievementCard(achievement, index) {
+        const card = document.createElement('div');
+        card.className = 'col-lg-4 col-md-6';
+        card.setAttribute('data-aos', 'fade-up');
+        card.setAttribute('data-aos-delay', ((index + 1) * 100).toString());
+        
+        const imageUrl = achievement.image_url || 'assets/images/achievements/default-achievement.jpg';
+        const categoryClass = achievement.category.toLowerCase();
+        
+        card.innerHTML = `
+            <div class="achievement-card">
+                <div class="achievement-image">
+                    <img src="${imageUrl}" alt="${achievement.title}" loading="lazy">
+                    <div class="achievement-category ${categoryClass}">${achievement.category}</div>
+                </div>
+                <div class="achievement-content">
+                    <div class="achievement-date">${formatDate(achievement.date)}</div>
+                    <h4>${achievement.title}</h4>
+                    <p>${truncateText(achievement.description, 120)}</p>
+                    <a href="achievements.html" class="achievement-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        `;
+        
+        return card;
+    }
+
+    /**
+     * Format date for display
+     */
+    function formatDate(dateString) {
+        if (!dateString) return 'Recent';
+        
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    }
+
+    /**
+     * Truncate text to specified length
+     */
+    function truncateText(text, length) {
+        if (!text) return '';
+        if (text.length <= length) return text;
+        return text.substring(0, length).trim() + '...';
+    }
+
+    // Load achievements when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add a small delay to ensure other scripts have loaded
+        setTimeout(loadLatestAchievements, 500);
+    });
+</script>
+
+
     <script>
         // Initialize AOS
         AOS.init({
