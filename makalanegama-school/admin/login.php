@@ -3,6 +3,7 @@ require_once 'config.php';
 require_once 'database.php';
 
 $error = '';
+$debug = ''; // For debugging purposes
 
 // Check if already logged in
 if (isLoggedIn()) {
@@ -19,6 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             $db = new Database();
+            
+            // Debug: Check what we're trying to authenticate
+            $debug = "Attempting to authenticate: $username";
+            
             $admin = $db->authenticateAdmin($username, $password);
             
             if ($admin) {
@@ -32,9 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             } else {
                 $error = 'Invalid username or password';
+                // Debug: Add more specific error information
+                $debug .= " - Authentication failed";
             }
         } catch (Exception $e) {
             $error = 'Login failed. Please try again.';
+            $debug .= " - Exception: " . $e->getMessage();
         }
     }
 }
@@ -95,6 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .alert {
             border-radius: 10px;
         }
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
@@ -110,13 +127,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
             
+            <!-- Debug information (remove in production) -->
+            <?php if ($debug && ENVIRONMENT === 'development'): ?>
+                <div class="debug-info">
+                    <strong>Debug:</strong> <?= $debug ?>
+                </div>
+            <?php endif; ?>
+            
             <form method="POST">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
                         <input type="text" class="form-control" id="username" name="username" required 
-                               value="<?= htmlspecialchars($username ?? '') ?>">
+                               value="<?= htmlspecialchars($username ?? '') ?>" autocomplete="username">
                     </div>
                 </div>
                 
@@ -124,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="password" class="form-label">Password</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password">
                     </div>
                 </div>
                 
@@ -138,6 +162,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     Default login: admin / admin123
                 </small>
             </div>
+            
+            <?php if (ENVIRONMENT === 'development'): ?>
+                <div class="text-center mt-2">
+                    <small>
+                        <a href="debug_login.php" target="_blank">Debug Login Issues</a>
+                    </small>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </body>
