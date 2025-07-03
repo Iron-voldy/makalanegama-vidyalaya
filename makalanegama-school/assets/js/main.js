@@ -1,6 +1,6 @@
 /**
  * Makalanegama School Website - Main JavaScript
- * Modern interactions, animations, and dynamic content loading
+ * Updated to use admin backend API instead of Telegram
  */
 
 // Global variables
@@ -42,39 +42,56 @@ function initializeLoadingScreen() {
     const schoolLogo = document.querySelector('.school-logo img');
     
     // Animate logo pulse
-    gsap.to(schoolLogo, {
-        scale: 1.1,
-        duration: 1,
-        repeat: -1,
-        yoyo: true,
-        ease: "power2.inOut"
-    });
+    if (typeof gsap !== 'undefined' && schoolLogo) {
+        gsap.to(schoolLogo, {
+            scale: 1.1,
+            duration: 1,
+            repeat: -1,
+            yoyo: true,
+            ease: "power2.inOut"
+        });
+    }
     
     // Progress bar animation
-    gsap.to(progressFill, {
-        width: "100%",
-        duration: 3,
-        ease: "power2.out",
-        onComplete: () => {
+    if (typeof gsap !== 'undefined' && progressFill) {
+        gsap.to(progressFill, {
+            width: "100%",
+            duration: 3,
+            ease: "power2.out",
+            onComplete: () => {
+                hideLoadingScreen();
+            }
+        });
+    } else {
+        // Fallback without GSAP
+        setTimeout(() => {
             hideLoadingScreen();
-        }
-    });
+        }, 3000);
+    }
 }
 
 function hideLoadingScreen() {
     if (!loadingScreen) return;
     
-    gsap.to(loadingScreen, {
-        opacity: 0,
-        duration: 0.5,
-        ease: "power2.out",
-        onComplete: () => {
+    if (typeof gsap !== 'undefined') {
+        gsap.to(loadingScreen, {
+            opacity: 0,
+            duration: 0.5,
+            ease: "power2.out",
+            onComplete: () => {
+                loadingScreen.style.display = 'none';
+                isLoading = false;
+                animateHeroSection();
+            }
+        });
+    } else {
+        // Fallback without GSAP
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
             loadingScreen.style.display = 'none';
             isLoading = false;
-            // Trigger hero animations
-            animateHeroSection();
-        }
-    });
+        }, 500);
+    }
 }
 
 /**
@@ -109,7 +126,7 @@ function initializeNavigation() {
     
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
-            if (navbarCollapse.classList.contains('show')) {
+            if (navbarCollapse && navbarCollapse.classList.contains('show')) {
                 const bsCollapse = new bootstrap.Collapse(navbarCollapse);
                 bsCollapse.hide();
             }
@@ -148,9 +165,11 @@ function initializeScrollEffects() {
 }
 
 /**
- * GSAP Animations
+ * GSAP Animations (if available)
  */
 function initializeAnimations() {
+    if (typeof gsap === 'undefined') return;
+    
     // Register ScrollTrigger plugin
     gsap.registerPlugin(ScrollTrigger);
     
@@ -218,6 +237,8 @@ function initializeAnimations() {
  * Hero section animations
  */
 function animateHeroSection() {
+    if (typeof gsap === 'undefined') return;
+    
     const heroContent = document.querySelector('.hero-content');
     const heroVisual = document.querySelector('.hero-visual');
     
@@ -295,59 +316,23 @@ function initializeInteractiveElements() {
     const buttons = document.querySelectorAll('.btn');
     buttons.forEach(btn => {
         btn.addEventListener('mouseenter', () => {
-            gsap.to(btn, {
-                scale: 1.05,
-                duration: 0.2,
-                ease: "power2.out"
-            });
+            if (typeof gsap !== 'undefined') {
+                gsap.to(btn, {
+                    scale: 1.05,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            }
         });
         
         btn.addEventListener('mouseleave', () => {
-            gsap.to(btn, {
-                scale: 1,
-                duration: 0.2,
-                ease: "power2.out"
-            });
-        });
-    });
-    
-    // Event items animation
-    const eventItems = document.querySelectorAll('.event-item');
-    eventItems.forEach(item => {
-        item.addEventListener('mouseenter', () => {
-            gsap.to(item, {
-                x: 10,
-                duration: 0.3,
-                ease: "power2.out"
-            });
-        });
-        
-        item.addEventListener('mouseleave', () => {
-            gsap.to(item, {
-                x: 0,
-                duration: 0.3,
-                ease: "power2.out"
-            });
-        });
-    });
-    
-    // News items animation
-    const newsItems = document.querySelectorAll('.news-item');
-    newsItems.forEach(item => {
-        item.addEventListener('mouseenter', () => {
-            gsap.to(item, {
-                x: 10,
-                duration: 0.3,
-                ease: "power2.out"
-            });
-        });
-        
-        item.addEventListener('mouseleave', () => {
-            gsap.to(item, {
-                x: 0,
-                duration: 0.3,
-                ease: "power2.out"
-            });
+            if (typeof gsap !== 'undefined') {
+                gsap.to(btn, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: "power2.out"
+                });
+            }
         });
     });
 }
@@ -360,37 +345,10 @@ function initializeGallery() {
     
     galleryItems.forEach(item => {
         item.addEventListener('click', () => {
-            // Create lightbox effect
-            createLightbox(item.querySelector('.gallery-image').src);
-        });
-        
-        // Hover animation
-        item.addEventListener('mouseenter', () => {
-            gsap.to(item.querySelector('.gallery-image'), {
-                scale: 1.1,
-                duration: 0.5,
-                ease: "power2.out"
-            });
-            
-            gsap.to(item.querySelector('.gallery-overlay'), {
-                opacity: 1,
-                duration: 0.3,
-                ease: "power2.out"
-            });
-        });
-        
-        item.addEventListener('mouseleave', () => {
-            gsap.to(item.querySelector('.gallery-image'), {
-                scale: 1,
-                duration: 0.5,
-                ease: "power2.out"
-            });
-            
-            gsap.to(item.querySelector('.gallery-overlay'), {
-                opacity: 0,
-                duration: 0.3,
-                ease: "power2.out"
-            });
+            const img = item.querySelector('.gallery-image');
+            if (img) {
+                createLightbox(img.src);
+            }
         });
     });
 }
@@ -401,40 +359,34 @@ function initializeGallery() {
 function createLightbox(imageSrc) {
     const lightbox = document.createElement('div');
     lightbox.className = 'lightbox';
+    lightbox.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        cursor: pointer;
+    `;
+    
     lightbox.innerHTML = `
-        <div class="lightbox-content">
-            <img src="${imageSrc}" alt="Gallery Image">
-            <button class="lightbox-close">&times;</button>
+        <div class="lightbox-content" style="position: relative; max-width: 90%; max-height: 90%;">
+            <img src="${imageSrc}" alt="Gallery Image" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+            <button class="lightbox-close" style="position: absolute; top: -40px; right: 0; background: none; border: none; color: white; font-size: 2rem; cursor: pointer;">&times;</button>
         </div>
     `;
     
     document.body.appendChild(lightbox);
     document.body.style.overflow = 'hidden';
     
-    // Animate lightbox in
-    gsap.from(lightbox, {
-        opacity: 0,
-        duration: 0.3,
-        ease: "power2.out"
-    });
-    
-    gsap.from(lightbox.querySelector('.lightbox-content'), {
-        scale: 0.8,
-        duration: 0.3,
-        ease: "back.out(1.7)"
-    });
-    
     // Close lightbox
     const closeLightbox = () => {
-        gsap.to(lightbox, {
-            opacity: 0,
-            duration: 0.3,
-            ease: "power2.out",
-            onComplete: () => {
-                document.body.removeChild(lightbox);
-                document.body.style.overflow = '';
-            }
-        });
+        document.body.removeChild(lightbox);
+        document.body.style.overflow = '';
     };
     
     lightbox.addEventListener('click', (e) => {
@@ -443,8 +395,11 @@ function createLightbox(imageSrc) {
     
     lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
     
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeLightbox();
+    document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+            document.removeEventListener('keydown', escapeHandler);
+        }
     });
 }
 
@@ -470,7 +425,9 @@ function initializeCalendar() {
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
         ];
-        calendarHeader.textContent = `${monthNames[month]} ${year}`;
+        if (calendarHeader) {
+            calendarHeader.textContent = `${monthNames[month]} ${year}`;
+        }
         
         // Clear existing days (keep headers)
         const existingDays = calendarGrid.querySelectorAll('.calendar-day:not(.header)');
@@ -522,132 +479,60 @@ function initializeCalendar() {
 }
 
 /**
- * Load dynamic content from Telegram
+ * Load dynamic content from API
  */
 function loadDynamicContent() {
-    // Check if we're in development mode
-    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
-    if (isDevelopment) {
-        // Load sample data for development
-        loadSampleData();
-    } else {
-        // Load real data from Telegram API
-        loadTelegramContent();
-    }
+    loadLatestAchievements();
+    loadUpcomingEvents();
+    loadLatestNews();
 }
 
 /**
- * Load sample data for development
+ * Load latest achievements from API
  */
-function loadSampleData() {
-    // Sample achievements
-    const sampleAchievements = [
-        {
-            title: "Provincial Mathematics Excellence",
-            description: "Our Grade 10 students achieved outstanding results in the provincial mathematics competition, securing first place among 50 participating schools.",
-            image: "assets/images/achievements/math-competition.jpg",
-            category: "Academic",
-            date: "2024-02-15"
-        },
-        {
-            title: "Inter-School Cricket Championship",
-            description: "Our cricket team won the zonal championship after a thrilling final match against St. Joseph's College.",
-            image: "assets/images/achievements/cricket-win.jpg",
-            category: "Sports",
-            date: "2024-01-20"
-        },
-        {
-            title: "Environmental Conservation Award",
-            description: "Recognition for our school's outstanding contribution to environmental conservation through our gardening and sustainability projects.",
-            image: "assets/images/achievements/environment-award.jpg",
-            category: "Environment",
-            date: "2024-01-10"
-        }
-    ];
-    
-    // Sample events
-    const sampleEvents = [
-        {
-            title: "Annual Sports Day",
-            date: "2024-02-25",
-            time: "8:00 AM - 4:00 PM",
-            location: "School Grounds",
-            description: "Join us for our annual sports day featuring various athletic competitions and cultural performances."
-        },
-        {
-            title: "Parent-Teacher Meeting",
-            date: "2024-03-15",
-            time: "2:00 PM - 5:00 PM",
-            location: "School Hall",
-            description: "Meet with teachers to discuss student progress and academic performance."
-        },
-        {
-            title: "Science Fair 2024",
-            date: "2024-04-10",
-            time: "9:00 AM - 3:00 PM",
-            location: "Computer Lab",
-            description: "Students will showcase their innovative science projects and experiments."
-        }
-    ];
-    
-    // Sample news
-    const sampleNews = [
-        {
-            title: "New Computer Lab Officially Opens",
-            content: "We are proud to announce the official opening of our state-of-the-art computer laboratory, made possible through the generous support of Wire Academy & Technology for Village.",
-            image: "assets/images/news/computer-lab.jpg",
-            category: "Facilities",
-            date: "2024-02-10"
-        },
-        {
-            title: "2024 Admissions Now Open",
-            content: "Applications for Grade 1 admissions for the 2024 academic year are now being accepted. Please visit the school office for application forms and requirements.",
-            image: "assets/images/news/admissions.jpg",
-            category: "Admissions",
-            date: "2024-02-05"
-        }
-    ];
-    
-    // Update DOM with sample data
-    updateAchievementsDisplay(sampleAchievements);
-    updateEventsDisplay(sampleEvents);
-    updateNewsDisplay(sampleNews);
-}
-
-/**
- * Load content from Telegram API
- */
-async function loadTelegramContent() {
+async function loadLatestAchievements() {
     try {
-        // Load achievements
-        const achievements = await fetchTelegramContent('achievements');
+        const response = await fetch('/api/achievements.php?limit=3&featured=1');
+        if (!response.ok) throw new Error('Failed to fetch achievements');
+        
+        const achievements = await response.json();
         updateAchievementsDisplay(achievements);
-        
-        // Load events
-        const events = await fetchTelegramContent('events');
-        updateEventsDisplay(events);
-        
-        // Load news
-        const news = await fetchTelegramContent('news');
-        updateNewsDisplay(news);
-        
     } catch (error) {
-        console.error('Error loading Telegram content:', error);
-        // Fallback to sample data
-        loadSampleData();
+        console.error('Error loading achievements:', error);
+        // Keep existing sample data if API fails
     }
 }
 
 /**
- * Fetch content from Telegram API
+ * Load upcoming events from API
  */
-async function fetchTelegramContent(type) {
-    const response = await fetch(`/api/${type}.php`);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch ${type}`);
+async function loadUpcomingEvents() {
+    try {
+        const response = await fetch('/api/events.php?limit=3&upcoming=1');
+        if (!response.ok) throw new Error('Failed to fetch events');
+        
+        const events = await response.json();
+        updateEventsDisplay(events);
+    } catch (error) {
+        console.error('Error loading events:', error);
+        // Keep existing sample data if API fails
     }
-    return await response.json();
+}
+
+/**
+ * Load latest news from API
+ */
+async function loadLatestNews() {
+    try {
+        const response = await fetch('/api/news.php?limit=4&featured=1');
+        if (!response.ok) throw new Error('Failed to fetch news');
+        
+        const news = await response.json();
+        updateNewsDisplay(news);
+    } catch (error) {
+        console.error('Error loading news:', error);
+        // Keep existing sample data if API fails
+    }
 }
 
 /**
@@ -657,10 +542,8 @@ function updateAchievementsDisplay(achievements) {
     const container = document.getElementById('latest-achievements');
     if (!container || !achievements.length) return;
     
-    // Clear existing content except the first 3 sample items for now
     const existingItems = container.querySelectorAll('.col-lg-4');
     
-    // Update existing items with new data
     achievements.slice(0, 3).forEach((achievement, index) => {
         if (existingItems[index]) {
             const card = existingItems[index].querySelector('.achievement-card');
@@ -681,11 +564,14 @@ function updateAchievementCard(card, achievement) {
     const title = card.querySelector('h4');
     const description = card.querySelector('p');
     
-    if (img && achievement.image) img.src = achievement.image;
+    if (img && achievement.image_url) {
+        img.src = achievement.image_url;
+        img.alt = achievement.title;
+    }
     if (category) category.textContent = achievement.category;
     if (date) date.textContent = formatDate(achievement.date);
     if (title) title.textContent = achievement.title;
-    if (description) description.textContent = achievement.description;
+    if (description) description.textContent = truncateText(achievement.description, 100);
 }
 
 /**
@@ -695,7 +581,6 @@ function updateEventsDisplay(events) {
     const container = document.getElementById('upcoming-events');
     if (!container || !events.length) return;
     
-    // Update existing event items
     const existingItems = container.querySelectorAll('.event-item');
     
     events.slice(0, 3).forEach((event, index) => {
@@ -715,13 +600,17 @@ function updateEventItem(item, event) {
     const time = item.querySelector('.event-time');
     const location = item.querySelector('.event-location');
     
-    const eventDate = new Date(event.date);
+    const eventDate = new Date(event.event_date);
     
     if (dateNumber) dateNumber.textContent = eventDate.getDate();
     if (dateMonth) dateMonth.textContent = eventDate.toLocaleDateString('en', { month: 'short' });
     if (title) title.textContent = event.title;
-    if (time) time.innerHTML = `<i class="fas fa-clock"></i> ${event.time}`;
-    if (location) location.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${event.location}`;
+    if (time && event.event_time) {
+        time.innerHTML = `<i class="fas fa-clock"></i> ${formatTime(event.event_time)}`;
+    }
+    if (location) {
+        location.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${event.location}`;
+    }
 }
 
 /**
@@ -756,11 +645,14 @@ function updateNewsCard(card, news) {
     const title = card.querySelector('h3');
     const content = card.querySelector('p');
     
-    if (img && news.image) img.src = news.image;
+    if (img && news.image_url) {
+        img.src = news.image_url;
+        img.alt = news.title;
+    }
     if (category) category.textContent = news.category;
     if (date) date.innerHTML = `<i class="fas fa-calendar"></i> ${formatDate(news.date)}`;
     if (title) title.textContent = news.title;
-    if (content) content.textContent = news.content;
+    if (content) content.textContent = news.excerpt || truncateText(news.content, 150);
 }
 
 /**
@@ -772,10 +664,13 @@ function updateNewsItem(item, news) {
     const title = item.querySelector('h5');
     const content = item.querySelector('p');
     
-    if (img && news.image) img.src = news.image;
+    if (img && news.image_url) {
+        img.src = news.image_url;
+        img.alt = news.title;
+    }
     if (date) date.textContent = formatDate(news.date);
     if (title) title.textContent = news.title;
-    if (content) content.textContent = news.content;
+    if (content) content.textContent = news.excerpt || truncateText(news.content, 80);
 }
 
 /**
@@ -788,6 +683,53 @@ function formatDate(dateString) {
         month: 'long', 
         day: 'numeric' 
     });
+}
+
+/**
+ * Format time for display
+ */
+function formatTime(timeString) {
+    const time = new Date(`2000-01-01T${timeString}`);
+    return time.toLocaleTimeString('en', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
+    });
+}
+
+/**
+ * Truncate text to specified length
+ */
+function truncateText(text, length) {
+    if (!text) return '';
+    if (text.length <= length) return text;
+    return text.substring(0, length).trim() + '...';
+}
+
+/**
+ * Handle contact form submission
+ */
+async function handleContactForm(formData) {
+    try {
+        const response = await fetch('/api/contact.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+            return { success: true, message: result.message };
+        } else {
+            return { success: false, message: result.error || 'Failed to send message' };
+        }
+    } catch (error) {
+        console.error('Contact form error:', error);
+        return { success: false, message: 'Network error. Please try again.' };
+    }
 }
 
 /**
@@ -807,9 +749,14 @@ function debounce(func, wait) {
 
 // Export functions for use in other files
 window.MakalanegamaSchool = {
-    loadTelegramContent,
+    loadLatestAchievements,
+    loadUpcomingEvents,
+    loadLatestNews,
     updateAchievementsDisplay,
     updateEventsDisplay,
     updateNewsDisplay,
-    formatDate
+    handleContactForm,
+    formatDate,
+    formatTime,
+    truncateText
 };
