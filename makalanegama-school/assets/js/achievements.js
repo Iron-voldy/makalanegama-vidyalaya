@@ -1,6 +1,6 @@
 /**
- * Achievements Page JavaScript - FIXED VERSION
- * Handles loading and displaying achievements from the database
+ * Achievements Page JavaScript
+ * Handles loading achievements from database, filtering, searching, and display
  */
 
 class AchievementsManager {
@@ -9,289 +9,332 @@ class AchievementsManager {
         this.filteredAchievements = [];
         this.currentFilter = 'all';
         this.currentPage = 1;
-        this.achievementsPerPage = 9;
+        this.achievementsPerPage = 6;
         this.isLoading = false;
         this.searchTerm = '';
+        this.currentAchievement = null;
         
-        this.initializeElements();
-        this.bindEvents();
-        this.init(); // Auto-initialize
-    }
-
-    /**
-     * Initialize DOM elements
-     */
-    initializeElements() {
-        this.achievementsGrid = document.getElementById('achievements-grid');
-        this.featuredSection = document.getElementById('featured-section');
-        this.featuredContainer = document.getElementById('featured-achievements');
-        this.loadMoreBtn = document.getElementById('load-more-achievements');
-        this.loadingIndicator = document.getElementById('loading-indicator');
-        this.noResultsDiv = document.getElementById('no-results');
-        this.searchInput = document.getElementById('achievement-search');
-        this.filterButtons = document.querySelectorAll('.filter-btn');
-        
-        // Stats elements
-        this.totalAchievementsEl = document.getElementById('total-achievements');
-        this.featuredCountEl = document.getElementById('featured-count');
-        this.categoriesCountEl = document.getElementById('categories-count');
-        this.statAcademicEl = document.getElementById('stat-academic');
-        this.statSportsEl = document.getElementById('stat-sports');
-        this.statFeaturedEl = document.getElementById('stat-featured');
-    }
-
-    /**
-     * Bind event listeners
-     */
-    bindEvents() {
-        // Filter buttons
-        this.filterButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.handleFilterChange(btn.getAttribute('data-filter'));
-            });
-        });
-
-        // Search functionality
-        if (this.searchInput) {
-            this.searchInput.addEventListener('input', this.debounce((e) => {
-                this.handleSearch(e.target.value);
-            }, 300));
-        }
-
-        // Load more button
-        if (this.loadMoreBtn) {
-            this.loadMoreBtn.addEventListener('click', () => {
-                this.loadMoreAchievements();
-            });
-        }
-
-        // Search button
-        const searchBtn = document.getElementById('search-btn');
-        if (searchBtn) {
-            searchBtn.addEventListener('click', () => {
-                this.handleSearch(this.searchInput.value);
-            });
-        }
+        // API endpoints
+        this.apiUrl = 'api/achievements.php';
     }
 
     /**
      * Initialize the achievements manager
      */
-    async init() {
-        console.log('Initializing AchievementsManager...');
-        await this.loadAchievements();
-        this.updateStatistics();
-        this.displayAchievements();
-        this.displayFeaturedAchievements();
+    init() {
+        this.initializeEventListeners();
+        this.loadAchievements();
     }
 
     /**
-     * Load achievements from API
+     * Initialize event listeners
+     */
+    initializeEventListeners() {
+        // Filter buttons
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.handleFilterClick(btn);
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('achievement-search');
+        const searchBtn = document.getElementById('search-btn');
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', this.debounce((e) => {
+                this.handleSearch(e.target.value);
+            }, 300));
+        }
+
+        if (searchBtn) {
+            searchBtn.addEventListener('click', () => {
+                this.handleSearch(searchInput.value);
+            });
+        }
+
+        // Load more button
+        const loadMoreBtn = document.getElementById('load-more-achievements');
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => {
+                this.loadMoreAchievements();
+            });
+        }
+
+        // Share button in modal
+        const shareBtn = document.getElementById('shareAchievementBtn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', () => {
+                this.shareCurrentAchievement();
+            });
+        }
+    }
+
+    /**
+     * Load achievements from database
      */
     async loadAchievements() {
         try {
             this.showLoading(true);
-            console.log('Loading achievements from API...');
             
-            // Use relative path for API
-            const response = await fetch('/api/achievements.php?limit=50');
-            console.log('API Response status:', response.status);
+            const response = await fetch(this.apiUrl);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
-            console.log('API Response data:', data);
             
-            // Check if data is valid
             if (Array.isArray(data)) {
                 this.achievements = data;
                 this.filteredAchievements = [...this.achievements];
-                console.log('Loaded achievements from database:', this.achievements.length);
-                
-                if (this.achievements.length === 0) {
-                    console.warn('No achievements found in database');
-                    this.showNoResults(true);
-                }
+                this.displayAchievements();
+                this.updateStatistics();
+                this.showFeaturedAchievements();
             } else {
-                throw new Error('Invalid data format received from API');
+                console.error('Invalid data format received:', data);
+                this.showErrorMessage('Invalid data format received from server');
             }
             
         } catch (error) {
             console.error('Error loading achievements:', error);
-            console.log('Falling back to sample data...');
-            this.achievements = this.getFallbackData();
-            this.filteredAchievements = [...this.achievements];
+            this.showErrorMessage('Failed to load achievements. Please try again later.');
+            // Load fallback data for development
+            this.loadFallbackData();
         } finally {
             this.showLoading(false);
         }
     }
 
     /**
-     * Fallback data when API is not available
+     * Load fallback data for development/demo
      */
-    getFallbackData() {
-        return [
+    loadFallbackData() {
+        this.achievements = [
             {
                 id: 1,
-                title: 'Provincial Mathematics Excellence Award',
-                description: 'Our Grade 10 students achieved outstanding results in the provincial mathematics competition, securing first place among 50+ schools.',
-                category: 'Academic',
+                title: "Provincial Mathematics Excellence",
+                description: "Our Grade 10 students achieved outstanding results in the provincial mathematics competition, securing first place among 50 participating schools from across the North Western Province. This remarkable achievement demonstrates the high quality of mathematics education at our school and the dedication of both students and teachers.",
+                category: "Academic",
+                image_url: "assets/images/achievements/math-competition.jpg",
                 featured: true,
-                image_url: 'assets/images/achievements/math-award.jpg',
-                date: '2024-02-15'
+                date: "2024-02-15"
             },
             {
                 id: 2,
-                title: 'Inter-School Cricket Championship',
-                description: 'Our cricket team won the zonal championship after a thrilling final match against St. Joseph\'s College.',
-                category: 'Sports',
-                featured: false,
-                image_url: 'assets/images/achievements/cricket-trophy.jpg',
-                date: '2024-01-20'
+                title: "Inter-School Cricket Championship",
+                description: "Our cricket team emerged victorious in the zonal inter-school cricket championship after a thrilling final match, demonstrating exceptional teamwork, sportsmanship, and dedication to the sport.",
+                category: "Sports",
+                image_url: "assets/images/achievements/cricket-championship.jpg",
+                featured: true,
+                date: "2024-01-20"
             },
             {
                 id: 3,
-                title: 'Environmental Conservation Award',
-                description: 'Recognition for our school\'s outstanding contribution to environmental conservation and sustainability projects.',
-                category: 'Environmental',
-                featured: true,
-                image_url: 'assets/images/achievements/environment-award.jpg',
-                date: '2024-01-10'
+                title: "Environmental Conservation Award",
+                description: "Recognition for our school's outstanding contribution to environmental conservation through innovative gardening and sustainability projects that have positively impacted the local community.",
+                category: "Environmental",
+                image_url: "assets/images/achievements/environmental-award.jpg",
+                featured: false,
+                date: "2024-01-10"
             },
             {
                 id: 4,
-                title: 'Science Fair Innovation Prize',
-                description: 'Students showcased innovative projects in renewable energy and received the district-level innovation award.',
-                category: 'Academic',
+                title: "Science Fair Innovation",
+                description: "Students demonstrated innovative science projects focusing on renewable energy and environmental sustainability, with three projects advancing to the national level competition.",
+                category: "Academic",
+                image_url: "assets/images/achievements/science-fair.jpg",
                 featured: false,
-                image_url: 'assets/images/achievements/science-fair.jpg',
-                date: '2023-12-15'
+                date: "2023-11-10"
             },
             {
                 id: 5,
-                title: 'Cultural Dance Performance Excellence',
-                description: 'Our traditional dance troupe won first place at the provincial cultural festival.',
-                category: 'Cultural',
+                title: "Traditional Dance Excellence",
+                description: "Our students showcased exceptional talent in traditional Sri Lankan dance at the provincial cultural festival, earning standing ovations and recognition for cultural preservation.",
+                category: "Cultural",
+                image_url: "assets/images/achievements/cultural-performance.jpg",
                 featured: false,
-                image_url: 'assets/images/achievements/cultural-dance.jpg',
-                date: '2023-11-25'
+                date: "2023-11-25"
             },
             {
                 id: 6,
-                title: 'Technology Integration Recognition',
-                description: 'Awarded for successfully integrating modern technology into our curriculum and teaching methods.',
-                category: 'Technology',
-                featured: true,
-                image_url: 'assets/images/achievements/tech-award.jpg',
-                date: '2023-11-10'
+                title: "Computer Lab Launch",
+                description: "Successfully inaugurated our state-of-the-art computer laboratory with support from Wire Academy & Technology for Village, enhancing digital education capabilities.",
+                category: "Technology",
+                image_url: "assets/images/achievements/computer-lab.jpg",
+                featured: false,
+                date: "2023-12-15"
+            },
+            {
+                id: 7,
+                title: "Track and Field Excellence",
+                description: "Outstanding performance in the zonal athletics championship with multiple medal wins in various track and field events, showcasing our students' athletic prowess.",
+                category: "Sports",
+                image_url: "assets/images/achievements/athletics.jpg",
+                featured: false,
+                date: "2023-10-18"
+            },
+            {
+                id: 8,
+                title: "Inter-School Debate Victory",
+                description: "Our debate team secured first place in the inter-school debate competition, demonstrating exceptional critical thinking and public speaking skills.",
+                category: "Academic",
+                image_url: "assets/images/achievements/debate-competition.jpg",
+                featured: false,
+                date: "2023-09-22"
             }
         ];
+        
+        this.filteredAchievements = [...this.achievements];
+        this.displayAchievements();
+        this.updateStatistics();
+        this.showFeaturedAchievements();
     }
 
     /**
-     * Handle filter changes
+     * Show/hide loading indicator
      */
-    handleFilterChange(filter) {
-        this.currentFilter = filter;
-        this.currentPage = 1;
+    showLoading(show) {
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const achievementsGrid = document.getElementById('achievements-grid');
         
-        // Update active filter button
-        this.filterButtons.forEach(btn => btn.classList.remove('active'));
-        const activeBtn = document.querySelector(`[data-filter="${filter}"]`);
-        if (activeBtn) {
-            activeBtn.classList.add('active');
+        if (loadingIndicator) {
+            loadingIndicator.style.display = show ? 'block' : 'none';
         }
         
-        this.applyFilters();
-        this.displayAchievements();
+        if (achievementsGrid) {
+            achievementsGrid.style.opacity = show ? '0.5' : '1';
+        }
+        
+        this.isLoading = show;
+    }
+
+    /**
+     * Show error message
+     */
+    showErrorMessage(message) {
+        const achievementsGrid = document.getElementById('achievements-grid');
+        if (achievementsGrid) {
+            achievementsGrid.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-danger text-center" role="alert">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <h4>Error Loading Achievements</h4>
+                        <p>${message}</p>
+                        <button class="btn btn-maroon" onclick="location.reload()">
+                            <i class="fas fa-refresh"></i> Try Again
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    /**
+     * Handle filter button click
+     */
+    handleFilterClick(button) {
+        // Remove active class from all buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        // Get filter value and apply
+        const filter = button.getAttribute('data-filter');
+        this.applyFilter(filter);
+        
+        // Animate filter change
         this.animateFilterChange();
     }
 
     /**
-     * Handle search functionality
+     * Apply filter to achievements
+     */
+    applyFilter(filter) {
+        this.currentFilter = filter;
+        this.currentPage = 1;
+        
+        if (filter === 'all') {
+            this.filteredAchievements = [...this.achievements];
+        } else {
+            this.filteredAchievements = this.achievements.filter(achievement => {
+                return achievement.category === filter;
+            });
+        }
+        
+        // Apply search if active
+        if (this.searchTerm) {
+            this.applySearch();
+        }
+        
+        this.displayAchievements();
+        this.updateLoadMoreButton();
+    }
+
+    /**
+     * Handle search
      */
     handleSearch(searchTerm) {
         this.searchTerm = searchTerm.toLowerCase().trim();
         this.currentPage = 1;
-        this.applyFilters();
-        this.displayAchievements();
+        
+        // Reset to all achievements first, then apply current filter
+        this.applyFilter(this.currentFilter);
     }
 
     /**
-     * Apply current filters and search
+     * Apply search to filtered achievements
      */
-    applyFilters() {
-        this.filteredAchievements = this.achievements.filter(achievement => {
-            const matchesFilter = this.currentFilter === 'all' || achievement.category === this.currentFilter;
-            const matchesSearch = !this.searchTerm || 
-                achievement.title.toLowerCase().includes(this.searchTerm) ||
-                achievement.description.toLowerCase().includes(this.searchTerm) ||
-                achievement.category.toLowerCase().includes(this.searchTerm);
-            
-            return matchesFilter && matchesSearch;
+    applySearch() {
+        if (!this.searchTerm) return;
+        
+        this.filteredAchievements = this.filteredAchievements.filter(achievement => {
+            return achievement.title.toLowerCase().includes(this.searchTerm) ||
+                   achievement.description.toLowerCase().includes(this.searchTerm) ||
+                   achievement.category.toLowerCase().includes(this.searchTerm);
         });
     }
 
     /**
-     * Display achievements in grid
+     * Display achievements
      */
     displayAchievements() {
-        if (!this.achievementsGrid) return;
-
+        const grid = document.getElementById('achievements-grid');
+        const noResults = document.getElementById('no-results');
+        
+        if (!grid) return;
+        
+        // Calculate items to show
         const startIndex = 0;
         const endIndex = this.currentPage * this.achievementsPerPage;
         const achievementsToShow = this.filteredAchievements.slice(startIndex, endIndex);
-
-        console.log('Displaying achievements:', achievementsToShow.length);
-
+        
         if (achievementsToShow.length === 0) {
-            this.showNoResults(true);
-            this.achievementsGrid.innerHTML = '';
-            this.updateLoadMoreButton();
+            grid.innerHTML = '';
+            if (noResults) noResults.style.display = 'block';
             return;
         }
-
-        this.showNoResults(false);
-        this.achievementsGrid.innerHTML = '';
-
+        
+        if (noResults) noResults.style.display = 'none';
+        
+        // Clear grid and add achievements
+        grid.innerHTML = '';
+        
         achievementsToShow.forEach((achievement, index) => {
             const achievementCard = this.createAchievementCard(achievement, index);
-            this.achievementsGrid.appendChild(achievementCard);
+            grid.appendChild(achievementCard);
         });
-
-        this.updateLoadMoreButton();
-        this.animateCards();
-    }
-
-    /**
-     * Display featured achievements
-     */
-    displayFeaturedAchievements() {
-        if (!this.featuredContainer) return;
-
-        const featuredAchievements = this.achievements.filter(a => a.featured || a.is_featured).slice(0, 3);
         
-        console.log('Featured achievements:', featuredAchievements.length);
-
-        if (featuredAchievements.length === 0) {
-            if (this.featuredSection) {
-                this.featuredSection.style.display = 'none';
-            }
-            return;
-        }
-
-        if (this.featuredSection) {
-            this.featuredSection.style.display = 'block';
-        }
-        this.featuredContainer.innerHTML = '';
-
-        featuredAchievements.forEach((achievement, index) => {
-            const featuredCard = this.createFeaturedCard(achievement, index);
-            this.featuredContainer.appendChild(featuredCard);
-        });
+        // Update load more button
+        this.updateLoadMoreButton();
+        
+        // Animate cards
+        this.animateCards();
     }
 
     /**
@@ -302,35 +345,71 @@ class AchievementsManager {
         card.className = 'col-lg-4 col-md-6';
         card.setAttribute('data-aos', 'fade-up');
         card.setAttribute('data-aos-delay', (index * 100).toString());
-
+        
         const imageUrl = achievement.image_url || 'assets/images/achievements/default-achievement.jpg';
-        const formattedDate = this.formatDate(achievement.date || achievement.created_at);
-        const isFeatured = achievement.featured || achievement.is_featured;
-
+        const categoryClass = achievement.category.toLowerCase();
+        
         card.innerHTML = `
-            <div class="achievement-card" onclick="window.achievementsManager.showAchievementModal(${achievement.id})">
+            <div class="achievement-card" data-achievement-id="${achievement.id}">
                 <div class="achievement-image">
-                    <img src="${imageUrl}" alt="${achievement.title}" loading="lazy" onerror="this.src='assets/images/achievements/default-achievement.jpg'">
-                    <div class="achievement-category ${achievement.category.toLowerCase()}">${achievement.category}</div>
-                    ${isFeatured ? '<div class="featured-badge"><i class="fas fa-star"></i></div>' : ''}
+                    <img src="${imageUrl}" alt="${achievement.title}" loading="lazy">
+                    <div class="achievement-category ${categoryClass}">${achievement.category}</div>
+                    <div class="achievement-overlay">
+                        <div class="overlay-actions">
+                            <button class="action-btn view-btn" data-bs-toggle="tooltip" title="View Details" onclick="achievementsManager.showAchievementModal(${achievement.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn share-btn" data-bs-toggle="tooltip" title="Share" onclick="achievementsManager.shareAchievement(${achievement.id})">
+                                <i class="fas fa-share"></i>
+                            </button>
+                            ${achievement.featured ? '<button class="action-btn featured-btn" data-bs-toggle="tooltip" title="Featured"><i class="fas fa-star"></i></button>' : ''}
+                        </div>
+                    </div>
                 </div>
+                
                 <div class="achievement-content">
-                    <div class="achievement-date">${formattedDate}</div>
+                    <div class="achievement-meta">
+                        <span class="achievement-date">${this.formatDate(achievement.date)}</span>
+                        <span class="achievement-type">${achievement.category}</span>
+                    </div>
                     <h4>${achievement.title}</h4>
-                    <p>${this.truncateText(achievement.description, 120)}</p>
+                    <p>${this.truncateText(achievement.description, 150)}</p>
                     <div class="achievement-actions">
-                        <button class="btn btn-maroon btn-sm" onclick="event.stopPropagation(); window.achievementsManager.showAchievementModal(${achievement.id})">
+                        <button class="btn btn-maroon btn-sm" onclick="achievementsManager.showAchievementModal(${achievement.id})">
                             <i class="fas fa-eye"></i> View Details
-                        </button>
-                        <button class="btn btn-outline-maroon btn-sm" onclick="event.stopPropagation(); window.achievementsManager.shareAchievement(${achievement.id})">
-                            <i class="fas fa-share"></i> Share
                         </button>
                     </div>
                 </div>
             </div>
         `;
-
+        
         return card;
+    }
+
+    /**
+     * Show featured achievements
+     */
+    showFeaturedAchievements() {
+        const featuredSection = document.getElementById('featured-section');
+        const featuredContainer = document.getElementById('featured-achievements');
+        
+        if (!featuredContainer) return;
+        
+        const featuredAchievements = this.achievements.filter(achievement => achievement.featured);
+        
+        if (featuredAchievements.length === 0) {
+            if (featuredSection) featuredSection.style.display = 'none';
+            return;
+        }
+        
+        if (featuredSection) featuredSection.style.display = 'block';
+        
+        featuredContainer.innerHTML = '';
+        
+        featuredAchievements.slice(0, 2).forEach((achievement, index) => {
+            const card = this.createFeaturedCard(achievement, index);
+            featuredContainer.appendChild(card);
+        });
     }
 
     /**
@@ -338,83 +417,133 @@ class AchievementsManager {
      */
     createFeaturedCard(achievement, index) {
         const card = document.createElement('div');
-        card.className = 'col-lg-4 col-md-6';
+        card.className = 'col-lg-6';
         card.setAttribute('data-aos', 'fade-up');
-        card.setAttribute('data-aos-delay', (index * 200).toString());
-
+        card.setAttribute('data-aos-delay', ((index + 1) * 100).toString());
+        
         const imageUrl = achievement.image_url || 'assets/images/achievements/default-achievement.jpg';
-        const formattedDate = this.formatDate(achievement.date || achievement.created_at);
-
+        const categoryClass = achievement.category.toLowerCase();
+        
         card.innerHTML = `
-            <div class="featured-achievement-card" onclick="window.achievementsManager.showAchievementModal(${achievement.id})">
-                <div class="featured-image">
-                    <img src="${imageUrl}" alt="${achievement.title}" loading="lazy" onerror="this.src='assets/images/achievements/default-achievement.jpg'">
-                    <div class="featured-overlay">
-                        <div class="featured-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                    </div>
+            <div class="featured-achievement-card">
+                <div class="achievement-badge">
+                    <i class="fas fa-star"></i>
+                    Featured
                 </div>
-                <div class="featured-content">
-                    <div class="featured-category">${achievement.category}</div>
+                <div class="achievement-image">
+                    <img src="${imageUrl}" alt="${achievement.title}">
+                    <div class="achievement-category ${categoryClass}">${achievement.category}</div>
+                </div>
+                <div class="achievement-content">
+                    <div class="achievement-meta">
+                        <span class="achievement-date">
+                            <i class="fas fa-calendar"></i>
+                            ${this.formatDate(achievement.date)}
+                        </span>
+                        <span class="achievement-level">
+                            <i class="fas fa-medal"></i>
+                            Featured Achievement
+                        </span>
+                    </div>
                     <h3>${achievement.title}</h3>
-                    <p>${this.truncateText(achievement.description, 100)}</p>
-                    <div class="featured-date">${formattedDate}</div>
+                    <p>${this.truncateText(achievement.description, 200)}</p>
+                    <div class="achievement-highlights">
+                        <span class="highlight-tag">${achievement.category}</span>
+                        <span class="highlight-tag">Featured</span>
+                    </div>
+                    <div class="achievement-actions">
+                        <button class="btn btn-maroon" onclick="achievementsManager.showAchievementModal(${achievement.id})">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </button>
+                        <button class="btn btn-outline-maroon" onclick="achievementsManager.shareAchievement(${achievement.id})">
+                            <i class="fas fa-share"></i>
+                            Share
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
-
+        
         return card;
     }
 
     /**
-     * Show achievement modal with details
+     * Load more achievements
+     */
+    loadMoreAchievements() {
+        if (this.isLoading) return;
+        
+        this.currentPage++;
+        const loadMoreBtn = document.getElementById('load-more-achievements');
+        const originalText = loadMoreBtn.innerHTML;
+        
+        // Show loading state
+        loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        loadMoreBtn.disabled = true;
+        
+        // Simulate loading delay
+        setTimeout(() => {
+            this.displayAchievements();
+            
+            // Reset button
+            loadMoreBtn.innerHTML = originalText;
+            loadMoreBtn.disabled = false;
+        }, 1000);
+    }
+
+    /**
+     * Update load more button visibility
+     */
+    updateLoadMoreButton() {
+        const loadMoreBtn = document.getElementById('load-more-achievements');
+        if (!loadMoreBtn) return;
+        
+        const totalShown = this.currentPage * this.achievementsPerPage;
+        const hasMore = totalShown < this.filteredAchievements.length;
+        
+        loadMoreBtn.style.display = hasMore ? 'inline-flex' : 'none';
+    }
+
+    /**
+     * Show achievement modal
      */
     showAchievementModal(achievementId) {
         const achievement = this.achievements.find(a => a.id == achievementId);
         if (!achievement) return;
-
+        
         const modal = document.getElementById('achievementModal');
-        const modalLabel = document.getElementById('achievementModalLabel');
+        const modalTitle = document.getElementById('achievementModalLabel');
         const modalBody = document.getElementById('achievementModalBody');
-
-        if (!modal || !modalLabel || !modalBody) {
-            console.error('Modal elements not found');
-            return;
-        }
-
-        modalLabel.textContent = achievement.title;
-
+        
+        if (!modal || !modalTitle || !modalBody) return;
+        
+        modalTitle.textContent = achievement.title;
+        
         const imageUrl = achievement.image_url || 'assets/images/achievements/default-achievement.jpg';
-        const formattedDate = this.formatDate(achievement.date || achievement.created_at);
-        const isFeatured = achievement.featured || achievement.is_featured;
-
+        
         modalBody.innerHTML = `
-            <div class="achievement-modal-content">
-                <div class="row">
-                    <div class="col-md-6">
-                        <img src="${imageUrl}" alt="${achievement.title}" class="img-fluid rounded mb-3" onerror="this.src='assets/images/achievements/default-achievement.jpg'">
-                    </div>
-                    <div class="col-md-6">
-                        <div class="achievement-details">
-                            <div class="badge bg-primary mb-2">${achievement.category}</div>
-                            ${isFeatured ? '<div class="badge bg-warning mb-2 ms-2"><i class="fas fa-star"></i> Featured</div>' : ''}
-                            <p class="text-muted mb-3"><i class="fas fa-calendar"></i> ${formattedDate}</p>
-                            <p class="achievement-description">${achievement.description}</p>
-                            <div class="achievement-stats mt-3">
-                                <small class="text-muted">
-                                    <i class="fas fa-eye"></i> Achievement ID: ${achievement.id}
-                                </small>
-                            </div>
-                        </div>
-                    </div>
+            <div class="modal-achievement-content">
+                <div class="modal-achievement-image mb-3">
+                    <img src="${imageUrl}" alt="${achievement.title}" class="img-fluid rounded">
+                </div>
+                <div class="modal-achievement-meta mb-3">
+                    <span class="badge bg-primary me-2">${achievement.category}</span>
+                    <span class="text-muted me-3">
+                        <i class="fas fa-calendar"></i> ${this.formatDate(achievement.date)}
+                    </span>
+                    ${achievement.featured ? '<span class="badge bg-warning"><i class="fas fa-star"></i> Featured</span>' : ''}
+                </div>
+                <div class="modal-achievement-description">
+                    <p>${achievement.description}</p>
                 </div>
             </div>
         `;
-
+        
         // Store current achievement for sharing
         this.currentAchievement = achievement;
-
+        
+        // Show modal
         const bsModal = new bootstrap.Modal(modal);
         bsModal.show();
     }
@@ -425,122 +554,110 @@ class AchievementsManager {
     shareAchievement(achievementId) {
         const achievement = this.achievements.find(a => a.id == achievementId);
         if (!achievement) return;
-
+        
         const shareData = {
-            title: `${achievement.title} - Makalanegama School`,
-            text: achievement.description,
-            url: window.location.href + `#achievement-${achievement.id}`
+            title: `Makalanegama School Achievement: ${achievement.title}`,
+            text: achievement.description.substring(0, 100) + '...',
+            url: window.location.href
         };
-
+        
         if (navigator.share) {
-            navigator.share(shareData).catch(console.error);
+            navigator.share(shareData);
         } else {
-            // Fallback to copying URL
-            const url = shareData.url;
-            navigator.clipboard.writeText(url).then(() => {
-                this.showToast('Achievement link copied to clipboard!');
+            // Fallback - copy to clipboard
+            const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
+            navigator.clipboard.writeText(shareText).then(() => {
+                this.showToast('Achievement details copied to clipboard!', 'success');
             }).catch(() => {
-                // Final fallback
-                prompt('Copy this link to share the achievement:', url);
+                // Fallback for older browsers
+                this.showToast('Please copy the link manually: ' + shareData.url, 'info');
             });
         }
     }
 
     /**
-     * Load more achievements
+     * Share current achievement from modal
      */
-    loadMoreAchievements() {
-        if (this.isLoading) return;
-
-        this.isLoading = true;
-        this.currentPage++;
-
-        const startIndex = (this.currentPage - 1) * this.achievementsPerPage;
-        const endIndex = this.currentPage * this.achievementsPerPage;
-        const newAchievements = this.filteredAchievements.slice(startIndex, endIndex);
-
-        newAchievements.forEach((achievement, index) => {
-            const achievementCard = this.createAchievementCard(achievement, index);
-            this.achievementsGrid.appendChild(achievementCard);
-        });
-
-        this.updateLoadMoreButton();
-        this.animateCards();
-        this.isLoading = false;
-    }
-
-    /**
-     * Update load more button visibility
-     */
-    updateLoadMoreButton() {
-        if (!this.loadMoreBtn) return;
-
-        const totalShown = this.currentPage * this.achievementsPerPage;
-        const hasMore = totalShown < this.filteredAchievements.length;
-
-        this.loadMoreBtn.style.display = hasMore ? 'inline-flex' : 'none';
+    shareCurrentAchievement() {
+        if (this.currentAchievement) {
+            this.shareAchievement(this.currentAchievement.id);
+        }
     }
 
     /**
      * Update statistics
      */
     updateStatistics() {
-        const total = this.achievements.length;
-        const featured = this.achievements.filter(a => a.featured || a.is_featured).length;
-        const categories = [...new Set(this.achievements.map(a => a.category))].length;
-        const academic = this.achievements.filter(a => a.category === 'Academic').length;
-        const sports = this.achievements.filter(a => a.category === 'Sports').length;
-
+        const stats = this.calculateStats();
+        
         // Update header stats
-        this.animateCounter(this.totalAchievementsEl, total);
-        this.animateCounter(this.featuredCountEl, featured);
-        this.animateCounter(this.categoriesCountEl, categories);
-
-        // Update section stats
-        this.animateCounter(this.statAcademicEl, academic);
-        this.animateCounter(this.statSportsEl, sports);
-        this.animateCounter(this.statFeaturedEl, featured);
+        this.updateStatElement('total-achievements', stats.total);
+        this.updateStatElement('featured-count', stats.featured);
+        this.updateStatElement('categories-count', stats.categories);
+        
+        // Update detailed stats
+        this.updateStatElement('stat-total', stats.total);
+        this.updateStatElement('stat-academic', stats.academic);
+        this.updateStatElement('stat-sports', stats.sports);
+        this.updateStatElement('stat-featured', stats.featured);
+        
+        // Animate counters
+        this.animateCounters();
     }
 
     /**
-     * Animate counter from 0 to target value
+     * Calculate statistics
      */
-    animateCounter(element, target) {
-        if (!element) return;
-
-        let current = 0;
-        const increment = target / 30;
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                element.textContent = target;
-                clearInterval(timer);
-            } else {
-                element.textContent = Math.floor(current);
-            }
-        }, 50);
+    calculateStats() {
+        const stats = {
+            total: this.achievements.length,
+            featured: this.achievements.filter(a => a.featured).length,
+            academic: this.achievements.filter(a => a.category === 'Academic').length,
+            sports: this.achievements.filter(a => a.category === 'Sports').length,
+            categories: [...new Set(this.achievements.map(a => a.category))].length
+        };
+        
+        return stats;
     }
 
     /**
-     * Show/hide loading indicator
+     * Update stat element
      */
-    showLoading(show) {
-        if (this.loadingIndicator) {
-            this.loadingIndicator.style.display = show ? 'block' : 'none';
+    updateStatElement(elementId, value) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.setAttribute('data-count', value);
+            element.textContent = value;
         }
     }
 
     /**
-     * Show/hide no results message
+     * Animate counters
      */
-    showNoResults(show) {
-        if (this.noResultsDiv) {
-            this.noResultsDiv.style.display = show ? 'block' : 'none';
-        }
+    animateCounters() {
+        const counters = document.querySelectorAll('[data-count]');
+        
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            if (isNaN(target)) return;
+            
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.floor(current);
+            }, 16);
+        });
     }
 
     /**
-     * Animate cards on display
+     * Animate cards
      */
     animateCards() {
         if (typeof gsap !== 'undefined') {
@@ -559,7 +676,8 @@ class AchievementsManager {
      */
     animateFilterChange() {
         if (typeof gsap !== 'undefined') {
-            gsap.from('.filter-btn', {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            gsap.from(filterButtons, {
                 scale: 0.95,
                 duration: 0.2,
                 stagger: 0.05,
@@ -571,26 +689,47 @@ class AchievementsManager {
     /**
      * Show toast notification
      */
-    showToast(message) {
+    showToast(message, type = 'info') {
         const toast = document.createElement('div');
-        toast.className = 'toast-notification';
-        toast.textContent = message;
-        toast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 1rem;
-            border-radius: 5px;
-            z-index: 9999;
-            animation: slideIn 0.3s ease-out;
+        toast.className = `toast-notification ${type}`;
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            </div>
         `;
-
+        
         document.body.appendChild(toast);
-
+        
+        // Animate in
+        if (typeof gsap !== 'undefined') {
+            gsap.from(toast, {
+                x: 300,
+                opacity: 0,
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        }
+        
+        // Remove after 3 seconds
         setTimeout(() => {
-            toast.remove();
+            if (typeof gsap !== 'undefined') {
+                gsap.to(toast, {
+                    x: 300,
+                    opacity: 0,
+                    duration: 0.3,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        if (document.body.contains(toast)) {
+                            document.body.removeChild(toast);
+                        }
+                    }
+                });
+            } else {
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }
         }, 3000);
     }
 
@@ -599,6 +738,7 @@ class AchievementsManager {
      */
     formatDate(dateString) {
         if (!dateString) return 'Recent';
+        
         const date = new Date(dateString);
         return date.toLocaleDateString('en', { 
             year: 'numeric', 
@@ -610,10 +750,10 @@ class AchievementsManager {
     /**
      * Truncate text to specified length
      */
-    truncateText(text, maxLength) {
+    truncateText(text, length) {
         if (!text) return '';
-        if (text.length <= maxLength) return text;
-        return text.substring(0, maxLength).trim() + '...';
+        if (text.length <= length) return text;
+        return text.substring(0, length).trim() + '...';
     }
 
     /**
@@ -633,19 +773,121 @@ class AchievementsManager {
 }
 
 // Initialize achievements manager when DOM is loaded
+let achievementsManager;
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing achievements manager...');
-    window.achievementsManager = new AchievementsManager();
+    achievementsManager = new AchievementsManager();
+    achievementsManager.init();
 });
 
-// Handle share achievement button in modal
-document.addEventListener('DOMContentLoaded', function() {
-    const shareBtn = document.getElementById('shareAchievementBtn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', function() {
-            if (window.achievementsManager && window.achievementsManager.currentAchievement) {
-                window.achievementsManager.shareAchievement(window.achievementsManager.currentAchievement.id);
-            }
+// Export for global access
+window.AchievementsManager = AchievementsManager;
+
+// Additional helper functions for homepage integration
+window.loadLatestAchievements = async function() {
+    const container = document.getElementById('latest-achievements');
+    const loadingIndicator = document.getElementById('achievements-loading');
+    
+    if (!container) return;
+    
+    try {
+        // Show loading
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'block';
+        }
+        
+        const response = await fetch('api/achievements.php?limit=3&featured=1');
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const achievements = await response.json();
+        
+        if (Array.isArray(achievements) && achievements.length > 0) {
+            updateAchievementsDisplay(achievements);
+        } else {
+            console.log('No achievements data available');
+        }
+        
+    } catch (error) {
+        console.error('Error loading achievements:', error);
+        // Keep existing content on error
+    } finally {
+        // Hide loading
+        if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+        }
+    }
+};
+
+// Helper function for homepage
+window.updateAchievementsDisplay = function(achievements) {
+    const container = document.getElementById('latest-achievements');
+    if (!container) return;
+    
+    // Clear existing content
+    container.innerHTML = '';
+    
+    achievements.slice(0, 3).forEach((achievement, index) => {
+        const achievementCard = createHomeAchievementCard(achievement, index);
+        container.appendChild(achievementCard);
+    });
+    
+    // Animate new cards
+    if (typeof gsap !== 'undefined') {
+        gsap.from('#latest-achievements .achievement-card', {
+            y: 30,
+            opacity: 0,
+            duration: 0.6,
+            stagger: 0.2,
+            ease: "power2.out"
         });
     }
-});
+};
+
+// Helper function to create homepage achievement cards
+function createHomeAchievementCard(achievement, index) {
+    const card = document.createElement('div');
+    card.className = 'col-lg-4 col-md-6';
+    card.setAttribute('data-aos', 'fade-up');
+    card.setAttribute('data-aos-delay', ((index + 1) * 100).toString());
+    
+    const imageUrl = achievement.image_url || 'assets/images/achievements/default-achievement.jpg';
+    const categoryClass = achievement.category.toLowerCase();
+    
+    card.innerHTML = `
+        <div class="achievement-card">
+            <div class="achievement-image">
+                <img src="${imageUrl}" alt="${achievement.title}" loading="lazy">
+                <div class="achievement-category ${categoryClass}">${achievement.category}</div>
+            </div>
+            <div class="achievement-content">
+                <div class="achievement-date">${formatDateForHome(achievement.date)}</div>
+                <h4>${achievement.title}</h4>
+                <p>${truncateTextForHome(achievement.description, 120)}</p>
+                <a href="achievements.html" class="achievement-link">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    `;
+    
+    return card;
+}
+
+// Helper functions for homepage
+function formatDateForHome(dateString) {
+    if (!dateString) return 'Recent';
+    
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+}
+
+function truncateTextForHome(text, length) {
+    if (!text) return '';
+    if (text.length <= length) return text;
+    return text.substring(0, length).trim() + '...';
+}
