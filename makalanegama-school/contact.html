@@ -33,6 +33,1484 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        /* Contact Page Specific Styles */
+        :root {
+            --maroon-primary: #800020;
+            --maroon-dark: #5d0017;
+            --maroon-light: #a6334f;
+            --gold-accent: #ffd700;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --medium-gray: #64748b;
+            --dark-gray: #334155;
+            --black: #1a1a1a;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --danger: #ef4444;
+            --cream-background: #faf7f0;
+            
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            --radius-small: 8px;
+            --radius-medium: 12px;
+            --radius-large: 20px;
+            
+            --transition-fast: 0.2s ease-out;
+            --transition-medium: 0.3s ease-out;
+            --transition-slow: 0.5s ease-out;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-dark) 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            padding: 8rem 0 4rem;
+            margin-top: 76px;
+        }
+
+        .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .page-subtitle-sinhala {
+            font-family: var(--font-sinhala);
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .page-description {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        .page-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gold-accent);
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-item .stat-label {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .header-visual {
+            position: relative;
+        }
+
+        .header-visual img {
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .visual-overlay {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow-medium);
+            text-align: center;
+        }
+
+        .overlay-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--maroon-primary);
+            font-weight: 600;
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb-item {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--gold-accent);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--gold-accent);
+        }
+
+        /* Contact Info Cards */
+        .contact-info-section {
+            background: linear-gradient(135deg, var(--white) 0%, var(--light-gray) 100%);
+        }
+
+        .contact-info-card {
+            background: var(--white);
+            padding: 2.5rem 2rem;
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            height: 100%;
+            transition: var(--transition-medium);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--maroon-primary), var(--gold-accent));
+        }
+
+        .contact-info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .contact-info-card .card-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--white);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .contact-info-card h4 {
+            color: var(--black);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+
+        .contact-info-card p {
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .contact-info-card a {
+            color: var(--maroon-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+
+        .contact-info-card a:hover {
+            color: var(--maroon-dark);
+            text-decoration: underline;
+        }
+
+        .info-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--cream-background);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-medium);
+            color: var(--maroon-primary) !important;
+            text-decoration: none !important;
+            transition: var(--transition-fast);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .info-link:hover {
+            background: var(--maroon-primary);
+            color: var(--white) !important;
+            transform: translateY(-2px);
+        }
+
+        .office-hours {
+            background: var(--light-gray);
+            padding: 0.75rem;
+            border-radius: var(--radius-small);
+            margin-top: 1rem;
+        }
+
+        .office-hours small {
+            color: var(--medium-gray);
+            font-weight: 500;
+        }
+
+        .social-links-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .social-links-contact .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--light-gray);
+            border-radius: var(--radius-medium);
+            color: var(--dark-gray) !important;
+            text-decoration: none !important;
+            transition: var(--transition-fast);
+            font-weight: 500;
+        }
+
+        .social-links-contact .social-link:hover {
+            background: var(--maroon-primary);
+            color: var(--white) !important;
+            transform: translateX(5px);
+        }
+
+        /* Contact Form */
+        .contact-form-container {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-label i {
+            color: var(--maroon-primary);
+            width: 16px;
+        }
+
+        .form-control {
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius-medium);
+            padding: 0.875rem 1.25rem;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+            background: var(--white);
+        }
+
+        .form-control:focus {
+            border-color: var(--maroon-primary);
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 32, 0.15);
+            background: var(--white);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--danger);
+        }
+
+        .form-control.is-valid {
+            border-color: var(--success);
+        }
+
+        .invalid-feedback {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        .form-text {
+            color: var(--medium-gray);
+            font-size: 0.825rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--maroon-primary);
+            border-color: var(--maroon-primary);
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 32, 0.15);
+        }
+
+        .form-check-label {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .btn-maroon {
+            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
+            border: none;
+            color: var(--white);
+            padding: 1rem 2.5rem;
+            border-radius: var(--radius-medium);
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition-medium);
+            box-shadow: var(--shadow-medium);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-maroon:hover {
+            background: linear-gradient(135deg, var(--maroon-dark), var(--maroon-primary));
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-heavy);
+            color: var(--white);
+        }
+
+        .btn-outline-maroon {
+            background: transparent;
+            border: 2px solid var(--maroon-primary);
+            color: var(--maroon-primary);
+            padding: 0.875rem 2rem;
+            border-radius: var(--radius-medium);
+            font-weight: 600;
+            transition: var(--transition-medium);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-outline-maroon:hover {
+            background: var(--maroon-primary);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .form-message {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .form-message .alert {
+            border: none;
+            border-radius: var(--radius-medium);
+            padding: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .form-message .alert-success {
+            background: linear-gradient(135deg, var(--success), #16a34a);
+            color: var(--white);
+        }
+
+        .form-message .alert-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: var(--white);
+        }
+
+        /* Map Section */
+        .map-section {
+            background: var(--white);
+        }
+
+        .map-container {
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .school-map {
+            height: 100%;
+            width: 100%;
+        }
+
+        .school-map iframe {
+            height: 100% !important;
+            filter: grayscale(20%);
+            transition: var(--transition-medium);
+        }
+
+        .school-map:hover iframe {
+            filter: grayscale(0%);
+        }
+
+        .map-info {
+            background: var(--cream-background);
+            height: 500px;
+            display: flex;
+            align-items: center;
+        }
+
+        .map-content {
+            padding: 3rem;
+            width: 100%;
+        }
+
+        .map-content h3 {
+            color: var(--black);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            font-size: 1.75rem;
+        }
+
+        .map-content > p {
+            color: var(--medium-gray);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .location-details {
+            margin-bottom: 2.5rem;
+        }
+
+        .location-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--white);
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow-light);
+            transition: var(--transition-fast);
+        }
+
+        .location-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .location-item i {
+            color: var(--maroon-primary);
+            font-size: 1.25rem;
+            width: 24px;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .location-item div {
+            flex: 1;
+        }
+
+        .location-item strong {
+            color: var(--black);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .location-item div:not(:has(strong)) {
+            color: var(--medium-gray);
+            line-height: 1.5;
+        }
+
+        .map-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background: var(--light-gray);
+        }
+
+        .accordion-item {
+            background: var(--white);
+            border: none;
+            border-radius: var(--radius-medium);
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+        }
+
+        .accordion-header button {
+            background: var(--white);
+            border: none;
+            color: var(--black);
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 1.5rem 2rem;
+            width: 100%;
+            text-align: left;
+            transition: var(--transition-fast);
+        }
+
+        .accordion-header button:not(.collapsed) {
+            background: var(--maroon-primary);
+            color: var(--white);
+        }
+
+        .accordion-header button:focus {
+            box-shadow: none;
+        }
+
+        .accordion-body {
+            padding: 1.5rem 2rem;
+            color: var(--medium-gray);
+            line-height: 1.6;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .contact-info-card {
+                padding: 2rem 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .contact-info-card .card-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .contact-form-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .map-container {
+                height: 300px;
+                margin-bottom: 2rem;
+            }
+
+            .location-info-card {
+                min-height: auto;
+                margin-top: 2rem;
+            }
+
+            .location-details {
+                padding: 1.5rem;
+            }
+
+            .map-actions {
+                flex-direction: column;
+                padding: 0 1.5rem 1.5rem 1.5rem;
+            }
+
+            .map-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .social-links-contact .social-link {
+                text-align: center;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .contact-form-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .btn-maroon {
+                width: 100%;
+                justify-content: center;
+                padding: 1.25rem 2rem;
+            }
+
+            .accordion-header button {
+                padding: 1.25rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .accordion-body {
+                padding: 1.25rem 1.5rem;
+            }
+        }
+
+        /* Animation Enhancements */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .contact-info-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .contact-info-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .contact-info-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .contact-info-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        /* Loading States */
+        .btn-loading {
+            pointer-events: none;
+        }
+
+        #messageCount {
+            font-weight: 600;
+            color: var(--maroon-primary);
+        }
+
+        /* Success Animation */
+        @keyframes checkmark {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .form-message .alert-success i {
+            animation: checkmark 0.6s ease-out;
+        }
+
+        /* Enhanced Map Section Styles */
+        .map-section {
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
+        }
+
+        .map-container {
+            position: relative;
+            height: 450px;
+            margin-bottom: 2rem;
+        }
+
+        .map-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: var(--shadow-heavy);
+            height: 100%;
+        }
+
+        .map-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+
+        .school-marker {
+            background: var(--maroon-primary);
+            color: var(--white);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow-medium);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .school-marker i {
+            font-size: 1.1rem;
+        }
+
+        .location-info-card {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            height: 100%;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .location-info-card .card-header {
+            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-dark) 100%);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .location-info-card .card-header h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .location-info-card .card-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .location-details {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .location-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .location-item:last-child {
+            border-bottom: none;
+        }
+
+        .location-item.featured {
+            background: var(--cream-background);
+            margin: -1rem -2rem 1rem -2rem;
+            padding: 1.5rem 2rem;
+        }
+
+        .item-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--maroon-light) 0%, var(--maroon-primary) 100%);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-light);
+        }
+
+        .item-content h5 {
+            margin-bottom: 0.5rem;
+            color: var(--dark-gray);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .item-content p {
+            margin: 0;
+            color: var(--medium-gray);
+            line-height: 1.6;
+        }
+
+        .map-actions {
+            padding: 0 2rem 2rem 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .map-actions .btn {
+            flex: 1;
+            min-width: 150px;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-medium);
+            transition: var(--transition-medium);
+        }
+
+        .map-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .info-card {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition-medium);
+            height: 100%;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .info-card .card-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-light) 100%);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 1.5rem auto;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .info-card h4 {
+            color: var(--dark-gray);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .info-card p {
+            color: var(--medium-gray);
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .info-card small {
+            color: var(--medium-gray);
+            font-size: 0.85rem;
+        }
+
+        /* Enhanced Responsive Design for Map Section */
+        @media (max-width: 991px) {
+            .map-container {
+                margin-bottom: 3rem;
+            }
+
+            .location-info-card .card-header {
+                padding: 1.5rem;
+            }
+
+            .location-details {
+                padding: 1.5rem;
+            }
+
+            .map-actions {
+                padding: 0 1.5rem 1.5rem 1.5rem;
+            }
+
+            .map-actions .btn {
+                min-width: 120px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .map-wrapper iframe {
+                height: 350px;
+            }
+
+            .school-marker {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .info-card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .info-card .card-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .location-item.featured {
+                margin: -1.5rem -1.5rem 1rem -1.5rem;
+                padding: 1.25rem 1.5rem;
+            }
+
+            .map-actions {
+                flex-direction: column;
+            }
+
+            .map-actions .btn {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .map-overlay {
+                position: static;
+                margin-bottom: 1rem;
+            }
+
+            .school-marker {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .location-info-card .card-header {
+                padding: 1.25rem;
+            }
+
+            .location-info-card .card-header h3 {
+                font-size: 1.3rem;
+            }
+
+            .location-details {
+                padding: 1.25rem;
+            }
+
+            .location-item {
+                padding: 1rem 0;
+            }
+
+            .item-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+
+            .map-actions {
+                padding: 0 1.25rem 1.25rem 1.25rem;
+            }
+        }
+
+        /* Achievements-style Layout for Contact Methods */
+        .filter-section {
+            background: var(--white);
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            color: var(--medium-gray);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition-fast);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--maroon-primary);
+            border-color: var(--maroon-primary);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .filter-btn i {
+            font-size: 1rem;
+        }
+
+        .featured-achievements {
+            padding: 4rem 0;
+            background: var(--white);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-badge {
+            background: var(--maroon-primary);
+            color: var(--white);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--black);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--medium-gray);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .featured-achievement-card {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+            transition: var(--transition-medium);
+            height: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .featured-achievement-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .featured-image {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .featured-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .featured-image .no-image {
+            color: var(--medium-gray);
+            font-size: 4rem;
+        }
+
+        .featured-achievement-card:hover .featured-image img {
+            transform: scale(1.05);
+        }
+
+        .achievement-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--white);
+            background: var(--maroon-primary);
+        }
+
+        .achievement-category.visit { background: var(--success); }
+        .achievement-category.call { background: var(--info); }
+        .achievement-category.email { background: var(--warning); }
+        .achievement-category.social { background: #e91e63; }
+        .achievement-category.emergency { background: #f44336; }
+
+        .featured-content {
+            padding: 2rem;
+        }
+
+        .featured-category {
+            color: var(--gold-accent);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .featured-content h3 {
+            color: var(--black);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .featured-content p {
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .contact-details {
+            margin-bottom: 2rem;
+        }
+
+        .contact-details .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-details .contact-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-details .contact-item i {
+            color: var(--maroon-primary);
+            font-size: 1.2rem;
+            width: 20px;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .contact-details .contact-item strong {
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .contact-details .contact-item a {
+            color: var(--maroon-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-details .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-actions .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .achievement-card.contact-method {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition-medium);
+            height: 100%;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .achievement-card.contact-method:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .achievement-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .achievement-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .achievement-image .no-image {
+            color: var(--medium-gray);
+            font-size: 3rem;
+        }
+
+        .achievement-card:hover .achievement-image img {
+            transform: scale(1.05);
+        }
+
+        .achievement-content {
+            padding: 1.5rem;
+        }
+
+        .achievement-date {
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .achievement-content h4 {
+            color: var(--black);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .achievement-content p {
+            color: var(--medium-gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .achievement-content .contact-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .achievement-content .contact-details .contact-item {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0;
+            border: none;
+            display: block;
+        }
+
+        .achievement-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .social-links-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-link-card {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: var(--radius-medium);
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            color: var(--dark-gray);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .social-link-card:hover {
+            transform: translateY(-2px);
+            color: var(--white);
+        }
+
+        .social-link-card.facebook:hover { background: #1877f2; }
+        .social-link-card.instagram:hover { background: #e4405f; }
+        .social-link-card.youtube:hover { background: #ff0000; }
+
+        .social-link-card i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .social-link-card span {
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .social-link-card small {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* Filter functionality */
+        .contact-method[data-category]:not([style*="display: none"]) {
+            display: block;
+        }
+
+        .contact-method[style*="display: none"] {
+            display: none !important;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .achievements-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .filter-tabs {
+                gap: 0.75rem;
+            }
+
+            .filter-btn {
+                padding: 0.6rem 1.25rem;
+                font-size: 0.8rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .contact-actions .btn {
+                min-width: 120px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filter-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .filter-btn {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+
+            .achievements-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .featured-content {
+                padding: 1.5rem;
+            }
+
+            .achievement-content {
+                padding: 1.25rem;
+            }
+
+            .contact-actions {
+                flex-direction: column;
+            }
+
+            .contact-actions .btn {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .social-links-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .featured-content h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .featured-image {
+                height: 200px;
+            }
+
+            .achievement-image {
+                height: 150px;
+            }
+
+            .featured-content {
+                padding: 1.25rem;
+            }
+
+            .achievement-content {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .section-description {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -97,7 +1575,7 @@
         </div>
         
         <div class="container">
-            <div class="row align-items-center min-vh-50">
+            <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="header-content">
                         <nav aria-label="breadcrumb" data-aos="fade-up">
@@ -108,7 +1586,7 @@
                         </nav>
                         
                         <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">
-                            Get in <span class="text-maroon">Touch</span>
+                            Get in <span style="color: var(--gold-accent);">Touch</span>
                         </h1>
                         
                         <h2 class="page-subtitle-sinhala" data-aos="fade-up" data-aos-delay="300">
@@ -116,22 +1594,22 @@
                         </h2>
                         
                         <p class="page-description" data-aos="fade-up" data-aos-delay="400">
-                            We're here to help with any questions about admissions, curriculum, school life, 
-                            or any other inquiries you may have. Reach out to us and we'll get back to you promptly.
+                            Connect with Makalanegama Vidyalaya for admissions, inquiries, or any support you need. 
+                            We're here to assist students, parents, and the community with prompt and helpful service.
                         </p>
                         
                         <div class="page-stats" data-aos="fade-up" data-aos-delay="500">
                             <div class="stat-item">
-                                <div class="stat-number">24/7</div>
-                                <div class="stat-label">Online Support</div>
+                                <div class="stat-number">6</div>
+                                <div class="stat-label">Contact Methods</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number">< 24hrs</div>
+                                <div class="stat-number">24hrs</div>
                                 <div class="stat-label">Response Time</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number">100%</div>
-                                <div class="stat-label">Satisfaction</div>
+                                <div class="stat-number">Mon-Fri</div>
+                                <div class="stat-label">Office Hours</div>
                             </div>
                         </div>
                     </div>
@@ -139,7 +1617,7 @@
                 
                 <div class="col-lg-4" data-aos="fade-left" data-aos-delay="600">
                     <div class="header-visual">
-                        <img src="assets/images/contact/contact-hero.jpg" alt="Contact Makalanegama School" class="img-fluid rounded">
+                        <img src="assets/images/contact/contact-hero.jpg" alt="Contact Makalanegama Vidyalaya" class="img-fluid rounded">
                         <div class="visual-overlay">
                             <div class="overlay-badge">
                                 <i class="fas fa-phone"></i>
@@ -152,72 +1630,378 @@
         </div>
     </section>
 
-    <!-- Contact Information Section -->
-    <section class="contact-info-section py-5">
+    <!-- Contact Methods Filter Section -->
+    <section class="filter-section">
         <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="contact-info-card">
-                        <div class="card-icon">
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="filter-tabs" data-aos="fade-up">
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-address-book"></i>
+                            All Contact Methods
+                        </button>
+                        <button class="filter-btn" data-filter="visit">
                             <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <h4>Visit Us</h4>
-                        <p>X8X5+VGH, Galgamuwa-Nikawewa Rd<br>
-                           Galgamuwa, North Western Province<br>
-                           Sri Lanka</p>
-                        <a href="https://maps.google.com/?q=7.899999,80.123456" target="_blank" class="info-link">
-                            <i class="fas fa-external-link-alt"></i> View on Map
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="contact-info-card">
-                        <div class="card-icon">
+                            Visit Us
+                        </button>
+                        <button class="filter-btn" data-filter="call">
                             <i class="fas fa-phone"></i>
-                        </div>
-                        <h4>Call Us</h4>
-                        <p>Main Office:<br>
-                           <a href="tel:+94372050000">+94 37 205 0000</a></p>
-                        <p>Principal's Office:<br>
-                           <a href="tel:+94372050001">+94 37 205 0001</a></p>
-                        <div class="office-hours">
-                            <small><i class="fas fa-clock"></i> Mon-Fri: 7:30 AM - 2:00 PM</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="contact-info-card">
-                        <div class="card-icon">
+                            Call Us
+                        </button>
+                        <button class="filter-btn" data-filter="email">
                             <i class="fas fa-envelope"></i>
+                            Email Us
+                        </button>
+                        <button class="filter-btn" data-filter="social">
+                            <i class="fab fa-facebook-f"></i>
+                            Social Media
+                        </button>
+                        <button class="filter-btn" data-filter="emergency">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Emergency
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Contact Methods -->
+    <section class="featured-achievements">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-badge">
+                    Primary Contact Methods
+                </div>
+                <h2 class="section-title">
+                    Get in <span style="color: var(--maroon-primary);">Touch</span> Easily
+                </h2>
+                <p class="section-description">
+                    Multiple ways to reach us for any inquiries, support, or information you need
+                </p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="featured-achievement-card contact-method" data-category="visit">
+                        <div class="featured-image">
+                            <img src="assets/images/contact/school-building.jpg" alt="Visit Our School" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="no-image" style="display: none;"><i class="fas fa-building"></i></div>
+                            <div class="achievement-category visit">Visit Us</div>
                         </div>
-                        <h4>Email Us</h4>
-                        <p>General Inquiries:<br>
-                           <a href="mailto:info@makalanegamaschool.lk">info@makalanegamaschool.lk</a></p>
-                        <p>Admissions:<br>
-                           <a href="mailto:admissions@makalanegamaschool.lk">admissions@makalanegamaschool.lk</a></p>
-                        <p>Principal:<br>
-                           <a href="mailto:principal@makalanegamaschool.lk">principal@makalanegamaschool.lk</a></p>
+                        <div class="featured-content">
+                            <div class="featured-category">Primary Location</div>
+                            <h3>Visit Our School</h3>
+                            <p>Come see our school facilities, meet our dedicated teachers, and experience the welcoming atmosphere of Makalanegama Vidyalaya firsthand.</p>
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <div>
+                                        <strong>Address:</strong><br>
+                                        X8X5+VGH, Galgamuwa-Nikawewa Rd<br>
+                                        Galgamuwa, North Western Province, Sri Lanka
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-clock"></i>
+                                    <div>
+                                        <strong>Visiting Hours:</strong><br>
+                                        Monday - Friday: 7:30 AM - 1:30 PM<br>
+                                        Saturday: 8:00 AM - 12:00 PM
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contact-actions">
+                                <a href="https://maps.google.com/?q=7.9864944,80.2878794" target="_blank" class="btn btn-maroon">
+                                    <i class="fas fa-directions"></i> Get Directions
+                                </a>
+                                <a href="tel:+94372053619" class="btn btn-outline-maroon">
+                                    <i class="fas fa-phone"></i> Call First
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                    <div class="contact-info-card">
-                        <div class="card-icon">
-                            <i class="fab fa-facebook-f"></i>
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="featured-achievement-card contact-method" data-category="call">
+                        <div class="featured-image">
+                            <img src="assets/images/contact/phone-support.jpg" alt="Call Us" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="no-image" style="display: none;"><i class="fas fa-phone"></i></div>
+                            <div class="achievement-category call">Call Us</div>
                         </div>
-                        <h4>Follow Us</h4>
-                        <p>Stay connected with us on social media for latest updates and news.</p>
-                        <div class="social-links-contact">
-                            <a href="https://web.facebook.com/people/Makalanegama-kv/100063734032649/" target="_blank" class="social-link">
-                                <i class="fab fa-facebook-f"></i> Facebook
+                        <div class="featured-content">
+                            <div class="featured-category">Immediate Support</div>
+                            <h3>Speak Directly with Our Team</h3>
+                            <p>Get immediate assistance and personalized support from our knowledgeable staff for any questions or concerns you may have.</p>
+                            <div class="contact-details">
+                                <div class="contact-item">
+                                    <i class="fas fa-phone"></i>
+                                    <div>
+                                        <strong>Main Office:</strong><br>
+                                        <a href="tel:+94372053619">+94 37 205 3619</a>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-user-tie"></i>
+                                    <div>
+                                        <strong>Principal's Office:</strong><br>
+                                        <a href="tel:+94711850003">+94 71 185 0003</a>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <div>
+                                        <strong>Admissions Office:</strong><br>
+                                        <a href="tel:+94372053619">+94 37 205 3619</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contact-actions">
+                                <a href="tel:+94372053619" class="btn btn-maroon">
+                                    <i class="fas fa-phone"></i> Call Main Office
+                                </a>
+                                <a href="tel:+94711850003" class="btn btn-outline-maroon">
+                                    <i class="fas fa-user-tie"></i> Call Principal
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Contact Methods Grid -->
+    <section class="achievements-grid-section">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <div class="section-badge">
+                    All Contact Options
+                </div>
+                <h2 class="section-title">
+                    Complete <span style="color: var(--maroon-primary);">Contact</span> Directory
+                </h2>
+                <p class="section-description">
+                    Choose the most convenient way to reach us based on your specific needs
+                </p>
+            </div>
+            
+            <div class="achievements-grid" id="contact-methods-grid">
+                <!-- Email Contact -->
+                <div class="achievement-card contact-method" data-category="email" data-aos="fade-up" data-aos-delay="100">
+                    <div class="achievement-image">
+                        <img src="assets/images/contact/email-support.jpg" alt="Email Us" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="no-image" style="display: none;"><i class="fas fa-envelope"></i></div>
+                        <div class="achievement-category email">Email Us</div>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="achievement-date">
+                            <i class="fas fa-reply"></i>
+                            <span>Response within 24 hours</span>
+                        </div>
+                        <h4>Send Us an Email</h4>
+                        <p>Detailed inquiries about admissions, academics, and school matters are best handled through email. We respond to all emails within 24 hours.</p>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <strong>General Inquiries:</strong><br>
+                                <a href="mailto:info@makalanegamaschool.lk">info@makalanegamaschool.lk</a>
+                            </div>
+                            <div class="contact-item">
+                                <strong>Admissions:</strong><br>
+                                <a href="mailto:admissions@makalanegamaschool.lk">admissions@makalanegamaschool.lk</a>
+                            </div>
+                            <div class="contact-item">
+                                <strong>Principal:</strong><br>
+                                <a href="mailto:principal@makalanegamaschool.lk">principal@makalanegamaschool.lk</a>
+                            </div>
+                        </div>
+                        <div class="achievement-actions">
+                            <a href="mailto:info@makalanegamaschool.lk" class="btn btn-sm btn-maroon">
+                                <i class="fas fa-envelope"></i> Send Email
                             </a>
-                            <a href="#" class="social-link">
-                                <i class="fab fa-instagram"></i> Instagram
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="achievement-card contact-method" data-category="social" data-aos="fade-up" data-aos-delay="200">
+                    <div class="achievement-image">
+                        <img src="assets/images/contact/social-media.jpg" alt="Social Media" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="no-image" style="display: none;"><i class="fab fa-facebook-f"></i></div>
+                        <div class="achievement-category social">Social Media</div>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="achievement-date">
+                            <i class="fas fa-users"></i>
+                            <span>Active community engagement</span>
+                        </div>
+                        <h4>Connect on Social Media</h4>
+                        <p>Follow us on social media for latest updates, news, and community interactions. Join our growing online community.</p>
+                        <div class="social-links-grid">
+                            <a href="https://web.facebook.com/people/Makalanegama-kv/100063734032649/" target="_blank" class="social-link-card facebook">
+                                <i class="fab fa-facebook-f"></i>
+                                <span>Facebook</span>
+                                <small>Follow for updates</small>
                             </a>
-                            <a href="#" class="social-link">
-                                <i class="fab fa-youtube"></i> YouTube
+                            <a href="#" class="social-link-card instagram">
+                                <i class="fab fa-instagram"></i>
+                                <span>Instagram</span>
+                                <small>See our daily life</small>
+                            </a>
+                            <a href="#" class="social-link-card youtube">
+                                <i class="fab fa-youtube"></i>
+                                <span>YouTube</span>
+                                <small>Watch our events</small>
+                            </a>
+                        </div>
+                        <div class="achievement-actions">
+                            <a href="https://web.facebook.com/people/Makalanegama-kv/100063734032649/" target="_blank" class="btn btn-sm btn-maroon">
+                                <i class="fab fa-facebook-f"></i> Follow Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="achievement-card contact-method" data-category="emergency" data-aos="fade-up" data-aos-delay="300">
+                    <div class="achievement-image">
+                        <img src="assets/images/contact/emergency.jpg" alt="Emergency Contact" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="no-image" style="display: none;"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="achievement-category emergency">Emergency</div>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="achievement-date">
+                            <i class="fas fa-clock"></i>
+                            <span>24/7 emergency support</span>
+                        </div>
+                        <h4>Emergency Contacts</h4>
+                        <p>For urgent matters outside regular hours, use our emergency contact numbers. Available for student safety and critical issues.</p>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <strong>Security Office:</strong><br>
+                                <a href="tel:+94712345678">+94 71 234 5678</a>
+                            </div>
+                            <div class="contact-item">
+                                <strong>Principal (Emergency):</strong><br>
+                                <a href="tel:+94711850003">+94 71 185 0003</a>
+                            </div>
+                            <div class="contact-item">
+                                <strong>Medical Emergency:</strong><br>
+                                <a href="tel:119">119</a> (National Emergency)
+                            </div>
+                        </div>
+                        <div class="achievement-actions">
+                            <a href="tel:+94712345678" class="btn btn-sm btn-danger">
+                                <i class="fas fa-phone"></i> Emergency Call
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Office Hours -->
+                <div class="achievement-card contact-method" data-category="visit" data-aos="fade-up" data-aos-delay="400">
+                    <div class="achievement-image">
+                        <img src="assets/images/contact/office-hours.jpg" alt="Office Hours" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="no-image" style="display: none;"><i class="fas fa-clock"></i></div>
+                        <div class="achievement-category visit">Office Hours</div>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="achievement-date">
+                            <i class="fas fa-calendar"></i>
+                            <span>Regular operating schedule</span>
+                        </div>
+                        <h4>Operating Hours</h4>
+                        <p>Plan your visit according to our operating hours for different departments and services.</p>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <strong>School Hours:</strong><br>
+                                Monday - Friday: 7:30 AM - 1:30 PM
+                            </div>
+                            <div class="contact-item">
+                                <strong>Office Hours:</strong><br>
+                                Monday - Friday: 7:30 AM - 1:30 PM
+                            </div>
+                            <div class="contact-item">
+                                <strong>Weekend Support:</strong><br>
+                                Saturday: 8:00 AM - 12:00 PM
+                            </div>
+                        </div>
+                        <div class="achievement-actions">
+                            <a href="tel:+94372053619" class="btn btn-sm btn-maroon">
+                                <i class="fas fa-phone"></i> Confirm Hours
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transportation -->
+                <div class="achievement-card contact-method" data-category="visit" data-aos="fade-up" data-aos-delay="500">
+                    <div class="achievement-image">
+                        <img src="assets/images/contact/transportation.jpg" alt="How to Reach" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="no-image" style="display: none;"><i class="fas fa-bus"></i></div>
+                        <div class="achievement-category visit">Transportation</div>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="achievement-date">
+                            <i class="fas fa-route"></i>
+                            <span>Multiple transport options</span>
+                        </div>
+                        <h4>How to Reach Us</h4>
+                        <p>Various transportation options are available to reach our school. We're conveniently located with good connectivity.</p>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <strong>By Bus:</strong><br>
+                                Regular services from Kurunegala and nearby towns
+                            </div>
+                            <div class="contact-item">
+                                <strong>By Car:</strong><br>
+                                Free parking available on premises
+                            </div>
+                            <div class="contact-item">
+                                <strong>Landmarks:</strong><br>
+                                Near Galgamuwa Hospital and Post Office
+                            </div>
+                        </div>
+                        <div class="achievement-actions">
+                            <a href="https://maps.google.com/?q=7.9864944,80.2878794" target="_blank" class="btn btn-sm btn-maroon">
+                                <i class="fas fa-directions"></i> Get Directions
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Department Contacts -->
+                <div class="achievement-card contact-method" data-category="call" data-aos="fade-up" data-aos-delay="600">
+                    <div class="achievement-image">
+                        <img src="assets/images/contact/departments.jpg" alt="Department Contacts" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="no-image" style="display: none;"><i class="fas fa-building"></i></div>
+                        <div class="achievement-category call">Departments</div>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="achievement-date">
+                            <i class="fas fa-users"></i>
+                            <span>Specialized support</span>
+                        </div>
+                        <h4>Department Contacts</h4>
+                        <p>Reach specific departments directly for specialized assistance and information about their services.</p>
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <strong>Academic Department:</strong><br>
+                                <a href="tel:+94372053619">+94 37 205 3619</a>
+                            </div>
+                            <div class="contact-item">
+                                <strong>Sports Department:</strong><br>
+                                <a href="tel:+94372053619">+94 37 205 3619</a>
+                            </div>
+                            <div class="contact-item">
+                                <strong>Library:</strong><br>
+                                <a href="tel:+94372053619">+94 37 205 3619</a>
+                            </div>
+                        </div>
+                        <div class="achievement-actions">
+                            <a href="tel:+94372050003" class="btn btn-sm btn-maroon">
+                                <i class="fas fa-phone"></i> Call Department
                             </a>
                         </div>
                     </div>
@@ -244,38 +2028,21 @@
                     </div>
                     
                     <div class="contact-form-container" data-aos="fade-up" data-aos-delay="200">
-                        <form id="contactForm" class="contact-form" novalidate>
+                        <form id="contactForm" class="contact-form" method="POST">
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="firstName" class="form-label">
-                                            <i class="fas fa-user"></i> First Name *
+                                        <label for="name" class="form-label">
+                                            <i class="fas fa-user"></i> Full Name *
                                         </label>
                                         <input type="text" 
                                                class="form-control" 
-                                               id="firstName" 
-                                               name="firstName" 
+                                               id="name" 
+                                               name="name" 
                                                required
-                                               placeholder="Enter your first name">
+                                               placeholder="Enter your full name">
                                         <div class="invalid-feedback">
-                                            Please enter your first name.
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="lastName" class="form-label">
-                                            <i class="fas fa-user"></i> Last Name *
-                                        </label>
-                                        <input type="text" 
-                                               class="form-control" 
-                                               id="lastName" 
-                                               name="lastName" 
-                                               required
-                                               placeholder="Enter your last name">
-                                        <div class="invalid-feedback">
-                                            Please enter your last name.
+                                            Please enter your full name.
                                         </div>
                                     </div>
                                 </div>
@@ -307,28 +2074,25 @@
                                                id="phone" 
                                                name="phone" 
                                                placeholder="+94 77 123 4567">
-                                        <div class="invalid-feedback">
-                                            Please enter a valid phone number.
-                                        </div>
                                     </div>
                                 </div>
                                 
-                                <div class="col-12">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="subject" class="form-label">
                                             <i class="fas fa-tag"></i> Subject *
                                         </label>
                                         <select class="form-control" id="subject" name="subject" required>
                                             <option value="">Select a subject</option>
-                                            <option value="admission">Admission Inquiry</option>
-                                            <option value="curriculum">Curriculum Information</option>
-                                            <option value="fees">Fees and Payments</option>
-                                            <option value="transport">School Transport</option>
-                                            <option value="activities">Extracurricular Activities</option>
-                                            <option value="facilities">School Facilities</option>
-                                            <option value="complaint">Complaint or Concern</option>
-                                            <option value="suggestion">Suggestion</option>
-                                            <option value="other">Other</option>
+                                            <option value="Admission Inquiry">Admission Inquiry</option>
+                                            <option value="Curriculum Information">Curriculum Information</option>
+                                            <option value="Fees and Payments">Fees and Payments</option>
+                                            <option value="School Transport">School Transport</option>
+                                            <option value="Extracurricular Activities">Extracurricular Activities</option>
+                                            <option value="School Facilities">School Facilities</option>
+                                            <option value="Complaint or Concern">Complaint or Concern</option>
+                                            <option value="Suggestion">Suggestion</option>
+                                            <option value="Other">Other</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             Please select a subject.
@@ -346,28 +2110,13 @@
                                                   name="message" 
                                                   rows="6" 
                                                   required
-                                                  placeholder="Please provide details about your inquiry..."></textarea>
+                                                  placeholder="Please provide details about your inquiry..." 
+                                                  maxlength="500"></textarea>
                                         <div class="invalid-feedback">
                                             Please enter your message.
                                         </div>
                                         <div class="form-text">
                                             <span id="messageCount">0</span>/500 characters
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-12">
-                                    <div class="form-check">
-                                        <input class="form-check-input" 
-                                               type="checkbox" 
-                                               id="privacy" 
-                                               name="privacy" 
-                                               required>
-                                        <label class="form-check-label" for="privacy">
-                                            I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a> and consent to the processing of my personal data. *
-                                        </label>
-                                        <div class="invalid-feedback">
-                                            You must agree to the privacy policy.
                                         </div>
                                     </div>
                                 </div>
@@ -398,79 +2147,138 @@
     </section>
 
     <!-- Map Section -->
-    <section class="map-section">
-        <div class="container-fluid p-0">
-            <div class="row g-0">
-                <div class="col-lg-6">
-                    <div class="map-container" data-aos="fade-right">
-                        <div id="schoolMap" class="school-map">
-                            <!-- Google Maps Embed -->
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.123!2d80.123456!3d7.899999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwNTMnNTkuOSJOIDgwwrAwNycyNC40IkU!5e0!3m2!1sen!2slk!4v1234567890123!5m2!1sen!2slk" 
+    <section class="map-section py-5 bg-light">
+        <div class="container">
+            <div class="section-header text-center mb-5" data-aos="fade-up">
+                <div class="section-badge">
+                    Visit Our School
+                </div>
+                <h2 class="section-title">
+                    Find Us <span class="text-maroon">Easily</span>
+                </h2>
+                <p class="section-description">
+                    Conveniently located in the heart of Galgamuwa, our school is easily accessible by various modes of transportation.
+                </p>
+            </div>
+            
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-7" data-aos="fade-right">
+                    <div class="map-container">
+                        <div class="map-wrapper">
+                            <!-- Google Maps Embed for Galgamuwa area -->
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.234!2d80.287!3d7.986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae29b4b4b4b4b4b%3A0x1234567890abcdef!2sGalgamuwa%2C%20Sri%20Lanka!5e0!3m2!1sen!2slk!4v1640995200000!5m2!1sen!2slk" 
                                     width="100%" 
-                                    height="400" 
+                                    height="450" 
                                     style="border:0;" 
                                     allowfullscreen="" 
                                     loading="lazy" 
                                     referrerpolicy="no-referrer-when-downgrade">
                             </iframe>
+                            <div class="map-overlay">
+                                <div class="school-marker">
+                                    <i class="fas fa-school"></i>
+                                    <span>Makalanegama School</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-6">
-                    <div class="map-info" data-aos="fade-left">
-                        <div class="map-content">
-                            <h3>Find Us Easily</h3>
-                            <p>Makalanegama School is conveniently located in Galgamuwa, making it easily accessible for families in the North Western Province.</p>
-                            
-                            <div class="location-details">
-                                <div class="location-item">
+                <div class="col-lg-5" data-aos="fade-left">
+                    <div class="location-info-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-map-marker-alt text-maroon"></i> Our Location</h3>
+                            <p>Find us at the following address in Galgamuwa, North Western Province</p>
+                        </div>
+                        
+                        <div class="location-details">
+                            <div class="location-item featured">
+                                <div class="item-icon">
                                     <i class="fas fa-map-marker-alt"></i>
-                                    <div>
-                                        <strong>Address:</strong><br>
-                                        X8X5+VGH, Galgamuwa-Nikawewa Rd<br>
-                                        Galgamuwa, North Western Province<br>
-                                        Sri Lanka
-                                    </div>
                                 </div>
-                                
-                                <div class="location-item">
-                                    <i class="fas fa-bus"></i>
-                                    <div>
-                                        <strong>Public Transport:</strong><br>
-                                        Regular bus services available from Kurunegala and nearby towns. 
-                                        School is located on the main Galgamuwa-Nikawewa road.
-                                    </div>
-                                </div>
-                                
-                                <div class="location-item">
-                                    <i class="fas fa-car"></i>
-                                    <div>
-                                        <strong>By Car:</strong><br>
-                                        Free parking available on school premises. 
-                                        Easily accessible from A6 highway.
-                                    </div>
-                                </div>
-                                
-                                <div class="location-item">
-                                    <i class="fas fa-landmark"></i>
-                                    <div>
-                                        <strong>Landmarks:</strong><br>
-                                        Near Galgamuwa Hospital and Galgamuwa Post Office. 
-                                        Close to the town center.
-                                    </div>
+                                <div class="item-content">
+                                    <h5>School Address</h5>
+                                    <p>X8X5+VGH, Galgamuwa-Nikawewa Rd<br>
+                                       Galgamuwa, North Western Province<br>
+                                       Sri Lanka</p>
                                 </div>
                             </div>
                             
-                            <div class="map-actions">
-                                <a href="https://maps.google.com/?q=7.899999,80.123456" target="_blank" class="btn btn-outline-maroon">
-                                    <i class="fas fa-directions"></i> Get Directions
-                                </a>
-                                <a href="tel:+94372050000" class="btn btn-maroon">
-                                    <i class="fas fa-phone"></i> Call for Directions
-                                </a>
+                            <div class="location-item">
+                                <div class="item-icon">
+                                    <i class="fas fa-bus"></i>
+                                </div>
+                                <div class="item-content">
+                                    <h5>Public Transport</h5>
+                                    <p>Regular bus services from Kurunegala and nearby towns. Located on the main Galgamuwa-Nikawewa road.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="location-item">
+                                <div class="item-icon">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <div class="item-content">
+                                    <h5>By Car</h5>
+                                    <p>Free parking available on school premises. Easily accessible from A6 highway.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="location-item">
+                                <div class="item-icon">
+                                    <i class="fas fa-landmark"></i>
+                                </div>
+                                <div class="item-content">
+                                    <h5>Nearby Landmarks</h5>
+                                    <p>Near Galgamuwa Hospital, Galgamuwa Post Office, and the town center.</p>
+                                </div>
                             </div>
                         </div>
+                        
+                        <div class="map-actions">
+                            <a href="https://maps.google.com/?q=7.9864944,80.2878794" target="_blank" class="btn btn-maroon">
+                                <i class="fas fa-directions"></i> Get Directions
+                            </a>
+                            <a href="tel:+94372053619" class="btn btn-outline-maroon">
+                                <i class="fas fa-phone"></i> Call Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Info Cards -->
+            <div class="row g-4 mt-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4>Office Hours</h4>
+                        <p>Monday - Friday<br>7:30 AM - 1:30 PM</p>
+                        <small class="text-muted">For admissions and inquiries</small>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <h4>Distance from Major Cities</h4>
+                        <p>Kurunegala: 45 km<br>Colombo: 150 km</p>
+                        <small class="text-muted">Approximate travel distances</small>
+                    </div>
+                </div>
+                
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <i class="fas fa-parking"></i>
+                        </div>
+                        <h4>Visitor Parking</h4>
+                        <p>Free parking available<br>on school premises</p>
+                        <small class="text-muted">Safe and secure parking</small>
                     </div>
                 </div>
             </div>
@@ -656,7 +2464,7 @@
                                 <i class="fas fa-phone"></i>
                                 <div>
                                     <strong>Phone:</strong><br>
-                                    <a href="tel:+94372050000">+94 37 205 0000</a>
+                                    <a href="tel:+94372053619">+94 37 205 3619</a>
                                 </div>
                             </div>
                             
@@ -805,26 +2613,37 @@
                 
                 // Collect form data
                 const formData = {
-                    firstName: document.getElementById('firstName').value,
-                    lastName: document.getElementById('lastName').value,
+                    name: document.getElementById('name').value,
                     email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value,
+                    phone: document.getElementById('phone').value || '',
                     subject: document.getElementById('subject').value,
-                    message: document.getElementById('message').value,
-                    privacy: document.getElementById('privacy').checked
+                    message: document.getElementById('message').value
                 };
                 
                 try {
-                    // Send to Telegram (if available)
-                    const result = await sendContactNotification(formData);
+                    // Send to API
+                    const response = await fetch('api/contact.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
                     
-                    // Show success message
-                    showFormMessage('success', 'Thank you for your message! We\'ll get back to you within 24 hours.');
+                    const result = await response.json();
                     
-                    // Reset form
-                    form.reset();
-                    form.classList.remove('was-validated');
-                    updateMessageCounter();
+                    if (response.ok && result.success) {
+                        // Show success message
+                        showFormMessage('success', result.message || 'Thank you for your message! We\'ll get back to you within 24 hours.');
+                        
+                        // Reset form
+                        form.reset();
+                        form.classList.remove('was-validated');
+                        updateMessageCounter();
+                    } else {
+                        // Show error message
+                        showFormMessage('error', result.error || 'Sorry, there was an error sending your message. Please try again.');
+                    }
                     
                 } catch (error) {
                     console.error('Contact form error:', error);
@@ -1304,5 +3123,554 @@
             }
         }
     </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School" class="logo">
+                <span class="school-name">
+                    <span class="primary-name">Makalanegama School</span>
+                    <span class="secondary-name">මාකලනේගම විද්‍යාලය</span>
+                </span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">About Us</a></li>
+                            <li><a class="dropdown-item" href="curriculum.html">Curriculum</a></li>
+                            <li><a class="dropdown-item" href="student-life.html">Student Life</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teachers.html">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="achievements.html">Achievements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admissions.html">Admissions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-main">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="footer-brand">
+                            <img src="assets/images/logo/logo-white.png" alt="Makalanegama School" class="footer-logo">
+                            <h4>Makalanegama School</h4>
+                            <p class="footer-tagline">Excellence in Education Since 1888</p>
+                            <p>Nurturing young minds with wisdom, virtue, and excellence in the heart of Galgamuwa, North Western Province.</p>
+                            
+                            <div class="social-links">
+                                <a href="https://web.facebook.com/people/Makalanegama-kv/100063734032649/" target="_blank" class="social-link">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-link">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-link">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-link">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5>Quick Links</h5>
+                            <ul>
+                                <li><a href="about.html">About Us</a></li>
+                                <li><a href="teachers.html">Our Teachers</a></li>
+                                <li><a href="curriculum.html">Curriculum</a></li>
+                                <li><a href="student-life.html">Student Life</a></li>
+                                <li><a href="admissions.html">Admissions</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-2 col-md-6">
+                        <div class="footer-links">
+                            <h5>Information</h5>
+                            <ul>
+                                <li><a href="achievements.html">Achievements</a></li>
+                                <li><a href="events.html">Events</a></li>
+                                <li><a href="news.html">News</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                                <li><a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="footer-contact">
+                            <h5>Contact Information</h5>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <strong>Address:</strong><br>
+                                    X8X5+VGH, Galgamuwa-Nikawewa Rd,<br>
+                                    Galgamuwa, North Western Province,<br>
+                                    Sri Lanka
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <div>
+                                    <strong>Phone:</strong><br>
+                                    <a href="tel:+94372053619">+94 37 205 3619</a>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <strong>Email:</strong><br>
+                                    <a href="mailto:info@makalanegamaschool.lk">info@makalanegamaschool.lk</a>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item">
+                                <i class="fas fa-clock"></i>
+                                <div>
+                                    <strong>School Hours:</strong><br>
+                                    Monday - Friday: 7:30 AM - 1:30 PM
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p>&copy; 2024 Makalanegama School. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p>Designed with ❤️ for educational excellence</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Information Collection</h6>
+                    <p>We collect information you provide directly to us, such as when you contact us through our website forms.</p>
+                    
+                    <h6>Use of Information</h6>
+                    <p>We use the information we collect to respond to your inquiries and provide information about our school.</p>
+                    
+                    <h6>Information Protection</h6>
+                    <p>We implement appropriate security measures to protect your personal information against unauthorized access.</p>
+                    
+                    <h6>Contact</h6>
+                    <p>If you have any questions about this privacy policy, please contact us at <a href="mailto:info@makalanegamaschool.lk">info@makalanegamaschool.lk</a></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
+        // Contact Form Functionality
+        class ContactFormManager {
+            constructor() {
+                this.form = document.getElementById('contactForm');
+                this.submitBtn = document.getElementById('submitBtn');
+                this.messageContainer = document.getElementById('formMessage');
+                this.messageCount = document.getElementById('messageCount');
+                this.messageTextarea = document.getElementById('message');
+                
+                this.init();
+            }
+
+            init() {
+                if (this.form) {
+                    this.form.addEventListener('submit', this.handleSubmit.bind(this));
+                }
+                
+                if (this.messageTextarea) {
+                    this.messageTextarea.addEventListener('input', this.updateCharacterCount.bind(this));
+                }
+
+                // Add real-time validation
+                this.addRealtimeValidation();
+            }
+
+            addRealtimeValidation() {
+                const inputs = this.form.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('blur', () => this.validateField(input));
+                    input.addEventListener('input', () => {
+                        if (input.classList.contains('is-invalid')) {
+                            this.validateField(input);
+                        }
+                    });
+                });
+            }
+
+            validateField(field) {
+                const isValid = field.checkValidity();
+                
+                if (isValid) {
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                } else {
+                    field.classList.remove('is-valid');
+                    field.classList.add('is-invalid');
+                }
+
+                return isValid;
+            }
+
+            validateForm() {
+                const inputs = this.form.querySelectorAll('input[required], select[required], textarea[required]');
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (!this.validateField(input)) {
+                        isValid = false;
+                    }
+                });
+
+                // Email validation
+                const email = this.form.querySelector('#email');
+                if (email && email.value) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email.value)) {
+                        email.classList.add('is-invalid');
+                        isValid = false;
+                    }
+                }
+
+                // Privacy checkbox validation
+                const privacy = this.form.querySelector('#privacy');
+                if (privacy && !privacy.checked) {
+                    privacy.classList.add('is-invalid');
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            updateCharacterCount() {
+                const currentLength = this.messageTextarea.value.length;
+                const maxLength = 500;
+                
+                this.messageCount.textContent = currentLength;
+                
+                if (currentLength > maxLength * 0.9) {
+                    this.messageCount.style.color = 'var(--warning)';
+                } else {
+                    this.messageCount.style.color = 'var(--maroon-primary)';
+                }
+
+                if (currentLength > maxLength) {
+                    this.messageTextarea.value = this.messageTextarea.value.substring(0, maxLength);
+                    this.messageCount.textContent = maxLength;
+                }
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+
+                if (!this.validateForm()) {
+                    this.showMessage('Please fill in all required fields correctly.', 'danger');
+                    return;
+                }
+
+                this.setLoading(true);
+
+                try {
+                    // Simulate form submission (replace with actual API call)
+                    await this.simulateFormSubmission();
+                    
+                    this.showMessage('Thank you! Your message has been sent successfully. We\'ll get back to you soon.', 'success');
+                    this.form.reset();
+                    this.clearValidationClasses();
+                    this.updateCharacterCount();
+                    
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                    this.showMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'danger');
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            async simulateFormSubmission() {
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // In a real implementation, you would send the form data to your server
+                const formData = new FormData(this.form);
+                const data = Object.fromEntries(formData);
+                
+                console.log('Form data:', data);
+                
+                // For now, we'll just simulate success
+                return { success: true };
+            }
+
+            setLoading(isLoading) {
+                const btnText = this.submitBtn.querySelector('.btn-text');
+                const btnLoading = this.submitBtn.querySelector('.btn-loading');
+
+                if (isLoading) {
+                    btnText.classList.add('d-none');
+                    btnLoading.classList.remove('d-none');
+                    this.submitBtn.disabled = true;
+                    this.submitBtn.classList.add('btn-loading');
+                } else {
+                    btnText.classList.remove('d-none');
+                    btnLoading.classList.add('d-none');
+                    this.submitBtn.disabled = false;
+                    this.submitBtn.classList.remove('btn-loading');
+                }
+            }
+
+            showMessage(message, type) {
+                const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+                
+                this.messageContainer.innerHTML = `
+                    <div class="alert ${alertClass}" role="alert">
+                        <i class="fas ${icon}"></i>
+                        <span class="message-text">${message}</span>
+                    </div>
+                `;
+                
+                this.messageContainer.classList.remove('d-none');
+                
+                // Scroll to message
+                this.messageContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Auto-hide success messages after 10 seconds
+                if (type === 'success') {
+                    setTimeout(() => {
+                        this.messageContainer.classList.add('d-none');
+                    }, 10000);
+                }
+            }
+
+            clearValidationClasses() {
+                const inputs = this.form.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    input.classList.remove('is-valid', 'is-invalid');
+                });
+            }
+        }
+
+        // Initialize contact form when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            new ContactFormManager();
+            
+            // Initialize contact filters
+            initializeContactFilters();
+        });
+
+        /**
+         * Initialize contact method filtering functionality (achievements-style)
+         */
+        function initializeContactFilters() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const contactMethods = document.querySelectorAll('.contact-method');
+            
+            console.log('Initializing contact filters...');
+            console.log('Filter buttons found:', filterButtons.length);
+            console.log('Contact methods found:', contactMethods.length);
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Get filter value
+                    const filter = this.getAttribute('data-filter');
+                    console.log('Filter selected:', filter);
+                    
+                    // Filter contact methods
+                    filterContactMethods(filter);
+                    
+                    // Animate filter change
+                    animateFilterChange();
+                });
+            });
+        }
+
+        /**
+         * Filter contact methods by category
+         */
+        function filterContactMethods(filter) {
+            const contactMethods = document.querySelectorAll('.contact-method');
+            let visibleCount = 0;
+            
+            contactMethods.forEach((method, index) => {
+                const category = method.getAttribute('data-category');
+                const shouldShow = filter === 'all' || category === filter;
+                
+                if (shouldShow) {
+                    method.style.display = 'block';
+                    // Add staggered animation
+                    if (typeof gsap !== 'undefined') {
+                        gsap.fromTo(method, 
+                            { opacity: 0, y: 20 }, 
+                            { 
+                                opacity: 1, 
+                                y: 0, 
+                                duration: 0.5, 
+                                delay: visibleCount * 0.1,
+                                ease: "power2.out" 
+                            }
+                        );
+                    }
+                    visibleCount++;
+                } else {
+                    method.style.display = 'none';
+                }
+            });
+            
+            console.log(`Showing ${visibleCount} contact methods for filter: ${filter}`);
+        }
+
+        /**
+         * Animate filter button changes
+         */
+        function animateFilterChange() {
+            if (typeof gsap !== 'undefined') {
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                gsap.from(filterButtons, {
+                    scale: 0.95,
+                    duration: 0.2,
+                    stagger: 0.05,
+                    ease: "power2.out"
+                });
+            }
+        }
+
+        // FAQ Accordion Enhancement
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    const isCollapsed = this.classList.contains('collapsed');
+                    
+                    // Reset all icons
+                    accordionButtons.forEach(btn => {
+                        btn.querySelector('i').className = 'fas fa-question-circle';
+                    });
+                    
+                    // Set active icon
+                    if (!isCollapsed) {
+                        icon.className = 'fas fa-check-circle';
+                    }
+                });
+            });
+        });
+
+        // Map interaction enhancement
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapContainer = document.querySelector('.school-map');
+            if (mapContainer) {
+                mapContainer.addEventListener('click', function() {
+                    // Optional: Add click tracking or enhanced interaction
+                    console.log('Map clicked - opening in new tab');
+                });
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

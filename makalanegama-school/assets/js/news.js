@@ -146,19 +146,34 @@ class NewsManager {
         card.setAttribute('data-aos', 'fade-up');
         card.setAttribute('data-aos-delay', (index * 100).toString());
         
+        // Handle image URL properly (matching events.js pattern)
+        let imageUrl = '/makalanegama-school/makalanegama-school/assets/images/news/default-news.jpg';
+        if (news.image_url && news.image_url.trim() !== '') {
+            if (news.image_url.startsWith('http')) {
+                imageUrl = news.image_url;
+            } else {
+                imageUrl = `/makalanegama-school/makalanegama-school/${news.image_url}`;
+            }
+        } else if (news.image) {
+            imageUrl = news.image;
+        }
+        
+        // Handle date field (API returns 'created_at' or 'date')
+        const displayDate = news.date || news.created_at;
+        
         card.innerHTML = `
             <article class="news-card">
                 <div class="news-image">
-                    <img src="${news.image}" alt="${news.title}">
-                    <div class="news-category ${news.category.toLowerCase()}">${news.category}</div>
+                    <img src="${imageUrl}" alt="${this.escapeHtml(news.title)}" onerror="this.src='/makalanegama-school/makalanegama-school/assets/images/news/default-news.jpg'">
+                    <div class="news-category ${news.category.toLowerCase()}">${this.escapeHtml(news.category)}</div>
                 </div>
                 <div class="news-content">
                     <div class="news-meta">
-                        <span class="news-date">${this.formatDate(news.date)}</span>
-                        <span class="news-author">${news.author}</span>
+                        <span class="news-date">${this.formatDate(displayDate)}</span>
+                        <span class="news-author">${this.escapeHtml(news.author)}</span>
                     </div>
-                    <h4>${news.title}</h4>
-                    <p>${news.excerpt || news.content.substring(0, 150) + '...'}</p>
+                    <h4>${this.escapeHtml(news.title)}</h4>
+                    <p>${this.escapeHtml(news.excerpt || news.content.substring(0, 150) + '...')}</p>
                     <a href="#" class="news-link" data-bs-toggle="modal" data-bs-target="#newsModal" data-news-id="${news.id}">
                         Read More <i class="fas fa-arrow-right"></i>
                     </a>
@@ -253,15 +268,30 @@ class NewsManager {
         
         modalTitle.textContent = news.title;
         
+        // Handle image URL properly
+        let imageUrl = '/makalanegama-school/makalanegama-school/assets/images/news/default-news.jpg';
+        if (news.image_url && news.image_url.trim() !== '') {
+            if (news.image_url.startsWith('http')) {
+                imageUrl = news.image_url;
+            } else {
+                imageUrl = `/makalanegama-school/makalanegama-school/${news.image_url}`;
+            }
+        } else if (news.image) {
+            imageUrl = news.image;
+        }
+        
+        // Handle date field (API returns 'created_at' or 'date')
+        const displayDate = news.date || news.created_at;
+        
         modalBody.innerHTML = `
             <div class="modal-news-image">
-                <img src="${news.image}" alt="${news.title}" class="img-fluid rounded mb-3">
+                <img src="${imageUrl}" alt="${this.escapeHtml(news.title)}" class="img-fluid rounded mb-3" onerror="this.style.display='none'">
             </div>
             <div class="modal-news-meta mb-3">
-                <span class="badge bg-primary me-2">${news.category}</span>
-                <span class="text-muted me-3"><i class="fas fa-calendar"></i> ${this.formatDate(news.date)}</span>
-                <span class="text-muted me-3"><i class="fas fa-user"></i> ${news.author}</span>
-                <span class="text-muted"><i class="fas fa-clock"></i> ${news.readTime || '3 min read'}</span>
+                <span class="badge bg-secondary me-2">${this.escapeHtml(news.category)}</span>
+                <span class="text-muted me-3"><i class="fas fa-calendar"></i> ${this.formatDate(displayDate)}</span>
+                <span class="text-muted me-3"><i class="fas fa-user"></i> ${this.escapeHtml(news.author)}</span>
+                <span class="text-muted"><i class="fas fa-clock"></i> ${this.calculateReadTime(news.content)} min read</span>
             </div>
             <div class="modal-news-content">
                 ${this.formatNewsContent(news.content)}
@@ -269,7 +299,7 @@ class NewsManager {
             ${news.tags ? `
                 <div class="modal-news-tags mt-4">
                     <strong>Tags:</strong>
-                    ${news.tags.map(tag => `<span class="badge bg-secondary me-1">${tag}</span>`).join('')}
+                    ${news.tags.map(tag => `<span class="badge bg-secondary me-1">${this.escapeHtml(tag)}</span>`).join('')}
                 </div>
             ` : ''}
         `;
@@ -504,18 +534,262 @@ class NewsManager {
     }
 
     /**
+     * Calculate reading time for article
+     */
+    calculateReadTime(content) {
+        const wordsPerMinute = 200;
+        const words = content.trim().split(/\s+/).length;
+        const readTime = Math.ceil(words / wordsPerMinute);
+        return readTime;
+    }
+
+    /**
+     * Escape HTML to prevent XSS
+     */
+    escapeHtml(text) {
+        if (!text) return '';
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>\"']/g, (m) => map[m]);
+    }
+
+    /**
+     * Render featured news section with sidebar
+     */
+    renderFeaturedNews() {
+        const featuredContainer = document.getElementById('featured-news');
+        if (!featuredContainer) return;
+        
+        const featuredNews = this.allNews.filter(news => news.featured || news.is_featured);
+        const recentNews = this.allNews.slice(0, 3); // Get latest 3 news for sidebar
+        
+        // Clear existing content
+        featuredContainer.innerHTML = '';
+        
+        if (featuredNews.length > 0) {
+            // Create main featured article
+            const featuredElement = this.createFeaturedNewsElement(featuredNews[0]);
+            featuredContainer.appendChild(featuredElement);
+        } else if (this.allNews.length > 0) {
+            // If no featured news, use the first news item as featured
+            const featuredElement = this.createFeaturedNewsElement(this.allNews[0]);
+            featuredContainer.appendChild(featuredElement);
+        }
+        
+        // Create sidebar with recent updates
+        const sidebarElement = this.createSidebarElement(recentNews);
+        featuredContainer.appendChild(sidebarElement);
+    }
+
+    /**
+     * Create featured news element for main display
+     */
+    createFeaturedNewsElement(news) {
+        const newsDate = new Date(news.date || news.created_at);
+        
+        let imageUrl = '/makalanegama-school/makalanegama-school/assets/images/news/default-news.jpg';
+        if (news.image_url && news.image_url.trim() !== '') {
+            if (news.image_url.startsWith('http')) {
+                imageUrl = news.image_url;
+            } else {
+                imageUrl = `/makalanegama-school/makalanegama-school/${news.image_url}`;
+            }
+        }
+        
+        const featuredElement = document.createElement('div');
+        featuredElement.className = 'col-lg-8';
+        featuredElement.setAttribute('data-aos', 'fade-up');
+        featuredElement.setAttribute('data-aos-delay', '100');
+        
+        featuredElement.innerHTML = `
+            <article class="featured-news-card">
+                <div class="news-image">
+                    <img src="${imageUrl}" alt="${this.escapeHtml(news.title)}" onerror="this.src='/makalanegama-school/makalanegama-school/assets/images/news/default-news.jpg'">
+                    <div class="news-badge featured">Featured</div>
+                    <div class="news-category">${this.escapeHtml(news.category)}</div>
+                </div>
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="news-date">
+                            <i class="fas fa-calendar"></i>
+                            ${newsDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        </span>
+                        <span class="news-author">
+                            <i class="fas fa-user"></i>
+                            ${this.escapeHtml(news.author)}
+                        </span>
+                        <span class="news-read-time">
+                            <i class="fas fa-clock"></i>
+                            ${this.calculateReadTime(news.content)} min read
+                        </span>
+                    </div>
+                    <h2>${this.escapeHtml(news.title)}</h2>
+                    <p>${this.escapeHtml(news.excerpt || this.truncateText(news.content, 200))}</p>
+                    <div class="news-tags">
+                        <span class="tag">${this.escapeHtml(news.category)}</span>
+                        <span class="tag">School News</span>
+                    </div>
+                    <a href="#" class="btn btn-maroon" onclick="newsManager.showNewsModal(${news.id})">
+                        Read Full Article <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+        `;
+        
+        return featuredElement;
+    }
+
+    /**
+     * Create sidebar element with recent updates
+     */
+    createSidebarElement(recentNews) {
+        const sidebarElement = document.createElement('div');
+        sidebarElement.className = 'col-lg-4';
+        
+        let sidebarItems = '';
+        recentNews.slice(0, 3).forEach((news, index) => {
+            const newsDate = new Date(news.date || news.created_at);
+            
+            let imageUrl = '/makalanegama-school/makalanegama-school/assets/images/news/default-news.jpg';
+            if (news.image_url && news.image_url.trim() !== '') {
+                if (news.image_url.startsWith('http')) {
+                    imageUrl = news.image_url;
+                } else {
+                    imageUrl = `/makalanegama-school/makalanegama-school/${news.image_url}`;
+                }
+            }
+            
+            sidebarItems += `
+                <div class="sidebar-news-item" data-aos="fade-up" data-aos-delay="${(index + 3) * 100}">
+                    <div class="news-item-image">
+                        <img src="${imageUrl}" alt="${this.escapeHtml(news.title)}" onerror="this.src='/makalanegama-school/makalanegama-school/assets/images/news/default-news.jpg'">
+                    </div>
+                    <div class="news-item-content">
+                        <div class="news-category">${this.escapeHtml(news.category)}</div>
+                        <h6>${this.escapeHtml(news.title)}</h6>
+                        <div class="news-date">${newsDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                        <p>${this.escapeHtml(this.truncateText(news.excerpt || news.content, 80))}...</p>
+                        <a href="#" class="read-more-link" onclick="newsManager.showNewsModal(${news.id})">Read More</a>
+                    </div>
+                </div>
+            `;
+        });
+        
+        sidebarElement.innerHTML = `
+            <div class="sidebar-news">
+                <h4 class="sidebar-title" data-aos="fade-up" data-aos-delay="200">Recent Updates</h4>
+                ${sidebarItems}
+            </div>
+        `;
+        
+        return sidebarElement;
+    }
+
+    /**
+     * Truncate text to specified length
+     */
+    truncateText(text, maxLength) {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.substr(0, maxLength);
+    }
+
+    /**
+     * Show news modal with content
+     */
+    showNewsModal(newsId) {
+        const news = this.getNewsById(newsId) || this.getSampleNews(newsId);
+        if (!news) return;
+        
+        const modal = document.getElementById('newsModal');
+        const modalTitle = document.getElementById('newsModalLabel');
+        const modalBody = document.getElementById('newsModalBody');
+        
+        if (!modal || !modalTitle || !modalBody) return;
+        
+        modalTitle.textContent = news.title;
+        
+        // Handle image URL properly
+        let imageUrl = '/makalanegama-school/makalanegama-school/assets/images/news/default-news.jpg';
+        if (news.image_url && news.image_url.trim() !== '') {
+            if (news.image_url.startsWith('http')) {
+                imageUrl = news.image_url;
+            } else {
+                imageUrl = `/makalanegama-school/makalanegama-school/${news.image_url}`;
+            }
+        } else if (news.image) {
+            imageUrl = news.image;
+        }
+        
+        // Handle date field (API returns 'created_at' or 'date')
+        const displayDate = news.date || news.created_at;
+        
+        modalBody.innerHTML = `
+            <div class="modal-news-content">
+                <div class="news-meta mb-3">
+                    <span class="badge bg-secondary me-2">${this.escapeHtml(news.category)}</span>
+                    <span class="text-muted">
+                        <i class="fas fa-calendar me-1"></i>
+                        ${new Date(displayDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </span>
+                    <span class="text-muted ms-3">
+                        <i class="fas fa-user me-1"></i>
+                        ${this.escapeHtml(news.author)}
+                    </span>
+                    <span class="text-muted ms-3">
+                        <i class="fas fa-clock me-1"></i>
+                        ${this.calculateReadTime(news.content)} min read
+                    </span>
+                </div>
+                
+                ${news.image_url || news.image ? `
+                <div class="news-image mb-4">
+                    <img src="${imageUrl}" alt="${this.escapeHtml(news.title)}" class="img-fluid rounded" onerror="this.style.display='none'">
+                </div>
+                ` : ''}
+                
+                <div class="news-body">
+                    ${this.formatNewsContent(news.content)}
+                </div>
+            </div>
+        `;
+        
+        // Setup share buttons
+        this.updateShareButtons(news);
+        
+        // Show modal
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+    }
+
+    /**
      * Load news data
      */
     async loadNews() {
         try {
-            // Try to load from API first
-            const response = await fetch('/api/news.php');
-            if (response.ok) {
-                this.newsData = await response.json();
+            // Use absolute path from the root directory (matching events.js pattern)
+            const response = await fetch('/makalanegama-school/makalanegama-school/api/news.php');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (Array.isArray(data) && data.length > 0) {
+                this.newsData = data;
+                console.log('News loaded successfully:', data.length, 'articles');
             } else {
-                throw new Error('API not available');
+                console.warn('No news data received, using fallback');
+                throw new Error('No news data available');
             }
         } catch (error) {
+            console.error('Error loading news:', error);
             // Use fallback data
             this.newsData = this.getFallbackNewsData();
         }
@@ -578,11 +852,13 @@ class NewsManager {
  * Initialize news page functionality
  */
 function initializeNewsFilters() {
-    const newsManager = new NewsManager();
-    newsManager.loadNews();
-    
-    // Make newsManager globally available
-    window.newsManager = newsManager;
+    if (!window.newsManager) {
+        const newsManager = new NewsManager();
+        newsManager.loadNews();
+        
+        // Make newsManager globally available
+        window.newsManager = newsManager;
+    }
 }
 
 function initializeNewsSearch() {

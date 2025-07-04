@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form Test - Makalanegama School</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            font-family: 'Inter', sans-serif;
+            padding: 2rem 0;
+        }
+        
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #800020;
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 32, 0.25);
+        }
+        
+        .btn-primary {
+            background: #800020;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #5d0017;
+            transform: translateY(-2px);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #800020;
+        }
+        
+        .status-message {
+            margin-top: 1rem;
+        }
+        
+        .admin-link {
+            margin-top: 2rem;
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-container">
+            <div class="test-header">
+                <h2><i class="fas fa-envelope"></i> Contact Form Test</h2>
+                <p class="text-muted">Test the contact form submission and admin view</p>
+            </div>
+            
+            <form id="testContactForm">
+                <div class="mb-3">
+                    <label for="name" class="form-label">
+                        <i class="fas fa-user"></i> Full Name *
+                    </label>
+                    <input type="text" class="form-control" id="name" name="name" required 
+                           placeholder="Enter your full name">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i> Email Address *
+                    </label>
+                    <input type="email" class="form-control" id="email" name="email" required 
+                           placeholder="Enter your email address">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="phone" class="form-label">
+                        <i class="fas fa-phone"></i> Phone Number
+                    </label>
+                    <input type="tel" class="form-control" id="phone" name="phone" 
+                           placeholder="+94 77 123 4567">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="subject" class="form-label">
+                        <i class="fas fa-tag"></i> Subject *
+                    </label>
+                    <select class="form-select" id="subject" name="subject" required>
+                        <option value="">Select a subject</option>
+                        <option value="Admission Inquiry">Admission Inquiry</option>
+                        <option value="Test Message">Test Message</option>
+                        <option value="General Inquiry">General Inquiry</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="message" class="form-label">
+                        <i class="fas fa-comment"></i> Message *
+                    </label>
+                    <textarea class="form-control" id="message" name="message" rows="4" required
+                              placeholder="Enter your message here"></textarea>
+                </div>
+                
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span class="btn-text">Send Test Message</span>
+                        <span class="btn-loading d-none">
+                            <i class="fas fa-spinner fa-spin"></i> Sending...
+                        </span>
+                    </button>
+                </div>
+            </form>
+            
+            <div id="statusMessage" class="status-message d-none"></div>
+            
+            <div class="admin-link">
+                <h6><i class="fas fa-cog"></i> Admin Access</h6>
+                <p class="mb-2">View submitted messages in the admin panel:</p>
+                <a href="admin/login.php" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-sign-in-alt"></i> Admin Login
+                </a>
+                <small class="d-block mt-2 text-muted">
+                    Username: <strong>admin</strong> | Password: <strong>admin123</strong>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('testContactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const form = this;
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.classList.add('d-none');
+            btnLoading.classList.remove('d-none');
+            statusMessage.classList.add('d-none');
+            
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value || '',
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+            
+            try {
+                const response = await fetch('api/contact.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Show success message
+                    statusMessage.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Success!</strong> ${result.message}
+                            <br><small>Now check the admin panel to see the message.</small>
+                        </div>
+                    `;
+                    
+                    // Reset form
+                    form.reset();
+                } else {
+                    // Show error message
+                    statusMessage.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Error:</strong> ${result.error || 'Failed to send message'}
+                        </div>
+                    `;
+                }
+                
+                statusMessage.classList.remove('d-none');
+                
+            } catch (error) {
+                console.error('Contact form error:', error);
+                statusMessage.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Error:</strong> Network error occurred. Please try again.
+                    </div>
+                `;
+                statusMessage.classList.remove('d-none');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.classList.remove('d-none');
+                btnLoading.classList.add('d-none');
+            }
+        });
+    </script>
+</body>
+</html>

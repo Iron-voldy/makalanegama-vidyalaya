@@ -33,6 +33,236 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        /* News Page Specific Styles */
+        :root {
+            --maroon-primary: #800020;
+            --maroon-dark: #5d0017;
+            --maroon-light: #a6334f;
+            --gold-accent: #ffd700;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --medium-gray: #64748b;
+            --dark-gray: #334155;
+            --black: #1a1a1a;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --danger: #ef4444;
+            --cream-background: #faf7f0;
+            
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            --radius-small: 8px;
+            --radius-medium: 12px;
+            --radius-large: 20px;
+            
+            --transition-fast: 0.2s ease-out;
+            --transition-medium: 0.3s ease-out;
+            --transition-slow: 0.5s ease-out;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-dark) 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            padding: 8rem 0 4rem;
+            margin-top: 76px;
+        }
+
+        .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+
+        /* Stylish Filter Buttons */
+        .filter-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-bottom: 3px solid var(--maroon-primary);
+        }
+
+        .filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            color: var(--dark-gray);
+            padding: 12px 24px;
+            border-radius: var(--radius-medium);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all var(--transition-medium);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .filter-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left var(--transition-slow);
+        }
+
+        .filter-btn:hover:before {
+            left: 100%;
+        }
+
+        .filter-btn i {
+            font-size: 16px;
+            transition: transform var(--transition-medium);
+        }
+
+        .filter-btn:hover {
+            background: var(--maroon-primary);
+            color: var(--white);
+            border-color: var(--maroon-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .filter-btn:hover i {
+            transform: scale(1.1);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-dark) 100%);
+            color: var(--white);
+            border-color: var(--maroon-primary);
+            box-shadow: var(--shadow-heavy);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active i {
+            color: var(--gold-accent);
+            transform: scale(1.05);
+        }
+
+        .filter-btn:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Responsive Design for Filter Buttons */
+        @media (max-width: 768px) {
+            .filter-tabs {
+                gap: 10px;
+            }
+            
+            .filter-btn {
+                padding: 10px 16px;
+                font-size: 12px;
+                min-width: 110px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .filter-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .filter-btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+        /* Enhanced Filter Button Icons */
+        .filter-btn[data-filter="all"] i { color: var(--info); }
+        .filter-btn[data-filter="academic"] i { color: var(--success); }
+        .filter-btn[data-filter="facilities"] i { color: var(--warning); }
+        .filter-btn[data-filter="events"] i { color: #8b5cf6; }
+        .filter-btn[data-filter="admissions"] i { color: #06b6d4; }
+
+        .filter-btn:hover i,
+        .filter-btn.active i {
+            color: var(--gold-accent) !important;
+        }
+
+        /* Search Box Enhancement */
+        .search-box .input-group {
+            border-radius: var(--radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+
+        .search-box .form-control {
+            border: 2px solid var(--light-gray);
+            border-right: none;
+            padding: 12px 16px;
+            font-size: 14px;
+            background: var(--white);
+            transition: all var(--transition-medium);
+        }
+
+        .search-box .form-control:focus {
+            border-color: var(--maroon-primary);
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 32, 0.1);
+            background: var(--white);
+        }
+
+        .search-box .btn {
+            background: var(--maroon-primary);
+            border: 2px solid var(--maroon-primary);
+            color: var(--white);
+            padding: 12px 20px;
+            transition: all var(--transition-medium);
+        }
+
+        .search-box .btn:hover {
+            background: var(--maroon-dark);
+            border-color: var(--maroon-dark);
+            transform: translateY(-1px);
+        }
+    </style>
 </head>
 
 <body>
@@ -97,7 +327,7 @@
         </div>
         
         <div class="container">
-            <div class="row align-items-center min-vh-50">
+            <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="header-content">
                         <nav aria-label="breadcrumb" data-aos="fade-up">
@@ -108,7 +338,7 @@
                         </nav>
                         
                         <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">
-                            School <span class="text-maroon">News & Updates</span>
+                            School <span style="color: var(--gold-accent);">News & Updates</span>
                         </h1>
                         
                         <h2 class="page-subtitle-sinhala" data-aos="fade-up" data-aos-delay="300">
@@ -116,22 +346,22 @@
                         </h2>
                         
                         <p class="page-description" data-aos="fade-up" data-aos-delay="400">
-                            Stay informed with the latest news, announcements, and updates from Makalanegama School. 
+                            Stay informed with the latest news, announcements, and updates from Makalanegama Vidyalaya. 
                             Get insights into school activities, achievements, and important information for our community.
                         </p>
                         
                         <div class="page-stats" data-aos="fade-up" data-aos-delay="500">
                             <div class="stat-item">
-                                <div class="stat-number">50+</div>
+                                <div class="stat-number" id="total-news">0</div>
                                 <div class="stat-label">News Articles</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number">Weekly</div>
-                                <div class="stat-label">Updates</div>
+                                <div class="stat-number" id="featured-news">0</div>
+                                <div class="stat-label">Featured</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number">Real-time</div>
-                                <div class="stat-label">Information</div>
+                                <div class="stat-number" id="news-categories">0</div>
+                                <div class="stat-label">Categories</div>
                             </div>
                         </div>
                     </div>
@@ -211,86 +441,6 @@
             
             <div class="row g-4" id="featured-news">
                 <!-- Featured news will be loaded dynamically -->
-                <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
-                    <article class="featured-news-card">
-                        <div class="news-image">
-                            <img src="assets/images/news/computer-lab-featured.jpg" alt="Computer Lab Opening">
-                            <div class="news-badge featured">Featured</div>
-                            <div class="news-category">Facilities</div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-meta">
-                                <span class="news-date">
-                                    <i class="fas fa-calendar"></i>
-                                    February 10, 2024
-                                </span>
-                                <span class="news-author">
-                                    <i class="fas fa-user"></i>
-                                    Principal
-                                </span>
-                                <span class="news-read-time">
-                                    <i class="fas fa-clock"></i>
-                                    3 min read
-                                </span>
-                            </div>
-                            <h2>New Computer Lab Officially Opens with Modern Technology</h2>
-                            <p>We are proud to announce the official opening of our state-of-the-art computer laboratory, made possible through the generous support of Wire Academy & Technology for Village. The lab features 25 modern computers with high-speed internet connectivity, enabling our students to develop essential digital literacy skills for the 21st century.</p>
-                            <div class="news-tags">
-                                <span class="tag">Technology</span>
-                                <span class="tag">Education</span>
-                                <span class="tag">Digital Literacy</span>
-                            </div>
-                            <a href="#" class="btn btn-maroon" data-bs-toggle="modal" data-bs-target="#newsModal" data-news-id="1">
-                                Read Full Article <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-                </div>
-                
-                <div class="col-lg-4">
-                    <div class="sidebar-news">
-                        <h4 class="sidebar-title" data-aos="fade-up" data-aos-delay="200">Recent Updates</h4>
-                        
-                        <div class="sidebar-news-item" data-aos="fade-up" data-aos-delay="300">
-                            <div class="news-item-image">
-                                <img src="assets/images/news/admissions-2024.jpg" alt="Admissions 2024">
-                            </div>
-                            <div class="news-item-content">
-                                <div class="news-category">Admissions</div>
-                                <h6>2024 Grade 1 Admissions Now Open</h6>
-                                <div class="news-date">February 5, 2024</div>
-                                <p>Applications for Grade 1 admissions for the 2024 academic year are now being accepted...</p>
-                                <a href="#" class="read-more-link" data-bs-toggle="modal" data-bs-target="#newsModal" data-news-id="2">Read More</a>
-                            </div>
-                        </div>
-                        
-                        <div class="sidebar-news-item" data-aos="fade-up" data-aos-delay="400">
-                            <div class="news-item-image">
-                                <img src="assets/images/news/teacher-training.jpg" alt="Teacher Training">
-                            </div>
-                            <div class="news-item-content">
-                                <div class="news-category">Academic</div>
-                                <h6>Professional Development Workshop for Teachers</h6>
-                                <div class="news-date">January 28, 2024</div>
-                                <p>Our dedicated teaching staff participated in a comprehensive training program...</p>
-                                <a href="#" class="read-more-link" data-bs-toggle="modal" data-bs-target="#newsModal" data-news-id="3">Read More</a>
-                            </div>
-                        </div>
-                        
-                        <div class="sidebar-news-item" data-aos="fade-up" data-aos-delay="500">
-                            <div class="news-item-image">
-                                <img src="assets/images/news/environmental-program.jpg" alt="Environmental Program">
-                            </div>
-                            <div class="news-item-content">
-                                <div class="news-category">Environment</div>
-                                <h6>Environmental Conservation Initiative Launched</h6>
-                                <div class="news-date">January 20, 2024</div>
-                                <p>Comprehensive environmental conservation program including tree planting and waste management...</p>
-                                <a href="#" class="read-more-link" data-bs-toggle="modal" data-bs-target="#newsModal" data-news-id="4">Read More</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -309,85 +459,6 @@
             
             <div class="row g-4" id="news-grid">
                 <!-- News articles will be loaded dynamically -->
-                <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <article class="news-card">
-                        <div class="news-image">
-                            <img src="assets/images/news/sports-achievement.jpg" alt="Sports Achievement">
-                            <div class="news-category sports">Sports</div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-meta">
-                                <span class="news-date">January 15, 2024</span>
-                                <span class="news-author">Sports Coordinator</span>
-                            </div>
-                            <h4>Cricket Team Wins Zonal Championship</h4>
-                            <p>Our school cricket team secured first place in the zonal inter-school tournament after a thrilling final match against St. Joseph's College.</p>
-                            <a href="#" class="news-link" data-bs-toggle="modal" data-bs-target="#newsModal" data-news-id="5">
-                                Read More <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-                </div>
-                
-                <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <article class="news-card">
-                        <div class="news-image">
-                            <img src="assets/images/news/cultural-festival.jpg" alt="Cultural Festival">
-                            <div class="news-category cultural">Cultural</div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-meta">
-                                <span class="news-date">January 10, 2024</span>
-                                <span class="news-author">Arts Department</span>
-                            </div>
-                            <h4>Annual Cultural Festival Celebrates Heritage</h4>
-                            <p>Students showcased their talents in traditional music, dance, and drama performances, celebrating Sri Lankan cultural heritage.</p>
-                            <a href="#" class="news-link" data-bs-toggle="modal" data-bs-target="#newsModal" data-news-id="6">
-                                Read More <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-                </div>
-                
-                <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <article class="news-card">
-                        <div class="news-image">
-                            <img src="assets/images/news/science-fair.jpg" alt="Science Fair">
-                            <div class="news-category academic">Academic</div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-meta">
-                                <span class="news-date">December 20, 2023</span>
-                                <span class="news-author">Science Department</span>
-                            </div>
-                            <h4>Science Fair Showcases Student Innovation</h4>
-                            <p>Students demonstrated innovative science projects focusing on renewable energy and environmental sustainability at our annual science fair.</p>
-                            <a href="#" class="news-link" data-bs-toggle="modal" data-bs-target="#newsModal" data-news-id="7">
-                                Read More <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-                </div>
-                
-                <div class="col-lg-6 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                    <article class="news-card">
-                        <div class="news-image">
-                            <img src="assets/images/news/parent-meeting.jpg" alt="Parent Meeting">
-                            <div class="news-category general">General</div>
-                        </div>
-                        <div class="news-content">
-                            <div class="news-meta">
-                                <span class="news-date">December 15, 2023</span>
-                                <span class="news-author">Administration</span>
-                            </div>
-                            <h4>Successful Parent-Teacher Meeting Held</h4>
-                            <p>The quarterly parent-teacher meeting was successfully conducted with high attendance and positive feedback from parents.</p>
-                            <a href="#" class="news-link" data-bs-toggle="modal" data-bs-target="#newsModal" data-news-id="8">
-                                Read More <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-                </div>
             </div>
             
             <!-- Load More Button -->
@@ -552,7 +623,7 @@
                                 <i class="fas fa-phone"></i>
                                 <div>
                                     <strong>Phone:</strong><br>
-                                    <a href="tel:+94372050000">+94 37 205 0000</a>
+                                    <a href="tel:+94372053619">+94 37 205 3619</a>
                                 </div>
                             </div>
                             

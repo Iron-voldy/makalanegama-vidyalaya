@@ -434,7 +434,7 @@ class TeachersManager {
      */
     createTeacherCard(teacher, index) {
         const card = document.createElement('div');
-        card.className = 'col-lg-4 col-md-6';
+        card.className = 'teacher-card-wrapper';
         card.setAttribute('data-aos', 'fade-up');
         card.setAttribute('data-aos-delay', (index * 100).toString());
 

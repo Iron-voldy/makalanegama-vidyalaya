@@ -33,6 +33,536 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        /* Admissions Page Specific Styles */
+        :root {
+            --maroon-primary: #800020;
+            --maroon-dark: #5d0017;
+            --maroon-light: #a6334f;
+            --gold-accent: #ffd700;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --medium-gray: #64748b;
+            --dark-gray: #334155;
+            --black: #1a1a1a;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --danger: #ef4444;
+            --cream-background: #faf7f0;
+            
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            --radius-small: 8px;
+            --radius-medium: 12px;
+            --radius-large: 20px;
+            
+            --transition-fast: 0.2s ease-out;
+            --transition-medium: 0.3s ease-out;
+            --transition-slow: 0.5s ease-out;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-dark) 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            padding: 8rem 0 4rem;
+            margin-top: 76px;
+        }
+
+        .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+
+        /* Header Content Styling */
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .page-subtitle-sinhala {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--gold-accent);
+            margin-bottom: 1.5rem;
+            font-family: 'Noto Sans Sinhala', sans-serif;
+        }
+
+        .page-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .page-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-maroon {
+            background: var(--maroon-primary);
+            border-color: var(--maroon-primary);
+            color: var(--white);
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: var(--radius-medium);
+            transition: all var(--transition-medium);
+            text-decoration: none;
+        }
+
+        .btn-maroon:hover {
+            background: var(--maroon-dark);
+            border-color: var(--maroon-dark);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-outline-light {
+            background: transparent;
+            border: 2px solid var(--white);
+            color: var(--white);
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: var(--radius-medium);
+            transition: all var(--transition-medium);
+            text-decoration: none;
+        }
+
+        .btn-outline-light:hover {
+            background: var(--white);
+            color: var(--maroon-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Header Visual */
+        .header-visual {
+            position: relative;
+            border-radius: var(--radius-large);
+            overflow: hidden;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .visual-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(128, 0, 32, 0.2), transparent);
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+        }
+
+        .overlay-badge {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--maroon-primary);
+            padding: 12px 20px;
+            border-radius: var(--radius-medium);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Breadcrumb Styling */
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--gold-accent);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--white);
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            content: "›";
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Notice Section */
+        .notice-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-top: 3px solid var(--gold-accent);
+        }
+
+        .notice-card {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            padding: 2rem;
+            box-shadow: var(--shadow-medium);
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            border-left: 5px solid var(--maroon-primary);
+        }
+
+        .notice-icon {
+            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
+            color: var(--white);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .notice-content h4 {
+            color: var(--maroon-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .notice-content p {
+            color: var(--dark-gray);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Styling */
+        .section-header {
+            margin-bottom: 4rem !important;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 1rem;
+        }
+
+        .text-maroon {
+            color: var(--maroon-primary) !important;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--medium-gray);
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Timeline Styling */
+        .process-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 80px;
+            transform: translateX(-50%);
+            width: 2px;
+            height: calc(100% + 1rem);
+            background: linear-gradient(180deg, var(--maroon-primary), var(--maroon-light));
+        }
+
+        .timeline-number {
+            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
+            color: var(--white);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-medium);
+            z-index: 2;
+            position: relative;
+        }
+
+        .timeline-content {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            padding: 2rem;
+            box-shadow: var(--shadow-medium);
+            flex: 1;
+            border: 1px solid var(--light-gray);
+            transition: all var(--transition-medium);
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .timeline-content h4 {
+            color: var(--maroon-primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .timeline-content p {
+            color: var(--medium-gray);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-features {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .feature-tag {
+            background: var(--cream-background);
+            color: var(--maroon-primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Office Section */
+        .visit-office-section {
+            background: linear-gradient(135deg, var(--light-gray) 0%, var(--cream-background) 100%);
+        }
+
+        .office-content {
+            padding-right: 2rem;
+        }
+
+        /* Contact Cards */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .contact-card {
+            background: var(--white);
+            border-radius: var(--radius-medium);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            transition: all var(--transition-medium);
+            border-top: 3px solid var(--maroon-primary);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .contact-card i {
+            background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-dark));
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.25rem;
+        }
+
+        .contact-card h5 {
+            color: var(--maroon-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-card p {
+            color: var(--medium-gray);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.5rem;
+            }
+            
+            .page-subtitle-sinhala {
+                font-size: 1.2rem;
+            }
+            
+            .page-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .stat-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: var(--radius-medium);
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-maroon,
+            .btn-outline-light {
+                text-align: center;
+                justify-content: center;
+            }
+
+            .notice-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: center;
+                text-align: center;
+            }
+
+            .timeline-item::after {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .office-content {
+                padding-right: 0;
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-header {
+                padding: 6rem 0 3rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .timeline-content {
+                padding: 1.5rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -97,7 +627,7 @@
         </div>
         
         <div class="container">
-            <div class="row align-items-center min-vh-50">
+            <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="header-content">
                         <nav aria-label="breadcrumb" data-aos="fade-up">
@@ -108,15 +638,15 @@
                         </nav>
                         
                         <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">
-                            Join Our <span class="text-maroon">School</span>
+                            Join Our <span style="color: var(--gold-accent);">School</span>
                         </h1>
                         
                         <h2 class="page-subtitle-sinhala" data-aos="fade-up" data-aos-delay="300">
-                            අපේ පාසලට එකතු වන්න
+                            මාකලනේගම විද්‍යාලයට එකතු වන්න
                         </h2>
                         
                         <p class="page-description" data-aos="fade-up" data-aos-delay="400">
-                            Begin your child's educational journey with us. Admissions are processed through our 
+                            Begin your child's educational journey with Makalanegama Vidyalaya. Admissions are processed through our 
                             school administration office with personal guidance and support for every family.
                         </p>
                         
@@ -126,8 +656,8 @@
                                 <div class="stat-label">Grades Available</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number">4.0</div>
-                                <div class="stat-label">School Rating</div>
+                                <div class="stat-number">1950+</div>
+                                <div class="stat-label">Established Since</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-number">25+</div>
@@ -203,7 +733,7 @@
                     <div class="timeline-number">1</div>
                     <div class="timeline-content">
                         <h4>Visit Administration Office</h4>
-                        <p>Come to our school administration office during working hours (8:00 AM - 2:00 PM, Monday to Friday). Our friendly staff will welcome you and provide initial guidance about the admission process.</p>
+                        <p>Come to our school administration office during working hours (7:30 AM - 1:30 PM, Monday to Friday). Our friendly staff will welcome you and provide initial guidance about the admission process.</p>
                         <div class="timeline-features">
                             <span class="feature-tag">Personal Consultation</span>
                             <span class="feature-tag">Immediate Assistance</span>
@@ -286,7 +816,7 @@
                                 </div>
                                 <div class="info-content">
                                     <h5>Office Hours</h5>
-                                    <p><strong>Monday - Friday:</strong> 8:00 AM - 2:00 PM<br>
+                                    <p><strong>Monday - Friday:</strong> 7:30 AM - 1:30 PM<br>
                                     <strong>Saturday:</strong> 8:00 AM - 12:00 PM<br>
                                     <strong>Sunday:</strong> Closed</p>
                                 </div>
@@ -310,7 +840,7 @@
                                 </div>
                                 <div class="info-content">
                                     <h5>Contact</h5>
-                                    <p><strong>Phone:</strong> <a href="tel:+94372050000">+94 37 205 0000</a><br>
+                                    <p><strong>Phone:</strong> <a href="tel:+94372053619">+94 37 205 3619</a><br>
                                     <strong>Email:</strong> <a href="mailto:admissions@makalanegamaschool.lk">admissions@makalanegamaschool.lk</a></p>
                                 </div>
                             </div>
@@ -713,11 +1243,11 @@
                         <div class="quick-contact-info">
                             <div class="contact-item">
                                 <i class="fas fa-clock"></i>
-                                <span><strong>Office Hours:</strong> Monday - Friday, 8:00 AM - 2:00 PM</span>
+                                <span><strong>Office Hours:</strong> Monday - Friday, 7:30 AM - 1:30 PM</span>
                             </div>
                             <div class="contact-item">
                                 <i class="fas fa-phone"></i>
-                                <span><strong>Phone:</strong> <a href="tel:+94372050000">+94 37 205 0000</a></span>
+                                <span><strong>Phone:</strong> <a href="tel:+94372053619">+94 37 205 3619</a></span>
                             </div>
                             <div class="contact-item">
                                 <i class="fas fa-envelope"></i>
@@ -732,7 +1262,7 @@
                             <i class="fas fa-map-marker-alt"></i>
                             Visit Our Office
                         </a>
-                        <a href="tel:+94372050000" class="btn btn-outline-maroon btn-lg">
+                        <a href="tel:+94372053619" class="btn btn-outline-maroon btn-lg">
                             <i class="fas fa-phone"></i>
                             Call Now
                         </a>
@@ -814,7 +1344,7 @@
                                 <i class="fas fa-phone"></i>
                                 <div>
                                     <strong>Phone:</strong><br>
-                                    <a href="tel:+94372050000">+94 37 205 0000</a>
+                                    <a href="tel:+94372053619">+94 37 205 3619</a>
                                 </div>
                             </div>
                             
@@ -831,7 +1361,7 @@
                                 <i class="fas fa-clock"></i>
                                 <div>
                                     <strong>Office Hours:</strong><br>
-                                    Monday - Friday: 8:00 AM - 2:00 PM<br>
+                                    Monday - Friday: 7:30 AM - 1:30 PM<br>
                                     Saturday: 8:00 AM - 12:00 PM
                                 </div>
                             </div>

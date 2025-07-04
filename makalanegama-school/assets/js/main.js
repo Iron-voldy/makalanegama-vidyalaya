@@ -109,13 +109,16 @@ function initializeNavigation() {
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+            const href = this.getAttribute('href');
+            if (href && href !== '#' && href.length > 1) {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             }
         });
     });
@@ -492,7 +495,7 @@ function loadDynamicContent() {
  */
 async function loadLatestAchievements() {
     try {
-        const response = await fetch('/api/achievements.php?limit=3&featured=1');
+        const response = await fetch('/makalanegama-school/makalanegama-school/api/achievements.php?limit=3&featured=1');
         if (!response.ok) throw new Error('Failed to fetch achievements');
         
         const achievements = await response.json();
@@ -508,7 +511,7 @@ async function loadLatestAchievements() {
  */
 async function loadUpcomingEvents() {
     try {
-        const response = await fetch('/api/events.php?limit=3&upcoming=1');
+        const response = await fetch('/makalanegama-school/makalanegama-school/api/events.php?limit=3&upcoming=1');
         if (!response.ok) throw new Error('Failed to fetch events');
         
         const events = await response.json();
@@ -524,7 +527,7 @@ async function loadUpcomingEvents() {
  */
 async function loadLatestNews() {
     try {
-        const response = await fetch('/api/news.php?limit=4&featured=1');
+        const response = await fetch('/makalanegama-school/makalanegama-school/api/news.php?limit=4&featured=1');
         if (!response.ok) throw new Error('Failed to fetch news');
         
         const news = await response.json();
