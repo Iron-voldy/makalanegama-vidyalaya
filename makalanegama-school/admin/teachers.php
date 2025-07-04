@@ -21,11 +21,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'subject' => sanitizeInput($_POST['subject']),
             'department' => sanitizeInput($_POST['department']),
             'bio' => sanitizeInput($_POST['bio']),
-            'experience_years' => (int)($_POST['experience_years'] ?? 0),
+            'experience_years' => !empty($_POST['experience_years']) ? (int)$_POST['experience_years'] : null,
             'email' => sanitizeInput($_POST['email']),
             'phone' => sanitizeInput($_POST['phone']),
-            'is_active' => isset($_POST['is_active'])
+            'is_active' => isset($_POST['is_active']) ? 1 : 0
         ];
+        
+        // Handle specializations
+        $specializations = [];
+        if (!empty($_POST['specializations'])) {
+            $specializations = array_map('trim', explode(',', $_POST['specializations']));
+            $specializations = array_filter($specializations); // Remove empty values
+            $data['specializations'] = json_encode($specializations);
+        } else {
+            $data['specializations'] = null;
+        }
         
         // Handle photo upload
         if (isset($_FILES['photo']) && $_FILES['photo']['size'] > 0) {
@@ -35,13 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $error = 'Failed to upload photo. Please check file size and format.';
             }
-        }
-        
-        // Handle specializations
-        $specializations = [];
-        if (!empty($_POST['specializations'])) {
-            $specializations = array_map('trim', explode(',', $_POST['specializations']));
-            $data['specializations'] = json_encode($specializations);
         }
         
         if (empty($error)) {
@@ -63,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } catch (Exception $e) {
                 $error = 'Database error: ' . $e->getMessage();
+                error_log("Teacher operation error: " . $e->getMessage());
             }
         }
     }
@@ -307,7 +311,7 @@ $stats = $db->getDashboardStats();
                                         <div class="mb-3">
                                             <label for="specializations" class="form-label">Specializations</label>
                                             <input type="text" class="form-control" id="specializations" name="specializations" 
-                                                   value="<?= htmlspecialchars(isset($teacher['specializations']) ? implode(', ', json_decode($teacher['specializations'], true) ?? []) : '') ?>">
+                                                   value="<?= htmlspecialchars(isset($teacher['specializations']) && $teacher['specializations'] ? implode(', ', json_decode($teacher['specializations'], true) ?? []) : '') ?>">
                                             <small class="form-text text-muted">Comma-separated list (e.g., Advanced Mathematics, Statistics, Problem Solving)</small>
                                         </div>
                                         

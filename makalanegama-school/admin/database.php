@@ -1,6 +1,6 @@
 <?php
 /**
- * Database class for Makalanegama School Admin
+ * Database class for Makalanegama School Admin - FIXED VERSION
  */
 
 require_once 'config.php';
@@ -111,7 +111,169 @@ class Database {
         }
     }
     
-    // Achievements CRUD
+    // ==================== TEACHERS CRUD - FIXED VERSION ====================
+    
+    /**
+     * Get all teachers
+     */
+    public function getTeachers($limit = null, $offset = 0) {
+        try {
+            $sql = "SELECT * FROM teachers ORDER BY name ASC";
+            if ($limit) {
+                $sql .= " LIMIT $limit OFFSET $offset";
+            }
+            
+            $stmt = $this->pdo->query($sql);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            error_log("Error fetching teachers: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Get teacher by ID
+     */
+    public function getTeacherById($id) {
+        try {
+            $sql = "SELECT * FROM teachers WHERE id = ?";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id]);
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            error_log("Error fetching teacher: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Create new teacher - FIXED
+     */
+    public function createTeacher($data) {
+        try {
+            $sql = "INSERT INTO teachers (name, qualification, subject, department, bio, experience_years, email, phone, photo_url, specializations, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->pdo->prepare($sql);
+            
+            $result = $stmt->execute([
+                $data['name'],
+                $data['qualification'],
+                $data['subject'],
+                $data['department'],
+                $data['bio'] ?? null,
+                $data['experience_years'] ?? null,
+                $data['email'] ?? null,
+                $data['phone'] ?? null,
+                $data['photo_url'] ?? null,
+                $data['specializations'] ?? null,
+                $data['is_active'] ?? 1
+            ]);
+            
+            if (ENVIRONMENT === 'development') {
+                error_log("Teacher creation result: " . ($result ? 'success' : 'failed'));
+                if (!$result) {
+                    error_log("SQL Error Info: " . print_r($stmt->errorInfo(), true));
+                }
+            }
+            
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Error creating teacher: " . $e->getMessage());
+            error_log("SQL: " . $sql);
+            error_log("Data: " . print_r($data, true));
+            return false;
+        }
+    }
+    
+    /**
+     * Update teacher - FIXED
+     */
+    public function updateTeacher($id, $data) {
+        try {
+            $sql = "UPDATE teachers SET name = ?, qualification = ?, subject = ?, department = ?, bio = ?, experience_years = ?, email = ?, phone = ?, specializations = ?, is_active = ?";
+            $params = [
+                $data['name'],
+                $data['qualification'],
+                $data['subject'],
+                $data['department'],
+                $data['bio'] ?? null,
+                $data['experience_years'] ?? null,
+                $data['email'] ?? null,
+                $data['phone'] ?? null,
+                $data['specializations'] ?? null,
+                $data['is_active'] ?? 1
+            ];
+            
+            if (!empty($data['photo_url'])) {
+                $sql .= ", photo_url = ?";
+                $params[] = $data['photo_url'];
+            }
+            
+            $sql .= " WHERE id = ?";
+            $params[] = $id;
+            
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            
+            if (ENVIRONMENT === 'development') {
+                error_log("Teacher update result: " . ($result ? 'success' : 'failed'));
+            }
+            
+            return $result;
+        } catch (PDOException $e) {
+            error_log("Error updating teacher: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Delete teacher
+     */
+    public function deleteTeacher($id) {
+        try {
+            $sql = "DELETE FROM teachers WHERE id = ?";
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([$id]);
+        } catch (PDOException $e) {
+            error_log("Error deleting teacher: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Get teachers by department
+     */
+    public function getTeachersByDepartment($department) {
+        try {
+            $sql = "SELECT * FROM teachers WHERE department = ? AND is_active = 1 ORDER BY name ASC";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$department]);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            error_log("Error fetching teachers by department: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Get active teachers only
+     */
+    public function getActiveTeachers($limit = null, $offset = 0) {
+        try {
+            $sql = "SELECT * FROM teachers WHERE is_active = 1 ORDER BY name ASC";
+            if ($limit) {
+                $sql .= " LIMIT $limit OFFSET $offset";
+            }
+            
+            $stmt = $this->pdo->query($sql);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            error_log("Error fetching active teachers: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    // ==================== ACHIEVEMENTS CRUD ====================
+    
     public function getAchievements($limit = null, $offset = 0) {
         try {
             $sql = "SELECT * FROM achievements ORDER BY created_at DESC";
@@ -188,7 +350,8 @@ class Database {
         }
     }
     
-    // Events CRUD
+    // ==================== EVENTS CRUD ====================
+    
     public function getEvents($limit = null, $offset = 0) {
         try {
             $sql = "SELECT * FROM events ORDER BY event_date DESC";
@@ -276,7 +439,8 @@ class Database {
         }
     }
     
-    // News CRUD
+    // ==================== NEWS CRUD ====================
+    
     public function getNews($limit = null, $offset = 0) {
         try {
             $sql = "SELECT * FROM news ORDER BY created_at DESC";
@@ -366,99 +530,8 @@ class Database {
         }
     }
     
-    // Teachers CRUD
-    public function getTeachers($limit = null, $offset = 0) {
-        try {
-            $sql = "SELECT * FROM teachers ORDER BY name ASC";
-            if ($limit) {
-                $sql .= " LIMIT $limit OFFSET $offset";
-            }
-            
-            $stmt = $this->pdo->query($sql);
-            return $stmt->fetchAll();
-        } catch (PDOException $e) {
-            error_log("Error fetching teachers: " . $e->getMessage());
-            return [];
-        }
-    }
+    // ==================== CONTACT SUBMISSIONS ====================
     
-    public function getTeacherById($id) {
-        try {
-            $sql = "SELECT * FROM teachers WHERE id = ?";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([$id]);
-            return $stmt->fetch();
-        } catch (PDOException $e) {
-            error_log("Error fetching teacher: " . $e->getMessage());
-            return false;
-        }
-    }
-    
-    public function createTeacher($data) {
-        try {
-            $sql = "INSERT INTO teachers (name, qualification, subject, department, bio, experience_years, email, phone, photo_url, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute([
-                $data['name'],
-                $data['qualification'],
-                $data['subject'],
-                $data['department'],
-                $data['bio'] ?? null,
-                $data['experience_years'] ?? null,
-                $data['email'] ?? null,
-                $data['phone'] ?? null,
-                $data['photo_url'] ?? null,
-                isset($data['is_active']) ? 1 : 0
-            ]);
-        } catch (PDOException $e) {
-            error_log("Error creating teacher: " . $e->getMessage());
-            return false;
-        }
-    }
-    
-    public function updateTeacher($id, $data) {
-        try {
-            $sql = "UPDATE teachers SET name = ?, qualification = ?, subject = ?, department = ?, bio = ?, experience_years = ?, email = ?, phone = ?, is_active = ?";
-            $params = [
-                $data['name'],
-                $data['qualification'],
-                $data['subject'],
-                $data['department'],
-                $data['bio'] ?? null,
-                $data['experience_years'] ?? null,
-                $data['email'] ?? null,
-                $data['phone'] ?? null,
-                isset($data['is_active']) ? 1 : 0
-            ];
-            
-            if (!empty($data['photo_url'])) {
-                $sql .= ", photo_url = ?";
-                $params[] = $data['photo_url'];
-            }
-            
-            $sql .= " WHERE id = ?";
-            $params[] = $id;
-            
-            $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute($params);
-        } catch (PDOException $e) {
-            error_log("Error updating teacher: " . $e->getMessage());
-            return false;
-        }
-    }
-    
-    public function deleteTeacher($id) {
-        try {
-            $sql = "DELETE FROM teachers WHERE id = ?";
-            $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute([$id]);
-        } catch (PDOException $e) {
-            error_log("Error deleting teacher: " . $e->getMessage());
-            return false;
-        }
-    }
-    
-    // Contact Submissions
     public function getContactSubmissions($limit = null, $offset = 0) {
         try {
             $sql = "SELECT * FROM contact_submissions ORDER BY created_at DESC";
@@ -508,7 +581,8 @@ class Database {
         }
     }
     
-    // Dashboard Statistics
+    // ==================== DASHBOARD STATISTICS ====================
+    
     public function getDashboardStats() {
         $stats = [];
         
@@ -525,7 +599,7 @@ class Database {
             $stmt = $this->pdo->query($sql);
             $stats['news'] = $stmt->fetch()['count'];
             
-            $sql = "SELECT COUNT(*) as count FROM teachers";
+            $sql = "SELECT COUNT(*) as count FROM teachers WHERE is_active = 1";
             $stmt = $this->pdo->query($sql);
             $stats['teachers'] = $stmt->fetch()['count'];
             
@@ -547,7 +621,8 @@ class Database {
         return $stats;
     }
     
-    // Count methods for pagination
+    // ==================== COUNT METHODS FOR PAGINATION ====================
+    
     public function countAchievements() {
         try {
             $sql = "SELECT COUNT(*) as count FROM achievements";
@@ -588,6 +663,17 @@ class Database {
             return $stmt->fetch()['count'];
         } catch (PDOException $e) {
             error_log("Error counting teachers: " . $e->getMessage());
+            return 0;
+        }
+    }
+    
+    public function countActiveTeachers() {
+        try {
+            $sql = "SELECT COUNT(*) as count FROM teachers WHERE is_active = 1";
+            $stmt = $this->pdo->query($sql);
+            return $stmt->fetch()['count'];
+        } catch (PDOException $e) {
+            error_log("Error counting active teachers: " . $e->getMessage());
             return 0;
         }
     }

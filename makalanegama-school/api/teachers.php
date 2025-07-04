@@ -42,8 +42,27 @@ try {
     $params = [];
     
     if ($department && $department !== 'all') {
-        $conditions[] = "department = ?";
-        $params[] = $department;
+        // Map filter departments to database departments
+        $departmentMap = [
+            'science' => 'Science & Mathematics',
+            'languages' => 'Languages',
+            'social' => 'Social Sciences',
+            'arts' => 'Arts',
+            'sports' => 'Physical Education',
+            'technology' => 'Technology',
+            'other' => ['Physical Education', 'Technology', 'Special Education', 'Arts']
+        ];
+        
+        if (isset($departmentMap[$department])) {
+            if (is_array($departmentMap[$department])) {
+                $placeholders = str_repeat('?,', count($departmentMap[$department]) - 1) . '?';
+                $conditions[] = "department IN ($placeholders)";
+                $params = array_merge($params, $departmentMap[$department]);
+            } else {
+                $conditions[] = "department = ?";
+                $params[] = $departmentMap[$department];
+            }
+        }
     }
     
     if ($active_only) {
@@ -84,7 +103,8 @@ try {
     foreach ($teachers as $teacher) {
         $specializations = null;
         if ($teacher['specializations']) {
-            $specializations = json_decode($teacher['specializations'], true);
+            $decoded = json_decode($teacher['specializations'], true);
+            $specializations = is_array($decoded) ? $decoded : [];
         }
         
         $response[] = [
@@ -94,7 +114,7 @@ try {
             'subject' => $teacher['subject'],
             'department' => $teacher['department'],
             'bio' => $teacher['bio'],
-            'experience_years' => (int)$teacher['experience_years'],
+            'experience_years' => (int)($teacher['experience_years'] ?? 0),
             'email' => $teacher['email'],
             'phone' => $teacher['phone'],
             'photo_url' => $teacher['photo_url'],

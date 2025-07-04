@@ -1,6 +1,6 @@
 /**
- * Teachers Page JavaScript
- * Handles teacher filtering, loading, and interactions
+ * Teachers Page JavaScript - COMPLETE FIXED VERSION
+ * Handles teacher loading, filtering, searching, and interactions
  */
 
 class TeachersManager {
@@ -8,74 +8,374 @@ class TeachersManager {
         this.teachers = [];
         this.filteredTeachers = [];
         this.currentFilter = 'all';
-        this.teachersPerPage = 6;
+        this.teachersPerPage = 9;
         this.currentPage = 1;
         this.isLoading = false;
+        this.searchTerm = '';
+        this.debugInfo = [];
         
-        this.initializeFilters();
-        this.initializeLoadMore();
+        this.initializeElements();
+        this.bindEvents();
+        console.log('TeachersManager initialized - COMPLETE FIXED VERSION');
+        this.init();
     }
 
     /**
-     * Initialize filter functionality
+     * Initialize DOM elements
      */
-    initializeFilters() {
-        const filterButtons = document.querySelectorAll('.filter-btn');
+    initializeElements() {
+        this.teachersGrid = document.getElementById('teachers-grid');
+        this.loadMoreBtn = document.getElementById('load-more-teachers');
+        this.loadingIndicator = document.getElementById('loading-indicator');
+        this.noTeachersDiv = document.getElementById('no-teachers');
+        this.apiErrorDiv = document.getElementById('api-error');
+        this.searchInput = document.getElementById('teacher-search');
+        this.filterButtons = document.querySelectorAll('.filter-btn');
         
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Remove active class from all buttons
-                filterButtons.forEach(button => button.classList.remove('active'));
-                
-                // Add active class to clicked button
-                btn.classList.add('active');
-                
-                // Get filter value
-                const filter = btn.getAttribute('data-filter');
-                this.filterTeachers(filter);
-                
-                // Animate filter change
-                this.animateFilterChange();
-            });
+        // Stats elements
+        this.totalTeachersEl = document.getElementById('total-teachers');
+        this.activeTeachersEl = document.getElementById('active-teachers');
+        this.departmentsCountEl = document.getElementById('departments-count');
+        
+        console.log('Elements initialized:', {
+            grid: !!this.teachersGrid,
+            buttons: this.filterButtons.length
         });
     }
 
     /**
-     * Initialize load more functionality
+     * Bind event listeners
      */
-    initializeLoadMore() {
-        const loadMoreBtn = document.getElementById('load-more-teachers');
-        
-        if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', () => {
+    bindEvents() {
+        // Filter buttons
+        this.filterButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.handleFilterChange(btn.getAttribute('data-filter'));
+            });
+        });
+
+        // Search functionality
+        if (this.searchInput) {
+            this.searchInput.addEventListener('input', this.debounce((e) => {
+                this.handleSearch(e.target.value);
+            }, 300));
+        }
+
+        // Load more button
+        if (this.loadMoreBtn) {
+            this.loadMoreBtn.addEventListener('click', () => {
                 this.loadMoreTeachers();
             });
         }
+
+        // Search button
+        const searchBtn = document.getElementById('search-btn');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', () => {
+                this.handleSearch(this.searchInput.value);
+            });
+        }
     }
 
     /**
-     * Filter teachers by department
+     * Initialize the teachers manager
      */
-    filterTeachers(filter) {
+    async init() {
+        console.log('Loading teachers from database...');
+        await this.loadTeachers();
+        this.updateStatistics();
+        this.displayTeachers();
+    }
+
+    /**
+     * Test multiple API paths to find the working one
+     */
+    async testApiPaths() {
+        const currentUrl = window.location.href;
+        const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/'));
+        
+        // Multiple possible API paths to test
+        const apiPaths = [
+            'api/teachers.php',
+            './api/teachers.php',
+            '/api/teachers.php',
+            '../api/teachers.php',
+            baseUrl + '/api/teachers.php'
+        ];
+
+        this.debugInfo.push('Testing API paths...');
+        this.debugInfo.push('Current URL: ' + currentUrl);
+        this.debugInfo.push('Base URL: ' + baseUrl);
+
+        for (const path of apiPaths) {
+            try {
+                this.debugInfo.push(`Testing: ${path}`);
+                console.log(`Testing API path: ${path}`);
+                
+                const response = await fetch(path + '?limit=100');
+                console.log(`Response status for ${path}:`, response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        this.debugInfo.push(`${path} - API Error: ${data.error}`);
+                        continue;
+                    }
+                    
+                    if (Array.isArray(data)) {
+                        this.debugInfo.push(`${path} - SUCCESS! Found ${data.length} teachers`);
+                        console.log(`SUCCESS: Working API path found: ${path}`);
+                        return { success: true, data: data, path: path };
+                    } else {
+                        this.debugInfo.push(`${path} - Invalid data format`);
+                    }
+                } else {
+                    this.debugInfo.push(`${path} - HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+            } catch (error) {
+                this.debugInfo.push(`${path} - Error: ${error.message}`);
+                console.log(`Error testing ${path}:`, error.message);
+            }
+        }
+        
+        return { success: false, data: [], path: null };
+    }
+
+    /**
+     * Load teachers from database API
+     */
+    async loadTeachers() {
+        try {
+            this.showLoading(true);
+            this.hideError();
+            this.debugInfo = [];
+            
+            console.log('Testing multiple API paths...');
+            
+            const result = await this.testApiPaths();
+            
+            if (result.success) {
+                this.teachers = result.data;
+                this.filteredTeachers = [...this.teachers];
+                console.log('Successfully loaded teachers from database:', this.teachers.length);
+                this.debugInfo.push(`Final result: ${this.teachers.length} teachers loaded successfully`);
+                
+                if (this.teachers.length === 0) {
+                    console.log('Database returned empty results - showing fallback data');
+                    this.teachers = this.getFallbackData();
+                    this.filteredTeachers = [...this.teachers];
+                }
+                
+                this.hideNoTeachers();
+            } else {
+                console.log('All API paths failed - using fallback data');
+                this.teachers = this.getFallbackData();
+                this.filteredTeachers = [...this.teachers];
+            }
+            
+        } catch (error) {
+            console.error('Error loading teachers:', error);
+            this.debugInfo.push(`Final error: ${error.message}`);
+            this.teachers = this.getFallbackData();
+            this.filteredTeachers = [...this.teachers];
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    /**
+     * Fallback data when API is not available
+     */
+    getFallbackData() {
+        return [
+            {
+                id: 1,
+                name: "Mr. Sunil Perera",
+                qualification: "B.Ed (Mathematics), Dip. in Education",
+                subject: "Mathematics",
+                department: "Science & Mathematics",
+                bio: "Experienced mathematics teacher specializing in advanced mathematics and statistics with over 15 years of teaching experience.",
+                experience_years: 15,
+                email: "sperera@makalanegamaschool.lk",
+                phone: "+94 71 234 5678",
+                photo_url: "assets/images/teachers/teacher-1.jpg",
+                specializations: ["Advanced Mathematics", "Statistics", "Problem Solving"],
+                is_active: true,
+                created_at: "2024-01-01"
+            },
+            {
+                id: 2,
+                name: "Mrs. Kamala Wijesinghe",
+                qualification: "B.A (Sinhala), PGDE",
+                subject: "Sinhala Language & Literature",
+                department: "Languages",
+                bio: "Passionate about promoting Sinhala literature and language skills among students with innovative teaching methods.",
+                experience_years: 12,
+                email: "kwijesinghe@makalanegamaschool.lk",
+                phone: "+94 71 345 6789",
+                photo_url: "assets/images/teachers/teacher-2.jpg",
+                specializations: ["Sinhala Literature", "Creative Writing", "Cultural Studies"],
+                is_active: true,
+                created_at: "2024-01-01"
+            },
+            {
+                id: 3,
+                name: "Mr. Rohan Fernando",
+                qualification: "B.Sc (Physics), Dip. in Education",
+                subject: "Science",
+                department: "Science & Mathematics",
+                bio: "Dedicated science teacher focusing on practical experiments and scientific inquiry to inspire young minds.",
+                experience_years: 10,
+                email: "rfernando@makalanegamaschool.lk",
+                phone: "+94 71 456 7890",
+                photo_url: "assets/images/teachers/teacher-3.jpg",
+                specializations: ["Physics", "Laboratory Work", "Scientific Method"],
+                is_active: true,
+                created_at: "2024-01-01"
+            },
+            {
+                id: 4,
+                name: "Mrs. Priyanka Silva",
+                qualification: "B.A (English), TESL Certificate",
+                subject: "English Language",
+                department: "Languages",
+                bio: "English language specialist with expertise in modern teaching methodologies and communication skills development.",
+                experience_years: 8,
+                email: "psilva@makalanegamaschool.lk",
+                phone: "+94 71 567 8901",
+                photo_url: "assets/images/teachers/teacher-4.jpg",
+                specializations: ["TESL", "Communication Skills", "Grammar"],
+                is_active: true,
+                created_at: "2024-01-01"
+            },
+            {
+                id: 5,
+                name: "Mr. Asanka Rathnayake",
+                qualification: "B.A (History), Dip. in Education",
+                subject: "History & Social Studies",
+                department: "Social Sciences",
+                bio: "History teacher with special interest in Sri Lankan heritage and culture, bringing the past to life for students.",
+                experience_years: 14,
+                email: "arathnayake@makalanegamaschool.lk",
+                phone: "+94 71 678 9012",
+                photo_url: "assets/images/teachers/teacher-5.jpg",
+                specializations: ["Sri Lankan History", "Cultural Heritage", "Social Studies"],
+                is_active: true,
+                created_at: "2024-01-01"
+            },
+            {
+                id: 6,
+                name: "Mrs. Sandya Mendis",
+                qualification: "B.Sc (Geography), PGDE",
+                subject: "Geography",
+                department: "Social Sciences",
+                bio: "Geography teacher promoting environmental awareness and sustainability through hands-on learning experiences.",
+                experience_years: 9,
+                email: "smendis@makalanegamaschool.lk",
+                phone: "+94 71 789 0123",
+                photo_url: "assets/images/teachers/teacher-6.jpg",
+                specializations: ["Environmental Geography", "Field Studies", "Sustainability"],
+                is_active: true,
+                created_at: "2024-01-01"
+            },
+            {
+                id: 7,
+                name: "Mr. Chathura Bandara",
+                qualification: "B.A (Art), Dip. in Education",
+                subject: "Art & Crafts",
+                department: "Arts",
+                bio: "Creative arts teacher inspiring students through various art forms and traditional crafts of Sri Lanka.",
+                experience_years: 7,
+                email: "cbandara@makalanegamaschool.lk",
+                phone: "+94 71 890 1234",
+                photo_url: "assets/images/teachers/teacher-7.jpg",
+                specializations: ["Traditional Art", "Crafts", "Creative Expression"],
+                is_active: true,
+                created_at: "2024-01-01"
+            },
+            {
+                id: 8,
+                name: "Mrs. Niluka Jayawardena",
+                qualification: "B.Sc (Physical Education), Dip. in Sports Science",
+                subject: "Physical Education",
+                department: "Physical Education",
+                bio: "Physical education teacher promoting health, fitness, and sportsmanship among students through active learning.",
+                experience_years: 6,
+                email: "njayawardena@makalanegamaschool.lk",
+                phone: "+94 71 901 2345",
+                photo_url: "assets/images/teachers/teacher-8.jpg",
+                specializations: ["Athletics", "Team Sports", "Health Education"],
+                is_active: true,
+                created_at: "2024-01-01"
+            },
+            {
+                id: 9,
+                name: "Mr. Dinesh Kulasekara",
+                qualification: "B.Sc (Computer Science), PGDE",
+                subject: "Information Technology",
+                department: "Technology",
+                bio: "IT teacher helping students develop digital literacy and computer programming skills for the modern world.",
+                experience_years: 5,
+                email: "dkulasekara@makalanegamaschool.lk",
+                phone: "+94 71 012 3456",
+                photo_url: "assets/images/teachers/teacher-9.jpg",
+                specializations: ["Programming", "Digital Literacy", "Web Development"],
+                is_active: true,
+                created_at: "2024-01-01"
+            }
+        ];
+    }
+
+    /**
+     * Handle filter changes
+     */
+    handleFilterChange(filter) {
         this.currentFilter = filter;
         this.currentPage = 1;
         
-        if (filter === 'all') {
-            this.filteredTeachers = [...this.teachers];
-        } else {
-            this.filteredTeachers = this.teachers.filter(teacher => {
-                return this.getDepartmentFilter(teacher.department) === filter;
-            });
+        // Update active filter button
+        this.filterButtons.forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.querySelector(`[data-filter="${filter}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
         }
         
+        this.applyFilters();
         this.displayTeachers();
-        this.updateLoadMoreButton();
+        this.animateFilterChange();
     }
 
     /**
-     * Get department filter key
+     * Handle search functionality
+     */
+    handleSearch(searchTerm) {
+        this.searchTerm = searchTerm.toLowerCase().trim();
+        this.currentPage = 1;
+        this.applyFilters();
+        this.displayTeachers();
+    }
+
+    /**
+     * Apply current filters and search
+     */
+    applyFilters() {
+        this.filteredTeachers = this.teachers.filter(teacher => {
+            const matchesFilter = this.currentFilter === 'all' || this.getDepartmentFilter(teacher.department) === this.currentFilter;
+            const matchesSearch = !this.searchTerm || 
+                teacher.name.toLowerCase().includes(this.searchTerm) ||
+                teacher.subject.toLowerCase().includes(this.searchTerm) ||
+                teacher.department.toLowerCase().includes(this.searchTerm) ||
+                teacher.qualification.toLowerCase().includes(this.searchTerm);
+            
+            return matchesFilter && matchesSearch;
+        });
+    }
+
+    /**
+     * Get department filter key from department name
      */
     getDepartmentFilter(department) {
         const departmentMap = {
@@ -84,92 +384,221 @@ class TeachersManager {
             'Social Sciences': 'social',
             'Physical Education': 'other',
             'Arts': 'other',
-            'Technology': 'other'
+            'Technology': 'other',
+            'Special Education': 'other'
         };
         
         return departmentMap[department] || 'other';
     }
 
     /**
-     * Display teachers with animation
+     * Display teachers in grid
      */
     displayTeachers() {
-        const grid = document.getElementById('teachers-grid');
-        if (!grid) return;
-        
-        // Clear existing teachers (except sample ones for now)
-        const teachersToShow = this.filteredTeachers.slice(0, this.currentPage * this.teachersPerPage);
-        
-        // Animate out existing cards
-        gsap.to('.teacher-card', {
-            opacity: 0,
-            y: 20,
-            duration: 0.3,
-            stagger: 0.05,
-            onComplete: () => {
-                this.renderTeachers(teachersToShow);
+        if (!this.teachersGrid) {
+            console.error('Teachers grid not found');
+            return;
+        }
+
+        const startIndex = 0;
+        const endIndex = this.currentPage * this.teachersPerPage;
+        const teachersToShow = this.filteredTeachers.slice(startIndex, endIndex);
+
+        console.log('Displaying teachers:', teachersToShow.length, 'of', this.filteredTeachers.length);
+
+        if (teachersToShow.length === 0) {
+            if (this.teachers.length === 0) {
+                this.showNoTeachers('No teachers found in the database. Please check back later.');
+            } else {
+                this.showNoTeachers('No teachers match your search criteria. Try adjusting your filters.');
             }
+            this.teachersGrid.innerHTML = '';
+            this.updateLoadMoreButton();
+            return;
+        }
+
+        this.hideNoTeachers();
+        this.teachersGrid.innerHTML = '';
+
+        teachersToShow.forEach((teacher, index) => {
+            const teacherCard = this.createTeacherCard(teacher, index);
+            this.teachersGrid.appendChild(teacherCard);
         });
+
+        this.updateLoadMoreButton();
+        this.animateCards();
     }
 
     /**
-     * Render teachers in the grid
+     * Create teacher card element
      */
-    renderTeachers(teachers) {
-        const grid = document.getElementById('teachers-grid');
-        if (!grid) return;
+    createTeacherCard(teacher, index) {
+        const card = document.createElement('div');
+        card.className = 'col-lg-4 col-md-6';
+        card.setAttribute('data-aos', 'fade-up');
+        card.setAttribute('data-aos-delay', (index * 100).toString());
+
+        const imageHtml = teacher.photo_url ? 
+            `<img src="${teacher.photo_url}" alt="${teacher.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+             <div class="no-photo" style="display: none;"><i class="fas fa-user"></i></div>` :
+            `<div class="no-photo"><i class="fas fa-user"></i></div>`;
+
+        const specializationsHtml = teacher.specializations && Array.isArray(teacher.specializations) ? 
+            teacher.specializations.map(spec => `<span class="specialization-tag">${spec}</span>`).join('') : '';
+
+        card.innerHTML = `
+            <div class="teacher-card" data-teacher-id="${teacher.id}">
+                <div class="teacher-image">
+                    ${imageHtml}
+                    <div class="teacher-overlay">
+                        <div class="teacher-social">
+                            <a href="mailto:${teacher.email || 'info@makalanegamaschool.lk'}" class="social-link">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                            <button class="social-link" onclick="teachersManager.showTeacherModal(${teacher.id})">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="teacher-content">
+                    <div class="teacher-department">${teacher.department}</div>
+                    <h4 class="teacher-name">${teacher.name}</h4>
+                    <p class="teacher-qualification">${teacher.qualification}</p>
+                    <div class="teacher-subject"><strong>Subject:</strong> ${teacher.subject}</div>
+                    <div class="teacher-experience">
+                        <i class="fas fa-clock"></i>
+                        <span>${teacher.experience_years || 0} years experience</span>
+                    </div>
+                    <p class="teacher-bio">${this.truncateText(teacher.bio || 'Dedicated educator committed to student success.', 100)}</p>
+                    <div class="teacher-specializations">
+                        ${specializationsHtml}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add click event to show modal
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.social-link')) {
+                this.showTeacherModal(teacher.id);
+            }
+        });
+
+        return card;
+    }
+
+    /**
+     * Show teacher modal with details
+     */
+    showTeacherModal(teacherId) {
+        const teacher = this.teachers.find(t => t.id == teacherId);
+        if (!teacher) {
+            console.error('Teacher not found:', teacherId);
+            return;
+        }
+
+        // Create modal
+        const modal = document.createElement('div');
+        modal.className = 'teacher-modal';
         
-        // For now, we'll work with the existing cards and update them
-        // In a real implementation, we would generate cards dynamically
-        
-        const existingCards = grid.querySelectorAll('.teacher-card');
-        
-        // Show/hide cards based on filter
-        existingCards.forEach((card, index) => {
-            const department = card.getAttribute('data-department');
-            const shouldShow = this.currentFilter === 'all' || 
-                              this.getDepartmentFilter(this.getDepartmentName(department)) === this.currentFilter;
+        const imageHtml = teacher.photo_url ? 
+            `<img src="${teacher.photo_url}" alt="${teacher.name}">` :
+            `<div class="no-photo-large"><i class="fas fa-user"></i></div>`;
+
+        const specializationsHtml = teacher.specializations && Array.isArray(teacher.specializations) ? 
+            `<div class="teacher-modal-specializations">
+                <h5>Specializations</h5>
+                <div class="specializations-list">
+                    ${teacher.specializations.map(spec => `<span class="spec-tag">${spec}</span>`).join('')}
+                </div>
+            </div>` : '';
+
+        modal.innerHTML = `
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <button class="modal-close">&times;</button>
+                <div class="modal-body">
+                    <div class="teacher-modal-image">
+                        ${imageHtml}
+                    </div>
+                    <div class="teacher-modal-info">
+                        <div class="teacher-modal-department">${teacher.department}</div>
+                        <h3 class="teacher-modal-name">${teacher.name}</h3>
+                        <p class="teacher-modal-qualification">${teacher.qualification}</p>
+                        <p><strong>Subject:</strong> ${teacher.subject}</p>
+                        <p><strong>Experience:</strong> ${teacher.experience_years || 0} years</p>
+                        
+                        <div class="teacher-modal-bio">
+                            <h5>About</h5>
+                            <p>${teacher.bio || 'Dedicated educator committed to student success and academic excellence.'}</p>
+                        </div>
+                        
+                        ${specializationsHtml}
+                        
+                        <div class="teacher-modal-contact">
+                            <h5>Contact</h5>
+                            <div class="contact-buttons">
+                                <a href="mailto:${teacher.email || 'info@makalanegamaschool.lk'}" class="btn btn-maroon">
+                                    <i class="fas fa-envelope"></i> Send Email
+                                </a>
+                                ${teacher.phone ? `<a href="tel:${teacher.phone}" class="btn btn-outline-maroon"><i class="fas fa-phone"></i> Call</a>` : ''}
+                                <button class="btn btn-outline-maroon" onclick="this.closest('.teacher-modal').remove(); document.body.style.overflow='';">
+                                    <i class="fas fa-times"></i> Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+
+        // Animate modal in
+        if (typeof gsap !== 'undefined') {
+            gsap.from(modal.querySelector('.modal-content'), {
+                scale: 0.8,
+                opacity: 0,
+                duration: 0.4,
+                ease: "back.out(1.7)"
+            });
             
-            if (shouldShow) {
-                card.style.display = 'block';
-                gsap.from(card, {
+            gsap.from(modal.querySelector('.modal-backdrop'), {
+                opacity: 0,
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        }
+
+        // Close modal functionality
+        const closeModal = () => {
+            if (typeof gsap !== 'undefined') {
+                gsap.to(modal, {
                     opacity: 0,
-                    y: 30,
-                    duration: 0.6,
-                    delay: index * 0.1,
-                    ease: "power2.out"
+                    duration: 0.3,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        document.body.removeChild(modal);
+                        document.body.style.overflow = '';
+                    }
                 });
             } else {
-                card.style.display = 'none';
+                document.body.removeChild(modal);
+                document.body.style.overflow = '';
             }
-        });
-    }
-
-    /**
-     * Get department name from filter key
-     */
-    getDepartmentName(filterKey) {
-        const filterMap = {
-            'science': 'Science & Mathematics',
-            'languages': 'Languages',
-            'social': 'Social Sciences',
-            'other': 'Other'
         };
-        
-        return filterMap[filterKey] || 'Other';
-    }
 
-    /**
-     * Animate filter change
-     */
-    animateFilterChange() {
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        
-        gsap.from(filterButtons, {
-            scale: 0.95,
-            duration: 0.2,
-            stagger: 0.05,
-            ease: "power2.out"
+        modal.querySelector('.modal-close').addEventListener('click', closeModal);
+        modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+
+        document.addEventListener('keydown', function escapeHandler(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escapeHandler);
+            }
         });
     }
 
@@ -178,22 +607,22 @@ class TeachersManager {
      */
     loadMoreTeachers() {
         if (this.isLoading) return;
-        
+
         this.isLoading = true;
         this.currentPage++;
-        
+
         const loadMoreBtn = document.getElementById('load-more-teachers');
         const originalText = loadMoreBtn.innerHTML;
-        
+
         // Show loading state
         loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
         loadMoreBtn.disabled = true;
-        
+
         // Simulate loading delay
         setTimeout(() => {
             this.displayTeachers();
             this.updateLoadMoreButton();
-            
+
             // Reset button
             loadMoreBtn.innerHTML = originalText;
             loadMoreBtn.disabled = false;
@@ -205,544 +634,189 @@ class TeachersManager {
      * Update load more button visibility
      */
     updateLoadMoreButton() {
-        const loadMoreBtn = document.getElementById('load-more-teachers');
-        if (!loadMoreBtn) return;
-        
+        if (!this.loadMoreBtn) return;
+
         const totalShown = this.currentPage * this.teachersPerPage;
         const hasMore = totalShown < this.filteredTeachers.length;
-        
-        if (hasMore) {
-            loadMoreBtn.style.display = 'inline-flex';
-        } else {
-            loadMoreBtn.style.display = 'none';
-        }
+
+        this.loadMoreBtn.style.display = hasMore ? 'inline-flex' : 'none';
     }
 
     /**
-     * Load teachers from API
+     * Update statistics
      */
-    async loadTeachers() {
-        try {
-            // In development, use fallback data
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                this.teachers = this.getFallbackTeachers();
+    updateStatistics() {
+        const total = this.teachers.length;
+        const active = this.teachers.filter(t => t.is_active).length;
+        const departments = [...new Set(this.teachers.map(t => t.department))].length;
+
+        // Update header stats
+        this.animateCounter(this.totalTeachersEl, total);
+        this.animateCounter(this.activeTeachersEl, active);
+        this.animateCounter(this.departmentsCountEl, departments);
+    }
+
+    /**
+     * Animate counter from 0 to target value
+     */
+    animateCounter(element, target) {
+        if (!element) return;
+
+        let current = 0;
+        const increment = target / 30;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                element.textContent = target;
+                clearInterval(timer);
             } else {
-                // Load from Telegram API
-                const response = await fetch('/api/teachers.php');
-                this.teachers = await response.json();
+                element.textContent = Math.floor(current);
             }
-            
-            this.filteredTeachers = [...this.teachers];
-            this.displayTeachers();
-            this.updateLoadMoreButton();
-            
-        } catch (error) {
-            console.error('Error loading teachers:', error);
-            this.teachers = this.getFallbackTeachers();
-            this.filteredTeachers = [...this.teachers];
-            this.displayTeachers();
+        }, 50);
+    }
+
+    /**
+     * Show/hide loading indicator
+     */
+    showLoading(show) {
+        if (this.loadingIndicator) {
+            this.loadingIndicator.style.display = show ? 'block' : 'none';
         }
     }
 
     /**
-     * Fallback teacher data
+     * Show error message
      */
-    getFallbackTeachers() {
-        return [
-            {
-                id: 1,
-                name: "Mr. Sunil Perera",
-                qualification: "B.Ed (Mathematics), Dip. in Education",
-                subject: "Mathematics",
-                department: "Science & Mathematics",
-                experience: "15 years",
-                bio: "Experienced mathematics teacher specializing in advanced mathematics and statistics.",
-                image: "assets/images/teachers/teacher-1.jpg",
-                email: "sperera@makalanegamaschool.lk",
-                specializations: ["Advanced Mathematics", "Statistics", "Problem Solving"]
-            },
-            {
-                id: 2,
-                name: "Mrs. Kamala Wijesinghe",
-                qualification: "B.A (Sinhala), PGDE",
-                subject: "Sinhala Language & Literature",
-                department: "Languages",
-                experience: "12 years",
-                bio: "Passionate about promoting Sinhala literature and language skills among students.",
-                image: "assets/images/teachers/teacher-2.jpg",
-                email: "kwijesinghe@makalanegamaschool.lk",
-                specializations: ["Sinhala Literature", "Creative Writing", "Cultural Studies"]
-            },
-            {
-                id: 3,
-                name: "Mr. Rohan Fernando",
-                qualification: "B.Sc (Physics), Dip. in Education",
-                subject: "Science",
-                department: "Science & Mathematics",
-                experience: "10 years",
-                bio: "Dedicated science teacher focusing on practical experiments and scientific inquiry.",
-                image: "assets/images/teachers/teacher-3.jpg",
-                email: "rfernando@makalanegamaschool.lk",
-                specializations: ["Physics", "Laboratory Work", "Scientific Method"]
-            },
-            {
-                id: 4,
-                name: "Mrs. Priyanka Silva",
-                qualification: "B.A (English), TESL Certificate",
-                subject: "English Language",
-                department: "Languages",
-                experience: "8 years",
-                bio: "English language specialist with expertise in modern teaching methodologies.",
-                image: "assets/images/teachers/teacher-4.jpg",
-                email: "psilva@makalanegamaschool.lk",
-                specializations: ["TESL", "Communication Skills", "Grammar"]
-            },
-            {
-                id: 5,
-                name: "Mr. Asanka Rathnayake",
-                qualification: "B.A (History), Dip. in Education",
-                subject: "History & Social Studies",
-                department: "Social Sciences",
-                experience: "14 years",
-                bio: "History teacher with special interest in Sri Lankan heritage and culture.",
-                image: "assets/images/teachers/teacher-5.jpg",
-                email: "arathnayake@makalanegamaschool.lk",
-                specializations: ["Sri Lankan History", "Cultural Heritage", "Social Studies"]
-            },
-            {
-                id: 6,
-                name: "Mrs. Sandya Mendis",
-                qualification: "B.Sc (Geography), PGDE",
-                subject: "Geography",
-                department: "Social Sciences",
-                experience: "9 years",
-                bio: "Geography teacher promoting environmental awareness and sustainability.",
-                image: "assets/images/teachers/teacher-6.jpg",
-                email: "smendis@makalanegamaschool.lk",
-                specializations: ["Environmental Geography", "Field Studies", "Sustainability"]
-            },
-            // Additional teachers for demonstration
-            {
-                id: 7,
-                name: "Mr. Chathura Bandara",
-                qualification: "B.A (Art), Dip. in Education",
-                subject: "Art & Crafts",
-                department: "Arts",
-                experience: "7 years",
-                bio: "Creative arts teacher inspiring students through various art forms and crafts.",
-                image: "assets/images/teachers/teacher-7.jpg",
-                email: "cbandara@makalanegamaschool.lk",
-                specializations: ["Traditional Art", "Crafts", "Creative Expression"]
-            },
-            {
-                id: 8,
-                name: "Mrs. Niluka Jayawardena",
-                qualification: "B.Sc (Physical Education), Dip. in Sports Science",
-                subject: "Physical Education",
-                department: "Physical Education",
-                experience: "6 years",
-                bio: "Physical education teacher promoting health, fitness, and sportsmanship among students.",
-                image: "assets/images/teachers/teacher-8.jpg",
-                email: "njayawardena@makalanegamaschool.lk",
-                specializations: ["Athletics", "Team Sports", "Health Education"]
-            },
-            {
-                id: 9,
-                name: "Mr. Dinesh Kulasekara",
-                qualification: "B.Sc (Computer Science), PGDE",
-                subject: "Information Technology",
-                department: "Technology",
-                experience: "5 years",
-                bio: "IT teacher helping students develop digital literacy and computer programming skills.",
-                image: "assets/images/teachers/teacher-9.jpg",
-                email: "dkulasekara@makalanegamaschool.lk",
-                specializations: ["Programming", "Digital Literacy", "Web Development"]
-            }
-        ];
-    }
-
-    /**
-     * Initialize teacher card interactions
-     */
-    initializeTeacherInteractions() {
-        const teacherCards = document.querySelectorAll('.teacher-card');
-        
-        teacherCards.forEach(card => {
-            // Hover animations
-            card.addEventListener('mouseenter', () => {
-                gsap.to(card, {
-                    y: -10,
-                    boxShadow: "0 20px 60px rgba(0, 0, 0, 0.15)",
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
-                
-                gsap.to(card.querySelector('.teacher-image img'), {
-                    scale: 1.1,
-                    duration: 0.4,
-                    ease: "power2.out"
-                });
-                
-                gsap.to(card.querySelector('.teacher-overlay'), {
-                    opacity: 1,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                gsap.to(card, {
-                    y: 0,
-                    boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)",
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
-                
-                gsap.to(card.querySelector('.teacher-image img'), {
-                    scale: 1,
-                    duration: 0.4,
-                    ease: "power2.out"
-                });
-                
-                gsap.to(card.querySelector('.teacher-overlay'), {
-                    opacity: 0,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
-            });
-            
-            // Click to expand functionality
-            card.addEventListener('click', (e) => {
-                if (!e.target.closest('.teacher-social')) {
-                    this.showTeacherModal(card);
-                }
-            });
-        });
-    }
-
-    /**
-     * Show teacher modal with detailed information
-     */
-    showTeacherModal(card) {
-        const teacherName = card.querySelector('.teacher-name').textContent;
-        const teacherImage = card.querySelector('.teacher-image img').src;
-        const teacherQualification = card.querySelector('.teacher-qualification').textContent;
-        const teacherSubject = card.querySelector('.teacher-subject').textContent;
-        const teacherDepartment = card.querySelector('.teacher-department').textContent;
-        const teacherBio = card.querySelector('.teacher-bio').textContent;
-        const teacherExperience = card.querySelector('.teacher-experience span').textContent;
-        
-        // Create modal
-        const modal = document.createElement('div');
-        modal.className = 'teacher-modal';
-        modal.innerHTML = `
-            <div class="modal-backdrop"></div>
-            <div class="modal-content">
-                <button class="modal-close">&times;</button>
-                <div class="modal-body">
-                    <div class="teacher-modal-image">
-                        <img src="${teacherImage}" alt="${teacherName}">
-                    </div>
-                    <div class="teacher-modal-info">
-                        <div class="teacher-modal-department">${teacherDepartment}</div>
-                        <h3 class="teacher-modal-name">${teacherName}</h3>
-                        <p class="teacher-modal-qualification">${teacherQualification}</p>
-                        <p class="teacher-modal-subject"><strong>Subject:</strong> ${teacherSubject}</p>
-                        <p class="teacher-modal-experience"><strong>Experience:</strong> ${teacherExperience}</p>
-                        <div class="teacher-modal-bio">
-                            <h5>About</h5>
-                            <p>${teacherBio}</p>
-                        </div>
-                        <div class="teacher-modal-contact">
-                            <h5>Contact</h5>
-                            <div class="contact-buttons">
-                                <a href="mailto:${teacherName.toLowerCase().replace(/\s+/g, '').replace(/\./g, '')}@makalanegamaschool.lk" class="btn btn-maroon">
-                                    <i class="fas fa-envelope"></i> Send Email
-                                </a>
-                                <button class="btn btn-outline-maroon" onclick="this.closest('.teacher-modal').remove()">
-                                    <i class="fas fa-times"></i> Close
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+    showError(message) {
+        if (this.apiErrorDiv) {
+            this.apiErrorDiv.innerHTML = `
+                <div class="api-error">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Unable to Load Teachers</h5>
+                    <p>${message}</p>
+                    <button onclick="window.location.reload()" class="btn btn-maroon btn-sm">
+                        <i class="fas fa-refresh"></i> Refresh Page
+                    </button>
                 </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        document.body.style.overflow = 'hidden';
-        
-        // Animate modal in
-        gsap.from(modal.querySelector('.modal-content'), {
-            scale: 0.8,
-            opacity: 0,
-            duration: 0.4,
-            ease: "back.out(1.7)"
-        });
-        
-        gsap.from(modal.querySelector('.modal-backdrop'), {
-            opacity: 0,
-            duration: 0.3,
-            ease: "power2.out"
-        });
-        
-        // Close modal functionality
-        const closeModal = () => {
-            gsap.to(modal, {
+            `;
+            this.apiErrorDiv.style.display = 'block';
+        }
+    }
+
+    /**
+     * Hide error message
+     */
+    hideError() {
+        if (this.apiErrorDiv) {
+            this.apiErrorDiv.style.display = 'none';
+        }
+    }
+
+    /**
+     * Show no teachers message
+     */
+    showNoTeachers(message) {
+        if (this.noTeachersDiv) {
+            this.noTeachersDiv.innerHTML = `
+                <i class="fas fa-chalkboard-teacher fa-4x text-muted mb-3"></i>
+                <h4>No Teachers Found</h4>
+                <p>${message}</p>
+            `;
+            this.noTeachersDiv.style.display = 'block';
+        }
+    }
+
+    /**
+     * Hide no teachers message
+     */
+    hideNoTeachers() {
+        if (this.noTeachersDiv) {
+            this.noTeachersDiv.style.display = 'none';
+        }
+    }
+
+    /**
+     * Animate cards on display
+     */
+    animateCards() {
+        if (typeof gsap !== 'undefined') {
+            gsap.from('.teacher-card', {
+                y: 30,
                 opacity: 0,
-                duration: 0.3,
-                ease: "power2.out",
-                onComplete: () => {
-                    document.body.removeChild(modal);
-                    document.body.style.overflow = '';
-                }
+                duration: 0.6,
+                stagger: 0.1,
+                ease: "power2.out"
             });
-        };
-        
-        modal.querySelector('.modal-close').addEventListener('click', closeModal);
-        modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
-        
-        document.addEventListener('keydown', function escapeHandler(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-                document.removeEventListener('keydown', escapeHandler);
-            }
-        });
+        }
     }
-}
 
-/**
- * Initialize teacher page functionality
- */
-function initializeTeacherFilters() {
-    const teachersManager = new TeachersManager();
-    
-    // Initialize interactions after a short delay to ensure DOM is ready
-    setTimeout(() => {
-        teachersManager.initializeTeacherInteractions();
-    }, 500);
-    
-    // Load teachers data
-    teachersManager.loadTeachers();
-    
-    // Make teachersManager globally available
-    window.teachersManager = teachersManager;
-}
-
-/**
- * Update teachers display from external call
- */
-window.MakalanegamaSchool = window.MakalanegamaSchool || {};
-window.MakalanegamaSchool.updateTeachersDisplay = function(teachers) {
-    if (window.teachersManager) {
-        window.teachersManager.teachers = teachers;
-        window.teachersManager.filteredTeachers = [...teachers];
-        window.teachersManager.displayTeachers();
-        window.teachersManager.updateLoadMoreButton();
+    /**
+     * Animate filter change
+     */
+    animateFilterChange() {
+        if (typeof gsap !== 'undefined') {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            gsap.from(filterButtons, {
+                scale: 0.95,
+                duration: 0.2,
+                stagger: 0.05,
+                ease: "power2.out"
+            });
+        }
     }
-};
 
-/**
- * Search functionality for teachers
- */
-function initializeTeacherSearch() {
-    const searchInput = document.getElementById('teacher-search');
-    if (!searchInput) return;
-    
-    searchInput.addEventListener('input', debounce((e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const teacherCards = document.querySelectorAll('.teacher-card');
-        
-        teacherCards.forEach(card => {
-            const teacherName = card.querySelector('.teacher-name').textContent.toLowerCase();
-            const teacherSubject = card.querySelector('.teacher-subject').textContent.toLowerCase();
-            const teacherDepartment = card.querySelector('.teacher-department').textContent.toLowerCase();
-            
-            const matches = teacherName.includes(searchTerm) || 
-                          teacherSubject.includes(searchTerm) || 
-                          teacherDepartment.includes(searchTerm);
-            
-            if (matches) {
-                card.style.display = 'block';
-                gsap.from(card, {
-                    opacity: 0,
-                    y: 20,
-                    duration: 0.3,
-                    ease: "power2.out"
-                });
-            } else {
-                gsap.to(card, {
-                    opacity: 0,
-                    y: -20,
-                    duration: 0.2,
-                    ease: "power2.out",
-                    onComplete: () => {
-                        card.style.display = 'none';
-                    }
-                });
-            }
-        });
-    }, 300));
-}
+    /**
+     * Format date for display
+     */
+    formatDate(dateString) {
+        if (!dateString) return 'No date';
+        try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return 'Invalid date';
+        }
+    }
 
-/**
- * Debounce function for search
- */
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
+    /**
+     * Truncate text to specified length
+     */
+    truncateText(text, maxLength) {
+        if (!text) return 'No description available';
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength).trim() + '...';
+    }
+
+    /**
+     * Debounce function for search
+     */
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
             clearTimeout(timeout);
-            func(...args);
+            timeout = setTimeout(later, wait);
         };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
+    }
 }
 
-/**
- * Initialize on DOM content loaded
- */
+// Initialize teachers manager when DOM is loaded
+let teachersManager;
+
 document.addEventListener('DOMContentLoaded', function() {
-    initializeTeacherSearch();
+    console.log('DOM loaded, initializing teachers manager...');
+    teachersManager = new TeachersManager();
+    
+    // Make it globally available for modal callbacks
+    window.teachersManager = teachersManager;
 });
 
-// CSS for teacher modal (to be added to style.css)
-const modalStyles = `
-.teacher-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-backdrop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-}
-
-.modal-content {
-    position: relative;
-    background: white;
-    border-radius: 20px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.modal-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 2rem;
-    color: #666;
-    cursor: pointer;
-    z-index: 10;
-    transition: color 0.3s ease;
-}
-
-.modal-close:hover {
-    color: var(--maroon-primary);
-}
-
-.modal-body {
-    padding: 0;
-}
-
-.teacher-modal-image {
-    height: 250px;
-    overflow: hidden;
-    border-radius: 20px 20px 0 0;
-}
-
-.teacher-modal-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.teacher-modal-info {
-    padding: 2rem;
-}
-
-.teacher-modal-department {
-    color: var(--maroon-primary);
-    font-weight: 600;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.5rem;
-}
-
-.teacher-modal-name {
-    color: var(--black);
-    margin-bottom: 0.5rem;
-}
-
-.teacher-modal-qualification,
-.teacher-modal-subject,
-.teacher-modal-experience {
-    color: var(--medium-gray);
-    margin-bottom: 0.5rem;
-}
-
-.teacher-modal-bio,
-.teacher-modal-contact {
-    margin-top: 1.5rem;
-}
-
-.teacher-modal-bio h5,
-.teacher-modal-contact h5 {
-    color: var(--black);
-    margin-bottom: 1rem;
-}
-
-.contact-buttons {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.contact-buttons .btn {
-    flex: 1;
-    min-width: 150px;
-}
-
-@media (max-width: 768px) {
-    .modal-content {
-        width: 95%;
-        margin: 1rem;
-    }
-    
-    .teacher-modal-info {
-        padding: 1.5rem;
-    }
-    
-    .contact-buttons {
-        flex-direction: column;
-    }
-    
-    .contact-buttons .btn {
-        width: 100%;
-    }
-}
-`;
-
-// Add modal styles to head
-const styleSheet = document.createElement('style');
-styleSheet.textContent = modalStyles;
-document.head.appendChild(styleSheet);
+// Export for global access
+window.TeachersManager = TeachersManager;

@@ -33,6 +33,640 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        /* Custom CSS Variables for Teachers Page */
+        :root {
+            --maroon-primary: #800020;
+            --maroon-dark: #5d0017;
+            --maroon-light: #a6334f;
+            --gold-accent: #ffd700;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --medium-gray: #64748b;
+            --dark-gray: #334155;
+            --black: #1a1a1a;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --cream-background: #faf7f0;
+            --deep-blue: #1e3a8a;
+            
+            --font-primary: 'Inter', 'Noto Sans Sinhala', sans-serif;
+            --font-sinhala: 'Noto Sans Sinhala', sans-serif;
+            
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            --radius-small: 8px;
+            --radius-medium: 12px;
+            --radius-large: 20px;
+            
+            --transition-fast: 0.2s ease-out;
+            --transition-medium: 0.3s ease-out;
+            --transition-slow: 0.5s ease-out;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-dark) 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            padding: 8rem 0 4rem;
+            margin-top: 76px;
+        }
+
+        .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="teacher-pattern" patternUnits="userSpaceOnUse" width="40" height="40"><path d="M20 10 C15 15, 15 25, 20 30 C25 25, 25 15, 20 10 Z" fill="rgba(255,215,0,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23teacher-pattern)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--gold-accent);
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .page-subtitle-sinhala {
+            font-family: var(--font-sinhala);
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .page-description {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        .page-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gold-accent);
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-item .stat-label {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .header-visual img {
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .visual-overlay {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow-medium);
+            text-align: center;
+        }
+
+        .overlay-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--maroon-primary);
+            font-weight: 600;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--light-gray);
+            border-bottom: 1px solid rgba(128, 0, 32, 0.1);
+            padding: 2rem 0;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            color: var(--medium-gray);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-medium);
+            font-weight: 500;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--maroon-primary);
+            color: var(--maroon-primary);
+            background: var(--cream-background);
+            text-decoration: none;
+        }
+
+        .filter-btn.active {
+            background: var(--maroon-primary);
+            border-color: var(--maroon-primary);
+            color: var(--white);
+        }
+
+        .search-box {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .search-box .form-control {
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius-medium) 0 0 var(--radius-medium);
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+
+        .search-box .btn {
+            border-radius: 0 var(--radius-medium) var(--radius-medium) 0;
+            border: 2px solid var(--maroon-primary);
+            border-left: none;
+            background: var(--maroon-primary);
+            color: var(--white);
+            padding: 0.75rem 1.25rem;
+        }
+
+        .search-box .btn:hover {
+            background: var(--maroon-dark);
+            border-color: var(--maroon-dark);
+        }
+
+        /* Loading and Error States */
+        .loading-indicator {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .spinner-border.text-maroon {
+            color: var(--maroon-primary) !important;
+        }
+
+        .no-teachers {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        .no-teachers i {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .api-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: var(--radius-medium);
+            margin: 1rem 0;
+        }
+
+        /* Teachers Grid */
+        .teachers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .teacher-card {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition-medium);
+            height: 100%;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .teacher-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .teacher-image {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .teacher-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .teacher-image .no-photo {
+            color: #6c757d;
+            font-size: 3rem;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+
+        .teacher-card:hover .teacher-image img {
+            transform: scale(1.05);
+        }
+
+        .teacher-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(128, 0, 32, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+
+        .teacher-card:hover .teacher-overlay {
+            opacity: 1;
+        }
+
+        .teacher-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: var(--white);
+            color: var(--maroon-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            border: none;
+            cursor: pointer;
+        }
+
+        .social-link:hover {
+            background: var(--gold-accent);
+            color: var(--black);
+            transform: scale(1.1);
+        }
+
+        .teacher-content {
+            padding: 2rem;
+        }
+
+        .teacher-department {
+            color: var(--maroon-primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .teacher-name {
+            color: var(--black);
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .teacher-qualification {
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .teacher-subject {
+            color: var(--dark-gray);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .teacher-experience {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .teacher-experience i {
+            color: var(--gold-accent);
+        }
+
+        .teacher-bio {
+            color: var(--medium-gray);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .teacher-specializations {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .specialization-tag {
+            background: var(--cream-background);
+            color: var(--maroon-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Teacher Modal */
+        .teacher-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #666;
+            cursor: pointer;
+            z-index: 10;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--maroon-primary);
+        }
+
+        .modal-body {
+            padding: 0;
+        }
+
+        .teacher-modal-image {
+            height: 250px;
+            overflow: hidden;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .teacher-modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-photo-large {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 4rem;
+        }
+
+        .teacher-modal-info {
+            padding: 2rem;
+        }
+
+        .teacher-modal-department {
+            color: var(--maroon-primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .teacher-modal-name {
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+
+        .teacher-modal-qualification {
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+        }
+
+        .teacher-modal-bio h5,
+        .teacher-modal-contact h5,
+        .teacher-modal-specializations h5 {
+            color: var(--black);
+            margin-bottom: 1rem;
+        }
+
+        .teacher-modal-specializations {
+            margin-top: 1.5rem;
+        }
+
+        .specializations-list {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .spec-tag {
+            background: var(--cream-background);
+            color: var(--maroon-primary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-medium);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-buttons .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 6rem 0 3rem;
+            }
+            
+            .page-title {
+                font-size: 2.5rem;
+            }
+            
+            .teachers-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .filter-tabs {
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            
+            .filter-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+            
+            .search-box {
+                max-width: none;
+                width: 100%;
+                margin-top: 1rem;
+            }
+            
+            .page-stats {
+                gap: 2rem;
+                justify-content: center;
+            }
+            
+            .stat-item .stat-number {
+                font-size: 2rem;
+            }
+            
+            .visual-overlay {
+                position: static;
+                margin-top: 1rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+            
+            .teacher-modal-info {
+                padding: 1.5rem;
+            }
+            
+            .contact-buttons {
+                flex-direction: column;
+            }
+            
+            .contact-buttons .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .teacher-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -97,7 +731,7 @@
         </div>
         
         <div class="container">
-            <div class="row align-items-center min-vh-50">
+            <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="header-content">
                         <nav aria-label="breadcrumb" data-aos="fade-up">
@@ -108,7 +742,7 @@
                         </nav>
                         
                         <h1 class="page-title" data-aos="fade-up" data-aos-delay="200">
-                            Our <span class="text-maroon">Teachers</span>
+                            Our <span style="color: var(--gold-accent);">Teachers</span>
                         </h1>
                         
                         <h2 class="page-subtitle-sinhala" data-aos="fade-up" data-aos-delay="300">
@@ -166,11 +800,11 @@
     </div>
 
     <!-- Department Filter -->
-    <section class="filter-section py-4 bg-light">
+    <section class="filter-section">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="filter-tabs text-center" data-aos="fade-up">
+                <div class="col-lg-12">
+                    <div class="filter-tabs" data-aos="fade-up">
                         <button class="filter-btn active" data-filter="all">
                             <i class="fas fa-users"></i>
                             All Teachers
@@ -193,7 +827,7 @@
                         </button>
                     </div>
                     
-                    <div class="search-box mt-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="search-box" data-aos="fade-up" data-aos-delay="200">
                         <div class="input-group">
                             <input type="text" id="teacher-search" class="form-control" placeholder="Search teachers...">
                             <button class="btn btn-maroon" type="button" id="search-btn">
@@ -214,7 +848,7 @@
                     Meet Our Faculty
                 </div>
                 <h2 class="section-title">
-                    Dedicated <span class="text-maroon">Educators</span>
+                    Dedicated <span style="color: var(--maroon-primary);">Educators</span>
                 </h2>
                 <p class="section-description">
                     Our experienced teaching staff brings passion, expertise, and dedication to education, 
@@ -237,198 +871,6 @@
                     <i class="fas fa-plus"></i>
                     Load More Teachers
                 </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Teaching Philosophy Section -->
-    <section class="philosophy-section py-5 bg-light">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6" data-aos="fade-right">
-                    <div class="philosophy-content">
-                        <div class="section-badge">
-                            Teaching Philosophy
-                        </div>
-                        <h2 class="section-title">
-                            Our Commitment to <span class="text-maroon">Excellence</span>
-                        </h2>
-                        <p class="section-description">
-                            At Makalanegama School, our teachers are more than educators – they are mentors, 
-                            guides, and inspirers who shape the future of our students through dedication, 
-                            innovation, and unwavering commitment to educational excellence.
-                        </p>
-                        
-                        <div class="philosophy-points">
-                            <div class="philosophy-point">
-                                <div class="point-icon">
-                                    <i class="fas fa-heart"></i>
-                                </div>
-                                <div class="point-content">
-                                    <h5>Student-Centered Approach</h5>
-                                    <p>Every teaching method is designed with the student's learning needs and individual growth in mind.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="philosophy-point">
-                                <div class="point-icon">
-                                    <i class="fas fa-lightbulb"></i>
-                                </div>
-                                <div class="point-content">
-                                    <h5>Innovative Teaching Methods</h5>
-                                    <p>We embrace modern teaching techniques while honoring traditional educational values.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="philosophy-point">
-                                <div class="point-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="point-content">
-                                    <h5>Collaborative Learning</h5>
-                                    <p>Our teachers foster an environment where students learn from each other and grow together.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="philosophy-point">
-                                <div class="point-icon">
-                                    <i class="fas fa-globe"></i>
-                                </div>
-                                <div class="point-content">
-                                    <h5>Cultural Integration</h5>
-                                    <p>We integrate Sri Lankan cultural values with global educational standards.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-6" data-aos="fade-left">
-                    <div class="philosophy-visual">
-                        <div class="main-image">
-                            <img src="assets/images/teachers/teaching-philosophy.jpg" alt="Teaching Philosophy" class="img-fluid rounded">
-                        </div>
-                        <div class="floating-stats">
-                            <div class="stat-bubble">
-                                <div class="stat-number">98%</div>
-                                <div class="stat-label">Student Satisfaction</div>
-                            </div>
-                            <div class="stat-bubble">
-                                <div class="stat-number">100%</div>
-                                <div class="stat-label">Qualified Teachers</div>
-                            </div>
-                            <div class="stat-bubble">
-                                <div class="stat-number">15+</div>
-                                <div class="stat-label">Years Experience</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Professional Development Section -->
-    <section class="development-section py-5">
-        <div class="container">
-            <div class="section-header text-center mb-5" data-aos="fade-up">
-                <div class="section-badge">
-                    Professional Development
-                </div>
-                <h2 class="section-title">
-                    Continuous <span class="text-maroon">Learning</span>
-                </h2>
-                <p class="section-description">
-                    Our teachers are committed to lifelong learning and professional development to ensure 
-                    they provide the best possible education to our students.
-                </p>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="development-card">
-                        <div class="card-icon">
-                            <i class="fas fa-laptop-code"></i>
-                        </div>
-                        <h4>Technology Integration</h4>
-                        <p>Regular training on modern educational technology and digital teaching tools to enhance classroom learning experiences.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Digital Literacy Training</li>
-                            <li><i class="fas fa-check"></i> Online Teaching Platforms</li>
-                            <li><i class="fas fa-check"></i> Educational Software</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="development-card">
-                        <div class="card-icon">
-                            <i class="fas fa-chalkboard-teacher"></i>
-                        </div>
-                        <h4>Teaching Methodology</h4>
-                        <p>Workshops and seminars on modern teaching methods, student engagement techniques, and curriculum development.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Interactive Teaching Methods</li>
-                            <li><i class="fas fa-check"></i> Assessment Strategies</li>
-                            <li><i class="fas fa-check"></i> Classroom Management</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="development-card">
-                        <div class="card-icon">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <h4>Subject Expertise</h4>
-                        <p>Specialized training and certification programs to deepen subject knowledge and stay current with educational trends.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Subject-Specific Workshops</li>
-                            <li><i class="fas fa-check"></i> Research Participation</li>
-                            <li><i class="fas fa-check"></i> Certification Programs</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Join Our Team Section -->
-    <section class="join-team-section py-5">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8" data-aos="fade-right">
-                    <div class="join-content">
-                        <h2>Interested in Joining Our Teaching Team?</h2>
-                        <p>We are always looking for passionate, qualified educators who share our commitment to excellence in education. Join us in shaping the future of our students.</p>
-                        <div class="requirements">
-                            <div class="requirement-item">
-                                <i class="fas fa-graduation-cap"></i>
-                                <span>Relevant degree and teaching qualifications</span>
-                            </div>
-                            <div class="requirement-item">
-                                <i class="fas fa-heart"></i>
-                                <span>Passion for education and student development</span>
-                            </div>
-                            <div class="requirement-item">
-                                <i class="fas fa-language"></i>
-                                <span>Proficiency in Sinhala and/or English</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 text-lg-end" data-aos="fade-left">
-                    <div class="join-buttons">
-                        <a href="contact.html" class="btn btn-maroon btn-lg">
-                            <i class="fas fa-paper-plane"></i>
-                            Apply Now
-                        </a>
-                        <a href="contact.html" class="btn btn-outline-maroon btn-lg">
-                            <i class="fas fa-info-circle"></i>
-                            Learn More
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -573,424 +1015,8 @@
         
         // Initialize teachers page functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Teachers manager is initialized automatically in teachers.js
             console.log('Teachers page loaded');
         });
     </script>
-    
-    <style>
-        /* Additional CSS for Teachers Page */
-        .page-header {
-            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-dark) 100%);
-            color: var(--white);
-            position: relative;
-            overflow: hidden;
-            padding: 8rem 0 4rem;
-            margin-top: 76px;
-        }
-        
-        .loading-indicator {
-            text-align: center;
-            padding: 3rem 0;
-        }
-        
-        .spinner-border.text-maroon {
-            color: var(--maroon-primary) !important;
-        }
-        
-        .teachers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .teacher-card {
-            background: var(--white);
-            border-radius: var(--radius-large);
-            overflow: hidden;
-            box-shadow: var(--shadow-light);
-            transition: var(--transition-medium);
-            height: 100%;
-            cursor: pointer;
-        }
-        
-        .teacher-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-heavy);
-        }
-        
-        .teacher-image {
-            position: relative;
-            height: 250px;
-            overflow: hidden;
-        }
-        
-        .teacher-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition-slow);
-        }
-        
-        .teacher-image .no-photo {
-            width: 100%;
-            height: 100%;
-            background: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-size: 3rem;
-        }
-        
-        .teacher-card:hover .teacher-image img {
-            transform: scale(1.1);
-        }
-        
-        .teacher-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(128, 0, 32, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: var(--transition-medium);
-        }
-        
-        .teacher-card:hover .teacher-overlay {
-            opacity: 1;
-        }
-        
-        .teacher-social {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .social-link {
-            width: 50px;
-            height: 50px;
-            background: var(--white);
-            color: var(--maroon-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: var(--transition-fast);
-        }
-        
-        .social-link:hover {
-            background: var(--gold-accent);
-            color: var(--black);
-            transform: scale(1.1);
-        }
-        
-        .teacher-content {
-            padding: 2rem;
-        }
-        
-        .teacher-department {
-            color: var(--maroon-primary);
-            font-weight: 600;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-        }
-        
-        .teacher-name {
-            color: var(--black);
-            margin-bottom: 0.5rem;
-            font-size: 1.25rem;
-        }
-        
-        .teacher-qualification {
-            color: var(--medium-gray);
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .teacher-subject {
-            color: var(--dark-gray);
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-        
-        .teacher-experience {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--medium-gray);
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-        }
-        
-        .teacher-experience i {
-            color: var(--gold-accent);
-        }
-        
-        .teacher-bio {
-            color: var(--medium-gray);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-        
-        .teacher-specializations {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .specialization-tag {
-            background: var(--cream-background);
-            color: var(--maroon-primary);
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .search-box {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .search-box .form-control {
-            border: 2px solid var(--light-gray);
-            border-radius: var(--radius-medium) 0 0 var(--radius-medium);
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-        }
-        
-        .search-box .btn {
-            border-radius: 0 var(--radius-medium) var(--radius-medium) 0;
-            border: 2px solid var(--maroon-primary);
-            border-left: none;
-            background: var(--maroon-primary);
-            color: var(--white);
-            padding: 0.75rem 1.25rem;
-        }
-        
-        .filter-btn {
-            background: var(--white);
-            border: 2px solid var(--light-gray);
-            color: var(--medium-gray);
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius-medium);
-            font-weight: 500;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            text-decoration: none;
-            margin: 0.25rem;
-        }
-        
-        .filter-btn:hover {
-            border-color: var(--maroon-primary);
-            color: var(--maroon-primary);
-            background: var(--cream-background);
-            text-decoration: none;
-        }
-        
-        .filter-btn.active {
-            background: var(--maroon-primary);
-            border-color: var(--maroon-primary);
-            color: var(--white);
-        }
-        
-        .no-teachers {
-            background: var(--white);
-            border-radius: var(--radius-large);
-            padding: 4rem 2rem;
-            margin: 2rem 0;
-            text-align: center;
-            box-shadow: var(--shadow-light);
-        }
-        
-        /* Teacher Modal Styles */
-        .teacher-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .modal-backdrop {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-        }
-        
-        .modal-content {
-            position: relative;
-            background: white;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 2rem;
-            color: #666;
-            cursor: pointer;
-            z-index: 10;
-            transition: color 0.3s ease;
-        }
-        
-        .modal-close:hover {
-            color: var(--maroon-primary);
-        }
-        
-        .modal-body {
-            padding: 0;
-        }
-        
-        .teacher-modal-image {
-            height: 250px;
-            overflow: hidden;
-            border-radius: 20px 20px 0 0;
-        }
-        
-        .teacher-modal-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .no-photo-large {
-            width: 100%;
-            height: 100%;
-            background: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6c757d;
-            font-size: 4rem;
-        }
-        
-        .teacher-modal-info {
-            padding: 2rem;
-        }
-        
-        .teacher-modal-department {
-            color: var(--maroon-primary);
-            font-weight: 600;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .teacher-modal-name {
-            color: var(--black);
-            margin-bottom: 0.5rem;
-        }
-        
-        .teacher-modal-qualification {
-            color: var(--medium-gray);
-            margin-bottom: 1rem;
-        }
-        
-        .teacher-modal-bio h5,
-        .teacher-modal-contact h5,
-        .teacher-modal-specializations h5 {
-            color: var(--black);
-            margin-bottom: 1rem;
-        }
-        
-        .teacher-modal-specializations {
-            margin-top: 1.5rem;
-        }
-        
-        .specializations-list {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .spec-tag {
-            background: var(--cream-background);
-            color: var(--maroon-primary);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-medium);
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        
-        .contact-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .contact-buttons .btn {
-            flex: 1;
-            min-width: 150px;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .teachers-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .filter-tabs {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 0.5rem;
-            }
-            
-            .filter-btn {
-                padding: 0.5rem 1rem;
-                font-size: 0.875rem;
-            }
-            
-            .search-box {
-                max-width: none;
-                width: 100%;
-            }
-            
-            .modal-content {
-                width: 95%;
-                margin: 1rem;
-            }
-            
-            .teacher-modal-info {
-                padding: 1.5rem;
-            }
-            
-            .contact-buttons {
-                flex-direction: column;
-            }
-            
-            .contact-buttons .btn {
-                width: 100%;
-            }
-        }
-    </style>
 </body>
 </html>
