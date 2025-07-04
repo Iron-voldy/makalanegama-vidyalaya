@@ -122,16 +122,16 @@
                         
                         <div class="page-stats" data-aos="fade-up" data-aos-delay="500">
                             <div class="stat-item">
-                                <div class="stat-number">25+</div>
+                                <div class="stat-number" id="total-teachers">0</div>
                                 <div class="stat-label">Qualified Teachers</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number">15+</div>
-                                <div class="stat-label">Years Average Experience</div>
+                                <div class="stat-number" id="active-teachers">0</div>
+                                <div class="stat-label">Active Educators</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-number">100%</div>
-                                <div class="stat-label">Certified Educators</div>
+                                <div class="stat-number" id="departments-count">0</div>
+                                <div class="stat-label">Departments</div>
                             </div>
                         </div>
                     </div>
@@ -152,11 +152,24 @@
         </div>
     </section>
 
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" class="loading-indicator" style="display: none;">
+        <div class="spinner-border text-maroon" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Loading teachers from database...</p>
+    </div>
+
+    <!-- API Error Display -->
+    <div id="api-error" class="container" style="display: none;">
+        <!-- Error content will be inserted here -->
+    </div>
+
     <!-- Department Filter -->
     <section class="filter-section py-4 bg-light">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-8">
+                <div class="col-lg-10">
                     <div class="filter-tabs text-center" data-aos="fade-up">
                         <button class="filter-btn active" data-filter="all">
                             <i class="fas fa-users"></i>
@@ -179,6 +192,15 @@
                             Other Subjects
                         </button>
                     </div>
+                    
+                    <div class="search-box mt-3" data-aos="fade-up" data-aos-delay="200">
+                        <div class="input-group">
+                            <input type="text" id="teacher-search" class="form-control" placeholder="Search teachers...">
+                            <button class="btn btn-maroon" type="button" id="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -200,228 +222,18 @@
                 </p>
             </div>
             
+            <!-- No Teachers Message -->
+            <div id="no-teachers" class="no-teachers" style="display: none;">
+                <!-- No teachers content will be inserted here -->
+            </div>
+            
             <div class="teachers-grid" id="teachers-grid">
-                <!-- Teachers will be loaded dynamically -->
-                <div class="teacher-card" data-department="science" data-aos="fade-up" data-aos-delay="100">
-                    <div class="teacher-image">
-                        <img src="assets/images/teachers/teacher-1.jpg" alt="Mr. Sunil Perera">
-                        <div class="teacher-overlay">
-                            <div class="teacher-social">
-                                <a href="mailto:sperera@makalanegamaschool.lk" class="social-link">
-                                    <i class="fas fa-envelope"></i>
-                                </a>
-                                <a href="#" class="social-link">
-                                    <i class="fas fa-phone"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="teacher-content">
-                        <div class="teacher-department">Science & Mathematics</div>
-                        <h4 class="teacher-name">Mr. Sunil Perera</h4>
-                        <p class="teacher-qualification">B.Ed (Mathematics), Dip. in Education</p>
-                        <p class="teacher-subject">Mathematics</p>
-                        <div class="teacher-experience">
-                            <i class="fas fa-medal"></i>
-                            <span>15 years experience</span>
-                        </div>
-                        <p class="teacher-bio">
-                            Experienced mathematics teacher specializing in advanced mathematics and statistics. 
-                            Passionate about making complex mathematical concepts accessible to all students.
-                        </p>
-                        <div class="teacher-specializations">
-                            <span class="specialization-tag">Advanced Mathematics</span>
-                            <span class="specialization-tag">Statistics</span>
-                            <span class="specialization-tag">Problem Solving</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="teacher-card" data-department="languages" data-aos="fade-up" data-aos-delay="200">
-                    <div class="teacher-image">
-                        <img src="assets/images/teachers/teacher-2.jpg" alt="Mrs. Kamala Wijesinghe">
-                        <div class="teacher-overlay">
-                            <div class="teacher-social">
-                                <a href="mailto:kwijesinghe@makalanegamaschool.lk" class="social-link">
-                                    <i class="fas fa-envelope"></i>
-                                </a>
-                                <a href="#" class="social-link">
-                                    <i class="fas fa-phone"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="teacher-content">
-                        <div class="teacher-department">Languages</div>
-                        <h4 class="teacher-name">Mrs. Kamala Wijesinghe</h4>
-                        <p class="teacher-qualification">B.A (Sinhala), PGDE</p>
-                        <p class="teacher-subject">Sinhala Language & Literature</p>
-                        <div class="teacher-experience">
-                            <i class="fas fa-medal"></i>
-                            <span>12 years experience</span>
-                        </div>
-                        <p class="teacher-bio">
-                            Passionate about promoting Sinhala literature and language skills among students. 
-                            Dedicated to preserving and sharing Sri Lankan cultural heritage through education.
-                        </p>
-                        <div class="teacher-specializations">
-                            <span class="specialization-tag">Sinhala Literature</span>
-                            <span class="specialization-tag">Creative Writing</span>
-                            <span class="specialization-tag">Cultural Studies</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="teacher-card" data-department="science" data-aos="fade-up" data-aos-delay="300">
-                    <div class="teacher-image">
-                        <img src="assets/images/teachers/teacher-3.jpg" alt="Mr. Rohan Fernando">
-                        <div class="teacher-overlay">
-                            <div class="teacher-social">
-                                <a href="mailto:rfernando@makalanegamaschool.lk" class="social-link">
-                                    <i class="fas fa-envelope"></i>
-                                </a>
-                                <a href="#" class="social-link">
-                                    <i class="fas fa-phone"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="teacher-content">
-                        <div class="teacher-department">Science & Mathematics</div>
-                        <h4 class="teacher-name">Mr. Rohan Fernando</h4>
-                        <p class="teacher-qualification">B.Sc (Physics), Dip. in Education</p>
-                        <p class="teacher-subject">Science</p>
-                        <div class="teacher-experience">
-                            <i class="fas fa-medal"></i>
-                            <span>10 years experience</span>
-                        </div>
-                        <p class="teacher-bio">
-                            Dedicated science teacher focusing on practical experiments and scientific inquiry. 
-                            Believes in hands-on learning to make science engaging and understandable.
-                        </p>
-                        <div class="teacher-specializations">
-                            <span class="specialization-tag">Physics</span>
-                            <span class="specialization-tag">Laboratory Work</span>
-                            <span class="specialization-tag">Scientific Method</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="teacher-card" data-department="languages" data-aos="fade-up" data-aos-delay="400">
-                    <div class="teacher-image">
-                        <img src="assets/images/teachers/teacher-4.jpg" alt="Mrs. Priyanka Silva">
-                        <div class="teacher-overlay">
-                            <div class="teacher-social">
-                                <a href="mailto:psilva@makalanegamaschool.lk" class="social-link">
-                                    <i class="fas fa-envelope"></i>
-                                </a>
-                                <a href="#" class="social-link">
-                                    <i class="fas fa-phone"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="teacher-content">
-                        <div class="teacher-department">Languages</div>
-                        <h4 class="teacher-name">Mrs. Priyanka Silva</h4>
-                        <p class="teacher-qualification">B.A (English), TESL Certificate</p>
-                        <p class="teacher-subject">English Language</p>
-                        <div class="teacher-experience">
-                            <i class="fas fa-medal"></i>
-                            <span>8 years experience</span>
-                        </div>
-                        <p class="teacher-bio">
-                            English language specialist with expertise in modern teaching methodologies. 
-                            Focuses on developing communication skills and confidence in English language usage.
-                        </p>
-                        <div class="teacher-specializations">
-                            <span class="specialization-tag">TESL</span>
-                            <span class="specialization-tag">Communication Skills</span>
-                            <span class="specialization-tag">Grammar</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="teacher-card" data-department="social" data-aos="fade-up" data-aos-delay="500">
-                    <div class="teacher-image">
-                        <img src="assets/images/teachers/teacher-5.jpg" alt="Mr. Asanka Rathnayake">
-                        <div class="teacher-overlay">
-                            <div class="teacher-social">
-                                <a href="mailto:arathnayake@makalanegamaschool.lk" class="social-link">
-                                    <i class="fas fa-envelope"></i>
-                                </a>
-                                <a href="#" class="social-link">
-                                    <i class="fas fa-phone"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="teacher-content">
-                        <div class="teacher-department">Social Sciences</div>
-                        <h4 class="teacher-name">Mr. Asanka Rathnayake</h4>
-                        <p class="teacher-qualification">B.A (History), Dip. in Education</p>
-                        <p class="teacher-subject">History & Social Studies</p>
-                        <div class="teacher-experience">
-                            <i class="fas fa-medal"></i>
-                            <span>14 years experience</span>
-                        </div>
-                        <p class="teacher-bio">
-                            History teacher with special interest in Sri Lankan heritage and culture. 
-                            Passionate about connecting historical events to contemporary understanding.
-                        </p>
-                        <div class="teacher-specializations">
-                            <span class="specialization-tag">Sri Lankan History</span>
-                            <span class="specialization-tag">Cultural Heritage</span>
-                            <span class="specialization-tag">Social Studies</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="teacher-card" data-department="social" data-aos="fade-up" data-aos-delay="600">
-                    <div class="teacher-image">
-                        <img src="assets/images/teachers/teacher-6.jpg" alt="Mrs. Sandya Mendis">
-                        <div class="teacher-overlay">
-                            <div class="teacher-social">
-                                <a href="mailto:smendis@makalanegamaschool.lk" class="social-link">
-                                    <i class="fas fa-envelope"></i>
-                                </a>
-                                <a href="#" class="social-link">
-                                    <i class="fas fa-phone"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="teacher-content">
-                        <div class="teacher-department">Social Sciences</div>
-                        <h4 class="teacher-name">Mrs. Sandya Mendis</h4>
-                        <p class="teacher-qualification">B.Sc (Geography), PGDE</p>
-                        <p class="teacher-subject">Geography</p>
-                        <div class="teacher-experience">
-                            <i class="fas fa-medal"></i>
-                            <span>9 years experience</span>
-                        </div>
-                        <p class="teacher-bio">
-                            Geography teacher promoting environmental awareness and sustainability. 
-                            Integrates field studies and practical geography into classroom learning.
-                        </p>
-                        <div class="teacher-specializations">
-                            <span class="specialization-tag">Environmental Geography</span>
-                            <span class="specialization-tag">Field Studies</span>
-                            <span class="specialization-tag">Sustainability</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Teachers will be loaded dynamically from database -->
             </div>
             
             <!-- Load More Button -->
             <div class="text-center mt-5" data-aos="fade-up">
-                <button id="load-more-teachers" class="btn btn-outline-maroon btn-lg">
+                <button id="load-more-teachers" class="btn btn-outline-maroon btn-lg" style="display: none;">
                     <i class="fas fa-plus"></i>
                     Load More Teachers
                 </button>
@@ -749,8 +561,6 @@
     
     <!-- Custom JS -->
     <script src="assets/js/main.js"></script>
-    <script src="assets/js/animations.js"></script>
-    <script src="assets/js/telegram-api.js"></script>
     <script src="assets/js/teachers.js"></script>
     
     <script>
@@ -761,11 +571,426 @@
             offset: 100
         });
         
-        // Load teachers on page load
+        // Initialize teachers page functionality
         document.addEventListener('DOMContentLoaded', function() {
-            loadTeacherProfiles();
-            initializeTeacherFilters();
+            // Teachers manager is initialized automatically in teachers.js
+            console.log('Teachers page loaded');
         });
     </script>
+    
+    <style>
+        /* Additional CSS for Teachers Page */
+        .page-header {
+            background: linear-gradient(135deg, var(--maroon-primary) 0%, var(--maroon-dark) 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            padding: 8rem 0 4rem;
+            margin-top: 76px;
+        }
+        
+        .loading-indicator {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .spinner-border.text-maroon {
+            color: var(--maroon-primary) !important;
+        }
+        
+        .teachers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .teacher-card {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition-medium);
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .teacher-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-heavy);
+        }
+        
+        .teacher-image {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .teacher-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+        
+        .teacher-image .no-photo {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 3rem;
+        }
+        
+        .teacher-card:hover .teacher-image img {
+            transform: scale(1.1);
+        }
+        
+        .teacher-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(128, 0, 32, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+        
+        .teacher-card:hover .teacher-overlay {
+            opacity: 1;
+        }
+        
+        .teacher-social {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: var(--white);
+            color: var(--maroon-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        
+        .social-link:hover {
+            background: var(--gold-accent);
+            color: var(--black);
+            transform: scale(1.1);
+        }
+        
+        .teacher-content {
+            padding: 2rem;
+        }
+        
+        .teacher-department {
+            color: var(--maroon-primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        
+        .teacher-name {
+            color: var(--black);
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+        
+        .teacher-qualification {
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .teacher-subject {
+            color: var(--dark-gray);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .teacher-experience {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--medium-gray);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .teacher-experience i {
+            color: var(--gold-accent);
+        }
+        
+        .teacher-bio {
+            color: var(--medium-gray);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .teacher-specializations {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .specialization-tag {
+            background: var(--cream-background);
+            color: var(--maroon-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .search-box {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .search-box .form-control {
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius-medium) 0 0 var(--radius-medium);
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+        
+        .search-box .btn {
+            border-radius: 0 var(--radius-medium) var(--radius-medium) 0;
+            border: 2px solid var(--maroon-primary);
+            border-left: none;
+            background: var(--maroon-primary);
+            color: var(--white);
+            padding: 0.75rem 1.25rem;
+        }
+        
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid var(--light-gray);
+            color: var(--medium-gray);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-medium);
+            font-weight: 500;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 0.25rem;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--maroon-primary);
+            color: var(--maroon-primary);
+            background: var(--cream-background);
+            text-decoration: none;
+        }
+        
+        .filter-btn.active {
+            background: var(--maroon-primary);
+            border-color: var(--maroon-primary);
+            color: var(--white);
+        }
+        
+        .no-teachers {
+            background: var(--white);
+            border-radius: var(--radius-large);
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+        
+        /* Teacher Modal Styles */
+        .teacher-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #666;
+            cursor: pointer;
+            z-index: 10;
+            transition: color 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: var(--maroon-primary);
+        }
+        
+        .modal-body {
+            padding: 0;
+        }
+        
+        .teacher-modal-image {
+            height: 250px;
+            overflow: hidden;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .teacher-modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .no-photo-large {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 4rem;
+        }
+        
+        .teacher-modal-info {
+            padding: 2rem;
+        }
+        
+        .teacher-modal-department {
+            color: var(--maroon-primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .teacher-modal-name {
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+        
+        .teacher-modal-qualification {
+            color: var(--medium-gray);
+            margin-bottom: 1rem;
+        }
+        
+        .teacher-modal-bio h5,
+        .teacher-modal-contact h5,
+        .teacher-modal-specializations h5 {
+            color: var(--black);
+            margin-bottom: 1rem;
+        }
+        
+        .teacher-modal-specializations {
+            margin-top: 1.5rem;
+        }
+        
+        .specializations-list {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .spec-tag {
+            background: var(--cream-background);
+            color: var(--maroon-primary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-medium);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .contact-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .contact-buttons .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .teachers-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .filter-tabs {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            
+            .filter-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+            
+            .search-box {
+                max-width: none;
+                width: 100%;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+            
+            .teacher-modal-info {
+                padding: 1.5rem;
+            }
+            
+            .contact-buttons {
+                flex-direction: column;
+            }
+            
+            .contact-buttons .btn {
+                width: 100%;
+            }
+        }
+    </style>
 </body>
 </html>
