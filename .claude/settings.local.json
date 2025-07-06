@@ -3,7 +3,14 @@
     "allow": [
       "Bash(rg:*)",
       "Bash(grep:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(php:*)",
+      "Bash(/mnt/c/xampp/php/php.exe populate_achievements.php)",
+      "Bash(curl:*)",
+      "Bash(/mnt/c/xampp/php/php.exe test_api.php)",
+      "Bash(rm:*)",
+      "Bash(/mnt/c/xampp/php/php.exe:*)"
     ],
     "deny": []
   }

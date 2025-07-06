@@ -76,7 +76,15 @@ try {
         $sql .= " WHERE " . implode(" AND ", $conditions);
     }
     
-    $sql .= " ORDER BY name ASC";
+    // Order by position first (admin staff first, then teachers)
+    $sql .= " ORDER BY 
+             CASE 
+                 WHEN LOWER(subject) LIKE '%principal%' OR LOWER(subject) LIKE '%principle%' THEN 1
+                 WHEN LOWER(subject) LIKE '%vice principal%' OR LOWER(subject) LIKE '%vice principle%' THEN 2
+                 WHEN LOWER(subject) LIKE '%office%' OR LOWER(subject) LIKE '%assistant%' THEN 3
+                 ELSE 4
+             END,
+             name ASC";
     
     if ($limit > 0) {
         $sql .= " LIMIT ?";
@@ -94,6 +102,18 @@ try {
     
     $stmt->execute();
     $teachers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Process teachers to add position/subject information
+    foreach ($teachers as &$teacher) {
+        $subject = strtolower($teacher['subject']);
+        $isPosition = stripos($subject, 'principal') !== false || 
+                     stripos($subject, 'principle') !== false || 
+                     stripos($subject, 'office') !== false || 
+                     stripos($subject, 'assistant') !== false;
+        
+        $teacher['is_position'] = $isPosition;
+        $teacher['display_type'] = $isPosition ? 'Position' : 'Subject';
+    }
     
     // Log the results
     error_log("Found " . count($teachers) . " teachers");

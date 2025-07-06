@@ -458,6 +458,19 @@
             height: 100%;
             cursor: pointer;
             border: 1px solid rgba(0, 0, 0, 0.05);
+            opacity: 1 !important; /* Override AOS opacity */
+            visibility: visible !important; /* Ensure always visible */
+        }
+
+        /* Ensure achievement cards are visible even with AOS */
+        .achievement-card[data-aos] {
+            opacity: 1 !important;
+        }
+
+        /* Animation completed state */
+        .achievement-card.aos-animate {
+            opacity: 1 !important;
+            transform: none !important;
         }
 
         .achievement-card:hover {
@@ -485,6 +498,12 @@
         .achievement-image .no-image {
             color: #6c757d;
             font-size: 3rem;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
         }
 
         .achievement-card:hover .achievement-image img {
@@ -1213,6 +1232,7 @@
                 console.log('Loading achievements from database...');
                 await this.loadAchievements();
                 this.updateStatistics();
+                this.applyFilters(); // Apply initial filters before displaying
                 this.displayAchievements();
                 this.displayFeaturedAchievements();
             }
@@ -1286,129 +1306,36 @@
                     
                     const result = await this.testApiPaths();
                     
-                    if (result.success) {
+                    if (result.success && result.data.length > 0) {
+                        // Use ONLY real database data - NO fallback
                         this.achievements = result.data;
                         this.filteredAchievements = [...this.achievements];
-                        console.log('Successfully loaded achievements from database:', this.achievements.length);
-                        this.debugInfo.push(`Final result: ${this.achievements.length} achievements loaded successfully`);
-                        
-                        if (this.achievements.length === 0) {
-                            console.log('Database returned empty results - showing fallback data');
-                            this.achievements = this.getFallbackData();
-                            this.filteredAchievements = [...this.achievements];
-                        }
-                        
+                        console.log('✅ SUCCESS: Loaded real achievements from database:', this.achievements.length);
+                        console.log('Real database achievements:', this.achievements);
                         this.hideNoAchievements();
                     } else {
-                        console.log('All API paths failed - using fallback data');
-                        this.achievements = this.getFallbackData();
-                        this.filteredAchievements = [...this.achievements];
+                        console.error('❌ FAILED: Could not load achievements from database');
+                        this.showError('Failed to load achievements from database. Please refresh the page.');
+                        this.achievements = [];
+                        this.filteredAchievements = [];
                     }
                     
                 } catch (error) {
-                    console.error('Error loading achievements:', error);
-                    this.debugInfo.push(`Final error: ${error.message}`);
-                    this.achievements = this.getFallbackData();
-                    this.filteredAchievements = [...this.achievements];
+                    console.error('❌ ERROR loading achievements:', error);
+                    this.showError('Error loading achievements: ' + error.message);
+                    this.achievements = [];
+                    this.filteredAchievements = [];
                 } finally {
                     this.showLoading(false);
                 }
             }
 
             /**
-             * Fallback data when API is not available
+             * No fallback data - only use real database achievements
              */
             getFallbackData() {
-                return [
-                    {
-                        id: 1,
-                        title: 'Provincial Mathematics Excellence Award',
-                        description: 'Our Grade 10 students achieved outstanding results in the provincial mathematics competition, securing first place among 50+ schools in the North Western Province.',
-                        category: 'Academic',
-                        featured: true,
-                        is_featured: true,
-                        image_url: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=250&fit=crop',
-                        date: '2024-02-15',
-                        created_at: '2024-02-15'
-                    },
-                    {
-                        id: 2,
-                        title: 'Inter-School Cricket Championship',
-                        description: 'Our cricket team won the zonal championship after a thrilling final match against St. Joseph\'s College, showcasing exceptional teamwork and sportsmanship.',
-                        category: 'Sports',
-                        featured: false,
-                        is_featured: false,
-                        image_url: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=400&h=250&fit=crop',
-                        date: '2024-01-20',
-                        created_at: '2024-01-20'
-                    },
-                    {
-                        id: 3,
-                        title: 'Environmental Conservation Award',
-                        description: 'Recognition for our school\'s outstanding contribution to environmental conservation and sustainability projects in the local community.',
-                        category: 'Environmental',
-                        featured: true,
-                        is_featured: true,
-                        image_url: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=250&fit=crop',
-                        date: '2024-01-10',
-                        created_at: '2024-01-10'
-                    },
-                    {
-                        id: 4,
-                        title: 'Science Fair Innovation Prize',
-                        description: 'Students showcased innovative projects in renewable energy and received the district-level innovation award for their creative solutions.',
-                        category: 'Science',
-                        featured: false,
-                        is_featured: false,
-                        image_url: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=400&h=250&fit=crop',
-                        date: '2023-12-15',
-                        created_at: '2023-12-15'
-                    },
-                    {
-                        id: 5,
-                        title: 'Cultural Dance Performance Excellence',
-                        description: 'Our traditional dance troupe won first place at the provincial cultural festival, preserving and celebrating Sri Lankan heritage.',
-                        category: 'Cultural',
-                        featured: false,
-                        is_featured: false,
-                        image_url: 'https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=400&h=250&fit=crop',
-                        date: '2023-11-25',
-                        created_at: '2023-11-25'
-                    },
-                    {
-                        id: 6,
-                        title: 'Technology Integration Recognition',
-                        description: 'Awarded for successfully integrating modern technology into our curriculum and teaching methods, enhancing student learning experiences.',
-                        category: 'Technology',
-                        featured: true,
-                        is_featured: true,
-                        image_url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=250&fit=crop',
-                        date: '2023-11-10',
-                        created_at: '2023-11-10'
-                    },
-                    {
-                        id: 7,
-                        title: 'Art Competition Winner',
-                        description: 'Our students excelled in the regional art competition, demonstrating creativity and artistic talent in various mediums.',
-                        category: 'Arts',
-                        featured: false,
-                        is_featured: false,
-                        image_url: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=400&h=250&fit=crop',
-                        date: '2023-10-20',
-                        created_at: '2023-10-20'
-                    },
-                    {
-                        id: 8,
-                        title: 'Community Service Excellence',
-                        description: 'Recognition for outstanding community service initiatives that made a positive impact on local families and environment.',
-                        category: 'Community Service',
-                        featured: false,
-                        is_featured: false,
-                        image_url: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=250&fit=crop',
-                        date: '2023-09-15',
-                        created_at: '2023-09-15'
-                    }
-                ];
+                console.warn('⚠️ getFallbackData() called - This should not happen. Using empty array.');
+                return [];
             }
 
             /**
@@ -1453,22 +1380,36 @@
                     
                     return matchesFilter && matchesSearch;
                 });
+                console.log('✅ Applied filters:', this.filteredAchievements.length, 'achievements match criteria');
             }
 
             /**
              * Display achievements in grid
              */
             displayAchievements() {
+                console.log('🔍 displayAchievements() called');
+                console.log('📊 this.achievements.length:', this.achievements.length);
+                console.log('📊 this.filteredAchievements.length:', this.filteredAchievements.length);
+                console.log('📊 this.currentPage:', this.currentPage);
+                console.log('📊 this.achievementsPerPage:', this.achievementsPerPage);
+                
                 if (!this.achievementsGrid) {
-                    console.error('Achievements grid not found');
+                    console.error('❌ Achievements grid not found');
                     return;
                 }
 
+                // If filteredAchievements is empty but we have achievements, use all achievements
+                if (this.filteredAchievements.length === 0 && this.achievements.length > 0) {
+                    console.log('⚠️ filteredAchievements is empty, using all achievements');
+                    this.filteredAchievements = [...this.achievements];
+                }
+                
                 const startIndex = 0;
                 const endIndex = this.currentPage * this.achievementsPerPage;
                 const achievementsToShow = this.filteredAchievements.slice(startIndex, endIndex);
 
-                console.log('Displaying achievements:', achievementsToShow.length, 'of', this.filteredAchievements.length);
+                console.log('📈 Displaying achievements:', achievementsToShow.length, 'of', this.filteredAchievements.length);
+                console.log('📋 Achievement data sample:', achievementsToShow[0]);
 
                 if (achievementsToShow.length === 0) {
                     if (this.achievements.length === 0) {
@@ -1486,22 +1427,67 @@
 
                 achievementsToShow.forEach((achievement, index) => {
                     const achievementCard = this.createAchievementCard(achievement, index);
+                    
+                    // Force immediate visibility before adding to DOM
+                    achievementCard.style.opacity = '1';
+                    achievementCard.style.visibility = 'visible';
+                    achievementCard.style.transform = 'none';
+                    
                     this.achievementsGrid.appendChild(achievementCard);
+                    console.log('✅ Added card for:', achievement.title);
                 });
+                
+                console.log('✅ Grid now contains', this.achievementsGrid.children.length, 'cards');
 
                 this.updateLoadMoreButton();
-                this.animateCards();
+                
+                // Force a reflow to ensure grid is visible
+                this.achievementsGrid.style.display = 'grid';
+                this.achievementsGrid.style.visibility = 'visible';
+                this.achievementsGrid.style.opacity = '1';
+                
+                // Ensure parent section is visible too
+                const gridSection = document.querySelector('.achievements-grid-section');
+                if (gridSection) {
+                    gridSection.style.display = 'block';
+                }
+                
+                console.log('✅ All Achievements Grid configured with', achievementsToShow.length, 'cards');
+                
+                // Refresh AOS to animate new elements and ensure visibility
+                setTimeout(() => {
+                    // Refresh AOS for new elements
+                    if (typeof AOS !== 'undefined') {
+                        AOS.refresh();
+                    }
+                    
+                    // Fallback: ensure cards are visible if AOS fails
+                    const cards = this.achievementsGrid.querySelectorAll('.achievement-card');
+                    cards.forEach(card => {
+                        // Force visibility if AOS hasn't animated the card
+                        if (card.style.opacity === '0') {
+                            card.style.opacity = '1';
+                            card.style.transform = 'none';
+                        }
+                    });
+                    
+                    this.animateCards();
+                }, 200);
             }
 
             /**
              * Display featured achievements
              */
             displayFeaturedAchievements() {
-                if (!this.featuredContainer) return;
+                if (!this.featuredContainer) {
+                    console.error('Featured container not found');
+                    return;
+                }
 
                 const featuredAchievements = this.achievements.filter(a => a.is_featured || a.featured).slice(0, 3);
                 
                 console.log('Featured achievements found:', featuredAchievements.length);
+                console.log('Featured achievements data:', featuredAchievements);
 
                 if (featuredAchievements.length === 0) {
                     if (this.featuredSection) {
@@ -1518,6 +1504,7 @@
                 featuredAchievements.forEach((achievement, index) => {
                     const featuredCard = this.createFeaturedCard(achievement, index);
                     this.featuredContainer.appendChild(featuredCard);
+                    console.log('Added featured card for:', achievement.title);
                 });
             }
 
@@ -1533,7 +1520,7 @@
                 const formattedDate = this.formatDate(achievement.created_at);
                 const isFeatured = achievement.is_featured || achievement.featured;
                 
-                // Handle image
+                // Handle image - show placeholder if no image or if image fails to load
                 const imageHtml = achievement.image_url ? 
                     `<img src="${achievement.image_url}" alt="${achievement.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                      <div class="no-image" style="display: none;"><i class="fas fa-trophy"></i></div>` :

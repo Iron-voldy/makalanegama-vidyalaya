@@ -10,63 +10,62 @@ $id = $_GET['id'] ?? null;
 $message = '';
 $error = '';
 
-// Handle form submissions
+// Handle form submissions for teachers
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!validateCSRFToken($_POST['csrf_token'] ?? '')) {
         $error = 'Invalid request. Please try again.';
     } else {
-        $data = [
-            'name' => sanitizeInput($_POST['name']),
-            'qualification' => sanitizeInput($_POST['qualification']),
-            'subject' => sanitizeInput($_POST['subject']),
-            'department' => sanitizeInput($_POST['department']),
-            'bio' => sanitizeInput($_POST['bio']),
-            'experience_years' => !empty($_POST['experience_years']) ? (int)$_POST['experience_years'] : null,
-            'email' => sanitizeInput($_POST['email']),
-            'phone' => sanitizeInput($_POST['phone']),
-            'is_active' => isset($_POST['is_active']) ? 1 : 0
-        ];
-        
-        // Handle specializations
-        $specializations = [];
-        if (!empty($_POST['specializations'])) {
-            $specializations = array_map('trim', explode(',', $_POST['specializations']));
-            $specializations = array_filter($specializations); // Remove empty values
-            $data['specializations'] = json_encode($specializations);
+        // Validate required fields
+        if (empty($_POST['name']) || empty($_POST['qualification']) || empty($_POST['subject']) || empty($_POST['department'])) {
+            $error = 'Name, qualification, subject, and department are required fields.';
         } else {
-            $data['specializations'] = null;
-        }
-        
-        // Handle photo upload
-        if (isset($_FILES['photo']) && $_FILES['photo']['size'] > 0) {
-            $photoUrl = uploadImage($_FILES['photo']);
-            if ($photoUrl) {
-                $data['photo_url'] = $photoUrl;
-            } else {
-                $error = 'Failed to upload photo. Please check file size and format.';
+            $data = [
+                'name' => sanitizeInput($_POST['name']),
+                'qualification' => sanitizeInput($_POST['qualification']),
+                'subject' => sanitizeInput($_POST['subject']),
+                'department' => sanitizeInput($_POST['department']),
+                'bio' => sanitizeInput($_POST['bio']),
+                'experience_years' => !empty($_POST['experience_years']) ? (int)$_POST['experience_years'] : null,
+                'email' => sanitizeInput($_POST['email']),
+                'phone' => sanitizeInput($_POST['phone']),
+                'is_active' => isset($_POST['is_active'])
+            ];
+            
+            // Handle specializations
+            if (!empty($_POST['specializations'])) {
+                $specializations = array_map('trim', explode(',', $_POST['specializations']));
+                $specializations = array_filter($specializations);
+                $data['specializations'] = json_encode($specializations);
             }
-        }
-        
-        if (empty($error)) {
-            try {
-                if ($action === 'add') {
-                    if ($db->createTeacher($data)) {
-                        $message = 'Teacher added successfully!';
-                        $action = 'list';
-                    } else {
-                        $error = 'Failed to add teacher.';
-                    }
-                } elseif ($action === 'edit' && $id) {
-                    if ($db->updateTeacher($id, $data)) {
-                        $message = 'Teacher updated successfully!';
-                        $action = 'list';
-                    } else {
-                        $error = 'Failed to update teacher.';
-                    }
+            
+            // Handle photo upload
+            if (isset($_FILES['photo']) && $_FILES['photo']['size'] > 0) {
+                $photoUrl = uploadImage($_FILES['photo']);
+                if ($photoUrl) {
+                    $data['photo_url'] = $photoUrl;
                 }
-            } catch (Exception $e) {
-                $error = 'Database error: ' . $e->getMessage();
-                error_log("Teacher operation error: " . $e->getMessage());
+            }
+            
+            if (empty($error)) {
+                try {
+                    if ($action === 'add') {
+                        if ($db->createTeacher($data)) {
+                            $message = 'Teacher created successfully!';
+                            $action = 'list';
+                        } else {
+                            $error = 'Failed to create teacher.';
+                        }
+                    } elseif ($action === 'edit' && $id) {
+                        if ($db->updateTeacher($id, $data)) {
+                            $message = 'Teacher updated successfully!';
+                            $action = 'list';
+                        } else {
+                            $error = 'Failed to update teacher.';
+                        }
+                    }
+                } catch (Exception $e) {
+                    $error = 'Database error: ' . $e->getMessage();
+                }
             }
         }
     }
@@ -169,7 +168,7 @@ $stats = $db->getDashboardStats();
                                             <tr>
                                                 <th>Photo</th>
                                                 <th>Name</th>
-                                                <th>Subject</th>
+                                                <th>Position/Subject</th>
                                                 <th>Department</th>
                                                 <th>Experience</th>
                                                 <th>Status</th>
@@ -182,11 +181,12 @@ $stats = $db->getDashboardStats();
                                                     <td>
                                                         <?php if ($item['photo_url']): ?>
                                                             <img src="../<?= htmlspecialchars($item['photo_url']) ?>" 
-                                                                 alt="Teacher Photo" class="img-preview rounded-circle">
+                                                                 alt="Teacher Photo" class="teacher-photo" 
+                                                                 title="Click to view larger">
                                                         <?php else: ?>
-                                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" 
-                                                                 style="width: 60px; height: 60px;">
-                                                                <i class="fas fa-user text-muted"></i>
+                                                            <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                                                 style="width: 80px; height: 100px; border: 1px solid #dee2e6;">
+                                                                <i class="fas fa-user fa-2x text-muted"></i>
                                                             </div>
                                                         <?php endif; ?>
                                                     </td>
@@ -197,7 +197,22 @@ $stats = $db->getDashboardStats();
                                                             <?= htmlspecialchars($item['qualification']) ?>
                                                         </small>
                                                     </td>
-                                                    <td><?= htmlspecialchars($item['subject']) ?></td>
+                                                    <td>
+                                                        <?php 
+                                                        $subject = htmlspecialchars($item['subject']);
+                                                        // Check if this is a position (administrative staff)
+                                                        $isPosition = stripos($subject, 'principal') !== false || 
+                                                                     stripos($subject, 'principle') !== false || 
+                                                                     stripos($subject, 'office') !== false || 
+                                                                     stripos($subject, 'assistant') !== false;
+                                                        
+                                                        if ($isPosition) {
+                                                            echo '<span class="badge bg-warning text-dark">Position: ' . $subject . '</span>';
+                                                        } else {
+                                                            echo '<span class="badge bg-info">Subject: ' . $subject . '</span>';
+                                                        }
+                                                        ?>
+                                                    </td>
                                                     <td>
                                                         <span class="badge bg-secondary"><?= $item['department'] ?></span>
                                                     </td>
@@ -272,6 +287,7 @@ $stats = $db->getDashboardStats();
                                                 <div class="mb-3">
                                                     <label for="department" class="form-label">Department *</label>
                                                     <select class="form-select" id="department" name="department" required>
+                                                        <option value="">Select Department</option>
                                                         <?php
                                                         $departments = [
                                                             'Science & Mathematics',

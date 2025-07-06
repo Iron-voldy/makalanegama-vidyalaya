@@ -107,6 +107,7 @@
         <div class="hero-background">
             <div class="hero-overlay"></div>
             <div class="hero-pattern"></div>
+            <div class="hero-image-background"></div>
         </div>
         
         <div class="container">
@@ -161,22 +162,12 @@
                 
                 <div class="col-lg-6">
                     <div class="hero-visual" data-aos="fade-left" data-aos-delay="700">
-                        <div class="school-building-container">
-                            <img src="assets/images/heroes/school-building.jpg" alt="Makalanegama School Building" class="school-building-img">
-                            <div class="floating-elements">
-                                <div class="floating-card achievement-card">
-                                    <i class="fas fa-trophy"></i>
-                                    <span>Excellence Awards</span>
-                                </div>
-                                <div class="floating-card facilities-card">
-                                    <i class="fas fa-laptop"></i>
-                                    <span>Computer Lab</span>
-                                </div>
-                                <div class="floating-card sports-card">
-                                    <i class="fas fa-running"></i>
-                                    <span>Sports Programs</span>
-                                </div>
+                        <div class="floating-elements">
+                            <div class="floating-card achievement-card">
+                                <i class="fas fa-trophy"></i>
+                                <span>Excellence Awards</span>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -493,60 +484,22 @@
             </div>
             
             <div class="row g-4" id="latest-news">
-                <!-- News will be loaded dynamically from Telegram -->
-                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-                    <article class="news-card featured">
-                        <div class="news-image">
-                            <img src="assets/images/news/computer-lab-opening.jpg" alt="Computer Lab Opening">
-                            <div class="news-category">Facilities</div>
+                <!-- News will be loaded dynamically -->
+                <div class="col-12" id="no-news-message" style="display: none;">
+                    <div class="text-center py-5" data-aos="fade-up">
+                        <div class="no-content-icon mb-3">
+                            <i class="fas fa-newspaper fa-3x text-muted"></i>
                         </div>
-                        <div class="news-content">
-                            <div class="news-meta">
-                                <span class="news-date"><i class="fas fa-calendar"></i> February 10, 2024</span>
-                                <span class="news-author"><i class="fas fa-user"></i> Principal</span>
-                            </div>
-                            <h3>New Computer Lab Officially Opens</h3>
-                            <p>We are proud to announce the official opening of our state-of-the-art computer laboratory, made possible through the generous support of Wire Academy & Technology for Village...</p>
-                            <a href="news.html" class="news-link">Read Full Article <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
+                        <h4 class="text-muted mb-2">No News Yet</h4>
+                        <p class="text-muted">We'll share important updates and announcements here soon. Stay tuned!</p>
+                        <a href="contact.html" class="btn btn-outline-maroon mt-3">
+                            <i class="fas fa-envelope"></i> Contact Us for Updates
+                        </a>
+                    </div>
                 </div>
                 
-                <div class="col-lg-6">
-                    <div class="news-sidebar">
-                        <div class="news-item" data-aos="fade-up" data-aos-delay="200">
-                            <div class="news-item-image">
-                                <img src="assets/images/news/admission-2024.jpg" alt="Admissions 2024">
-                            </div>
-                            <div class="news-item-content">
-                                <div class="news-date">February 5, 2024</div>
-                                <h5>2024 Admissions Now Open</h5>
-                                <p>Applications for Grade 1 admissions for the 2024 academic year are now being accepted...</p>
-                            </div>
-                        </div>
-                        
-                        <div class="news-item" data-aos="fade-up" data-aos-delay="300">
-                            <div class="news-item-image">
-                                <img src="assets/images/news/teacher-training.jpg" alt="Teacher Training">
-                            </div>
-                            <div class="news-item-content">
-                                <div class="news-date">January 28, 2024</div>
-                                <h5>Professional Development Workshop</h5>
-                                <p>Our teachers participated in a comprehensive training program on modern teaching methodologies...</p>
-                            </div>
-                        </div>
-                        
-                        <div class="news-item" data-aos="fade-up" data-aos-delay="400">
-                            <div class="news-item-image">
-                                <img src="assets/images/news/cultural-program.jpg" alt="Cultural Program">
-                            </div>
-                            <div class="news-item-content">
-                                <div class="news-date">January 20, 2024</div>
-                                <h5>Annual Cultural Festival</h5>
-                                <p>Students showcased their talents in traditional music, dance, and drama performances...</p>
-                            </div>
-                        </div>
-                    </div>
+                <div id="news-content">
+                    <!-- Dynamic news content will be loaded here -->
                 </div>
             </div>
             
@@ -579,7 +532,7 @@
                     <div class="gallery-overlay">
                         <div class="gallery-content">
                             <h5>Interactive Learning</h5>
-                            <p>Modern teaching methods in action</p>
+                            <p>Grade 05 seminars</p>
                         </div>
                     </div>
                 </div>
@@ -588,8 +541,8 @@
                     <img src="assets/images/gallery/science-experiment.jpg" alt="Science Experiment" class="gallery-image">
                     <div class="gallery-overlay">
                         <div class="gallery-content">
-                            <h5>Science Lab</h5>
-                            <p>Hands-on experiments</p>
+                            <h5>School Ground</h5>
+                            <p>Prefect day</p>
                         </div>
                     </div>
                 </div>
@@ -624,15 +577,7 @@
                     </div>
                 </div>
                 
-                <div class="gallery-item">
-                    <img src="assets/images/gallery/computer-class.jpg" alt="Computer Class" class="gallery-image">
-                    <div class="gallery-overlay">
-                        <div class="gallery-content">
-                            <h5>Technology Integration</h5>
-                            <p>Computer literacy programs</p>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
             
             <div class="text-center mt-5" data-aos="fade-up">

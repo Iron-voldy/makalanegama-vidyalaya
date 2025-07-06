@@ -53,10 +53,12 @@ body {
     opacity: 0.8;
 }
 
-/* Tables */
+/* Tables - FIXED */
 .table {
     border-radius: 0.5rem;
     overflow: hidden;
+    width: 100%;
+    table-layout: auto;
 }
 
 .table thead th {
@@ -65,12 +67,26 @@ body {
     font-weight: 600;
     color: #495057;
     padding: 1rem 0.75rem;
+    white-space: nowrap;
 }
 
 .table tbody td {
     padding: 0.75rem;
     vertical-align: middle;
     border-color: #e9ecef;
+    word-wrap: break-word;
+}
+
+.table tbody tr {
+    width: 100%;
+    display: table-row;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    clear: both;
 }
 
 /* Action buttons */
@@ -125,10 +141,37 @@ body {
 
 /* Image previews */
 .img-preview {
-    max-width: 100px;
-    max-height: 100px;
+    width: 60px;
+    height: 60px;
     border-radius: 0.5rem;
-    object-fit: cover;
+    object-fit: contain;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+/* Teacher photo specific styling - FIXED */
+.teacher-photo {
+    width: 80px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    display: block;
+    flex-shrink: 0;
+    margin: 0 auto;
+}
+
+/* Fix for photo cell */
+.table td:first-child {
+    width: 100px;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Better responsive table handling */
+.table td {
+    min-width: fit-content;
 }
 
 /* Alerts */
@@ -155,7 +198,7 @@ body {
     border-color: #5d0017;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments - ENHANCED */
 @media (max-width: 767.98px) {
     .sidebar {
         top: 5rem;
@@ -167,6 +210,28 @@ body {
     
     .table-responsive {
         font-size: 0.8rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .teacher-photo {
+        width: 60px;
+        height: 75px;
+    }
+    
+    .table td:first-child {
+        width: 80px;
+        min-width: 80px;
+    }
+    
+    .table td, .table th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .btn-group .btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
     }
 }
 
@@ -235,4 +300,149 @@ body {
 .file-upload-area.dragover {
     border-color: #800020;
     background-color: rgba(128, 0, 32, 0.1);
+}
+
+/* Admin Layout Fixes */
+.container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.card-body .table-responsive {
+    margin: 0;
+    padding: 0;
+    clear: both;
+}
+
+/* Teacher row height fix */
+.table tbody tr {
+    height: auto;
+    min-height: 120px;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: transparent !important;
+}
+
+/* Fix transparency issues */
+.table tbody td {
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: transparent !important;
+    z-index: 1;
+}
+
+.table {
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 1;
+    position: relative;
+}
+
+.card {
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 1;
+    position: relative;
+}
+
+/* Button group spacing */
+.btn-group-sm .btn {
+    margin: 0 1px;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Ensure table doesn't break layout */
+.card .table-responsive {
+    overflow-x: auto;
+    overflow-y: visible;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Fix for empty table state */
+.text-center.py-4 {
+    padding: 3rem 1rem !important;
+}
+
+/* Force visibility for all table elements */
+.table *, .table tbody *, .table tbody tr *, .table tbody td * {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Badge styling for positions */
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.badge.bg-info {
+    background-color: #0dcaf0 !important;
+    color: #000 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Ensure all content is visible and not affected by scroll */
+main {
+    position: relative !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.container-fluid {
+    position: relative !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Fix scroll-related transparency issues */
+body, html {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Remove any transform or animation that might cause transparency */
+.table, .table *, .card, .card * {
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Force all table content to be fully opaque */
+.table tbody tr:nth-child(n) {
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: #fff !important;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f8f9fa !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Ensure buttons remain visible */
+.btn, .btn-group, .btn-group * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 10 !important;
+}
+
+/* Fix any overlay or backdrop issues */
+.sidebar {
+    z-index: 100 !important;
+}
+
+/* Remove any potential interference from animations or transitions */
+* {
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
 }

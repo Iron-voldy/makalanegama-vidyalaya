@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Grid Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .test-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            min-height: 200px;
+        }
+        .debug-info {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Bootstrap Grid Test</h1>
+        <p>This should show 3 cards per row on desktop (lg), 2 on tablet (md), 1 on mobile (sm)</p>
+        
+        <div class="row g-4" id="test-grid">
+            <div class="col-lg-4 col-md-6">
+                <div class="test-card">
+                    <h5>Card 1</h5>
+                    <div class="debug-info">col-lg-4 col-md-6</div>
+                    <p>This is test card 1</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="test-card">
+                    <h5>Card 2</h5>
+                    <div class="debug-info">col-lg-4 col-md-6</div>
+                    <p>This is test card 2</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="test-card">
+                    <h5>Card 3</h5>
+                    <div class="debug-info">col-lg-4 col-md-6</div>
+                    <p>This is test card 3</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="test-card">
+                    <h5>Card 4</h5>
+                    <div class="debug-info">col-lg-4 col-md-6</div>
+                    <p>This is test card 4</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="test-card">
+                    <h5>Card 5</h5>
+                    <div class="debug-info">col-lg-4 col-md-6</div>
+                    <p>This is test card 5</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="test-card">
+                    <h5>Card 6</h5>
+                    <div class="debug-info">col-lg-4 col-md-6</div>
+                    <p>This is test card 6</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-5">
+            <h3>JavaScript Generated Grid Test</h3>
+            <div id="js-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Test the same JavaScript approach used in teachers.js
+        const jsGrid = document.getElementById('js-grid');
+        const rowContainer = document.createElement('div');
+        rowContainer.className = 'row g-4';
+        jsGrid.appendChild(rowContainer);
+
+        for (let i = 1; i <= 6; i++) {
+            const card = document.createElement('div');
+            card.className = 'col-lg-4 col-md-6';
+            card.innerHTML = `
+                <div class="test-card">
+                    <h5>JS Card ${i}</h5>
+                    <div class="debug-info">Generated with JavaScript</div>
+                    <p>This is JavaScript generated card ${i}</p>
+                </div>
+            `;
+            rowContainer.appendChild(card);
+        }
+
+        console.log('Grid created with class:', rowContainer.className);
+        console.log('Number of cards:', rowContainer.children.length);
+    </script>
+</body>
+</html>

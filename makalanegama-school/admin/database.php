@@ -114,11 +114,18 @@ class Database {
     // ==================== TEACHERS CRUD - FIXED VERSION ====================
     
     /**
-     * Get all teachers
+     * Get all teachers ordered by position (admin staff first, then teachers)
      */
     public function getTeachers($limit = null, $offset = 0) {
         try {
-            $sql = "SELECT * FROM teachers ORDER BY name ASC";
+            $sql = "SELECT * FROM teachers ORDER BY 
+                    CASE 
+                        WHEN LOWER(subject) LIKE '%principal%' OR LOWER(subject) LIKE '%principle%' THEN 1
+                        WHEN LOWER(subject) LIKE '%vice principal%' OR LOWER(subject) LIKE '%vice principle%' THEN 2
+                        WHEN LOWER(subject) LIKE '%office%' OR LOWER(subject) LIKE '%assistant%' THEN 3
+                        ELSE 4
+                    END,
+                    name ASC";
             if ($limit) {
                 $sql .= " LIMIT $limit OFFSET $offset";
             }
@@ -153,8 +160,7 @@ class Database {
         try {
             $sql = "INSERT INTO teachers (name, qualification, subject, department, bio, experience_years, email, phone, photo_url, specializations, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $this->pdo->prepare($sql);
-            
-            $result = $stmt->execute([
+            return $stmt->execute([
                 $data['name'],
                 $data['qualification'],
                 $data['subject'],
@@ -165,21 +171,10 @@ class Database {
                 $data['phone'] ?? null,
                 $data['photo_url'] ?? null,
                 $data['specializations'] ?? null,
-                $data['is_active'] ?? 1
+                isset($data['is_active']) ? 1 : 0
             ]);
-            
-            if (ENVIRONMENT === 'development') {
-                error_log("Teacher creation result: " . ($result ? 'success' : 'failed'));
-                if (!$result) {
-                    error_log("SQL Error Info: " . print_r($stmt->errorInfo(), true));
-                }
-            }
-            
-            return $result;
         } catch (PDOException $e) {
             error_log("Error creating teacher: " . $e->getMessage());
-            error_log("SQL: " . $sql);
-            error_log("Data: " . print_r($data, true));
             return false;
         }
     }
@@ -200,7 +195,7 @@ class Database {
                 $data['email'] ?? null,
                 $data['phone'] ?? null,
                 $data['specializations'] ?? null,
-                $data['is_active'] ?? 1
+                isset($data['is_active']) ? 1 : 0
             ];
             
             if (!empty($data['photo_url'])) {
@@ -212,13 +207,7 @@ class Database {
             $params[] = $id;
             
             $stmt = $this->pdo->prepare($sql);
-            $result = $stmt->execute($params);
-            
-            if (ENVIRONMENT === 'development') {
-                error_log("Teacher update result: " . ($result ? 'success' : 'failed'));
-            }
-            
-            return $result;
+            return $stmt->execute($params);
         } catch (PDOException $e) {
             error_log("Error updating teacher: " . $e->getMessage());
             return false;

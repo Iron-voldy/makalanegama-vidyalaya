@@ -530,11 +530,13 @@ async function loadLatestNews() {
         const response = await fetch('/makalanegama-school/makalanegama-school/api/news.php?limit=4&featured=1');
         if (!response.ok) throw new Error('Failed to fetch news');
         
-        const news = await response.json();
+        const result = await response.json();
+        const news = result.success ? result.data : [];
         updateNewsDisplay(news);
     } catch (error) {
         console.error('Error loading news:', error);
-        // Keep existing sample data if API fails
+        // Show no news message if API fails
+        updateNewsDisplay([]);
     }
 }
 
@@ -621,21 +623,77 @@ function updateEventItem(item, event) {
  */
 function updateNewsDisplay(news) {
     const container = document.getElementById('latest-news');
-    if (!container || !news.length) return;
+    const noNewsMessage = document.getElementById('no-news-message');
+    const newsContent = document.getElementById('news-content');
     
-    // Update featured news (first item)
-    const featuredCard = container.querySelector('.news-card.featured');
-    if (featuredCard && news[0]) {
-        updateNewsCard(featuredCard, news[0]);
+    if (!container) return;
+    
+    // Check if we have news data
+    if (!news || !news.length) {
+        // Show "No news yet" message
+        if (noNewsMessage) {
+            noNewsMessage.style.display = 'block';
+        }
+        if (newsContent) {
+            newsContent.style.display = 'none';
+        }
+        return;
     }
     
-    // Update sidebar news items
-    const sidebarItems = container.querySelectorAll('.news-item');
-    news.slice(1, 4).forEach((newsItem, index) => {
-        if (sidebarItems[index]) {
-            updateNewsItem(sidebarItems[index], newsItem);
-        }
-    });
+    // Hide "No news yet" message and show news content
+    if (noNewsMessage) {
+        noNewsMessage.style.display = 'none';
+    }
+    if (newsContent) {
+        newsContent.style.display = 'block';
+        // Create dynamic news content
+        createNewsContent(newsContent, news);
+    }
+}
+
+/**
+ * Create dynamic news content
+ */
+function createNewsContent(container, news) {
+    const featuredNews = news[0];
+    const sidebarNews = news.slice(1, 4);
+    
+    container.innerHTML = `
+        <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+            <article class="news-card featured">
+                <div class="news-image">
+                    <img src="${featuredNews.image_url || 'assets/images/news/default-news.jpg'}" alt="${featuredNews.title}">
+                    <div class="news-category">${featuredNews.category || 'General'}</div>
+                </div>
+                <div class="news-content">
+                    <div class="news-meta">
+                        <span class="news-date"><i class="fas fa-calendar"></i> ${formatDate(featuredNews.created_at)}</span>
+                        <span class="news-author"><i class="fas fa-user"></i> ${featuredNews.author || 'Administration'}</span>
+                    </div>
+                    <h3>${featuredNews.title}</h3>
+                    <p>${featuredNews.excerpt || truncateText(featuredNews.content, 150)}</p>
+                    <a href="news.html" class="news-link">Read Full Article <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="news-sidebar">
+                ${sidebarNews.map((newsItem, index) => `
+                    <div class="news-item" data-aos="fade-up" data-aos-delay="${200 + (index * 100)}">
+                        <div class="news-item-image">
+                            <img src="${newsItem.image_url || 'assets/images/news/default-news.jpg'}" alt="${newsItem.title}">
+                        </div>
+                        <div class="news-item-content">
+                            <div class="news-date">${formatDate(newsItem.created_at)}</div>
+                            <h5>${newsItem.title}</h5>
+                            <p>${newsItem.excerpt || truncateText(newsItem.content, 100)}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
 }
 
 /**

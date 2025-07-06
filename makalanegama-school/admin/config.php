@@ -99,32 +99,46 @@ function logout() {
 
 function uploadImage($file) {
     if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
+        error_log("Upload failed: No temp file");
+        return false;
+    }
+    
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        error_log("Upload failed: Error code " . $file['error']);
         return false;
     }
     
     $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     
     if (!in_array($extension, ALLOWED_IMAGE_TYPES)) {
+        error_log("Upload failed: Invalid file type: " . $extension);
         return false;
     }
     
     if ($file['size'] > UPLOAD_MAX_SIZE) {
+        error_log("Upload failed: File too large: " . $file['size'] . " bytes");
         return false;
     }
     
     $uploadDir = UPLOAD_PATH . date('Y/m/');
     if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
+        if (!mkdir($uploadDir, 0755, true)) {
+            error_log("Upload failed: Cannot create directory: " . $uploadDir);
+            return false;
+        }
     }
     
     $filename = uniqid() . '.' . $extension;
     $uploadPath = $uploadDir . $filename;
     
     if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-        return str_replace('../', '', $uploadPath);
+        $relativePath = str_replace('../', '', $uploadPath);
+        error_log("Upload successful: " . $relativePath);
+        return $relativePath;
+    } else {
+        error_log("Upload failed: Cannot move file to " . $uploadPath);
+        return false;
     }
-    
-    return false;
 }
 
 function formatDate($date) {

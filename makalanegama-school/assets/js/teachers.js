@@ -8,7 +8,7 @@ class TeachersManager {
         this.teachers = [];
         this.filteredTeachers = [];
         this.currentFilter = 'all';
-        this.teachersPerPage = 9;
+        this.teachersPerPage = 50; // Show more teachers initially
         this.currentPage = 1;
         this.isLoading = false;
         this.searchTerm = '';
@@ -420,13 +420,55 @@ class TeachersManager {
         this.hideNoTeachers();
         this.teachersGrid.innerHTML = '';
 
+        // Create Bootstrap row container
+        const rowContainer = document.createElement('div');
+        rowContainer.className = 'row g-4';
+        this.teachersGrid.appendChild(rowContainer);
+        console.log('✅ Created row container with class:', rowContainer.className);
+
         teachersToShow.forEach((teacher, index) => {
             const teacherCard = this.createTeacherCard(teacher, index);
-            this.teachersGrid.appendChild(teacherCard);
+            
+            // Force immediate visibility before adding to DOM
+            teacherCard.style.opacity = '1';
+            teacherCard.style.visibility = 'visible';
+            teacherCard.style.transform = 'none';
+            
+            rowContainer.appendChild(teacherCard);
+            console.log('✅ Added card for:', teacher.name, 'with class:', teacherCard.className);
         });
+        
+        console.log('✅ Grid now contains', this.teachersGrid.children.length, 'cards');
 
         this.updateLoadMoreButton();
-        this.animateCards();
+        
+        // Force a reflow to ensure grid is visible
+        this.teachersGrid.style.display = 'block';
+        this.teachersGrid.style.visibility = 'visible';
+        this.teachersGrid.style.opacity = '1';
+        
+        console.log('✅ Teachers Grid configured with', teachersToShow.length, 'cards');
+        
+        // Ensure immediate visibility since AOS is disabled
+        setTimeout(() => {
+            // Ensure row and all cards are visible
+            const row = this.teachersGrid.querySelector('.row');
+            if (row) {
+                row.style.opacity = '1';
+                row.style.visibility = 'visible';
+                row.style.display = 'flex';
+            }
+            
+            const cards = this.teachersGrid.querySelectorAll('.teacher-card-wrapper');
+            cards.forEach(card => {
+                card.style.opacity = '1';
+                card.style.visibility = 'visible';
+                card.style.transform = 'none';
+                card.style.display = 'block';
+            });
+            
+            this.animateCards();
+        }, 100);
     }
 
     /**
@@ -434,9 +476,10 @@ class TeachersManager {
      */
     createTeacherCard(teacher, index) {
         const card = document.createElement('div');
-        card.className = 'teacher-card-wrapper';
-        card.setAttribute('data-aos', 'fade-up');
-        card.setAttribute('data-aos-delay', (index * 100).toString());
+        card.className = 'col-lg-4 col-md-6 teacher-card-wrapper';
+        // Remove AOS animations to prevent visibility issues
+        // card.setAttribute('data-aos', 'fade-up');
+        // card.setAttribute('data-aos-delay', (index * 100).toString());
 
         const imageHtml = teacher.photo_url ? 
             `<img src="${teacher.photo_url}" alt="${teacher.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -446,34 +489,46 @@ class TeachersManager {
         const specializationsHtml = teacher.specializations && Array.isArray(teacher.specializations) ? 
             teacher.specializations.map(spec => `<span class="specialization-tag">${spec}</span>`).join('') : '';
 
+        // Check if this is a position or subject
+        const isPosition = teacher.subject && (
+            teacher.subject.toLowerCase().includes('principal') ||
+            teacher.subject.toLowerCase().includes('principle') ||
+            teacher.subject.toLowerCase().includes('office') ||
+            teacher.subject.toLowerCase().includes('assistant')
+        );
+
         card.innerHTML = `
             <div class="teacher-card" data-teacher-id="${teacher.id}">
                 <div class="teacher-image">
                     ${imageHtml}
-                    <div class="teacher-overlay">
-                        <div class="teacher-social">
-                            <a href="mailto:${teacher.email || 'info@makalanegamaschool.lk'}" class="social-link">
-                                <i class="fas fa-envelope"></i>
-                            </a>
-                            <button class="social-link" onclick="teachersManager.showTeacherModal(${teacher.id})">
-                                <i class="fas fa-info-circle"></i>
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 
                 <div class="teacher-content">
-                    <div class="teacher-department">${teacher.department}</div>
-                    <h4 class="teacher-name">${teacher.name}</h4>
-                    <p class="teacher-qualification">${teacher.qualification}</p>
-                    <div class="teacher-subject"><strong>Subject:</strong> ${teacher.subject}</div>
-                    <div class="teacher-experience">
-                        <i class="fas fa-clock"></i>
-                        <span>${teacher.experience_years || 0} years experience</span>
+                    <div class="teacher-info">
+                        <div class="teacher-department">${teacher.department}</div>
+                        <h4 class="teacher-name">${teacher.name}</h4>
+                        <div class="teacher-subject">
+                            <span class="subject-label">${isPosition ? 'Position' : 'Subject'}:</span>
+                            <span class="badge ${isPosition ? 'badge-position' : 'badge-subject'}">${teacher.subject}</span>
+                        </div>
+                        <p class="teacher-qualification">${teacher.qualification}</p>
+                        <div class="teacher-experience">
+                            <i class="fas fa-clock"></i> ${teacher.experience_years || 0} years experience
+                        </div>
+                        <p class="teacher-bio">${this.truncateText(teacher.bio || 'Dedicated educator committed to student success.', 120)}</p>
                     </div>
-                    <p class="teacher-bio">${this.truncateText(teacher.bio || 'Dedicated educator committed to student success.', 100)}</p>
-                    <div class="teacher-specializations">
-                        ${specializationsHtml}
+                    <div class="teacher-footer">
+                        <div class="teacher-specializations">
+                            ${specializationsHtml}
+                        </div>
+                        <div class="teacher-actions">
+                            <button class="btn btn-maroon btn-sm" onclick="window.teachersManager.showTeacherModal(${teacher.id})">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            <a href="mailto:${teacher.email || 'info@makalanegamaschool.lk'}" class="btn btn-outline-maroon btn-sm">
+                                <i class="fas fa-envelope"></i> Contact
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -481,7 +536,7 @@ class TeachersManager {
 
         // Add click event to show modal
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.social-link')) {
+            if (!e.target.closest('button') && !e.target.closest('a')) {
                 this.showTeacherModal(teacher.id);
             }
         });
@@ -603,20 +658,26 @@ class TeachersManager {
     }
 
     /**
-     * Load more teachers
+     * Load more teachers - Show all remaining teachers
      */
     loadMoreTeachers() {
         if (this.isLoading) return;
 
         this.isLoading = true;
-        this.currentPage++;
-
+        
         const loadMoreBtn = document.getElementById('load-more-teachers');
         const originalText = loadMoreBtn.innerHTML;
 
         // Show loading state
         loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
         loadMoreBtn.disabled = true;
+
+        // Calculate how many more teachers to show (show all remaining)
+        const remainingTeachers = this.filteredTeachers.length - (this.currentPage * this.teachersPerPage);
+        if (remainingTeachers > 0) {
+            // Set page to show all teachers
+            this.currentPage = Math.ceil(this.filteredTeachers.length / this.teachersPerPage);
+        }
 
         // Simulate loading delay
         setTimeout(() => {
@@ -627,7 +688,7 @@ class TeachersManager {
             loadMoreBtn.innerHTML = originalText;
             loadMoreBtn.disabled = false;
             this.isLoading = false;
-        }, 1000);
+        }, 500);
     }
 
     /**
