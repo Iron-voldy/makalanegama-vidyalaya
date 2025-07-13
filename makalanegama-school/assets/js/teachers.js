@@ -99,8 +99,6 @@ class TeachersManager {
         const apiPaths = [
             'api/teachers.php',
             './api/teachers.php',
-            '/api/teachers.php',
-            '../api/teachers.php',
             baseUrl + '/api/teachers.php'
         ];
 
@@ -118,18 +116,41 @@ class TeachersManager {
                 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log(`Data received from ${path}:`, data);
                     
                     if (data.error) {
                         this.debugInfo.push(`${path} - API Error: ${data.error}`);
+                        console.log(`API Error from ${path}:`, data.error);
                         continue;
                     }
                     
+                    // Handle both array format and object format with data property
+                    let teachers = [];
                     if (Array.isArray(data)) {
-                        this.debugInfo.push(`${path} - SUCCESS! Found ${data.length} teachers`);
-                        console.log(`SUCCESS: Working API path found: ${path}`);
-                        return { success: true, data: data, path: path };
+                        teachers = data;
+                        console.log(`${path} - Found array with ${teachers.length} teachers`);
+                    } else if (data.data && Array.isArray(data.data)) {
+                        teachers = data.data;
+                        console.log(`${path} - Found data.data array with ${teachers.length} teachers`);
+                    } else if (data.message) {
+                        // Database is empty
+                        this.debugInfo.push(`${path} - Empty database: ${data.message}`);
+                        console.log(`${path} - Empty database message:`, data.message);
+                        return { success: true, data: [], path: path, message: data.message };
                     } else {
-                        this.debugInfo.push(`${path} - Invalid data format`);
+                        console.log(`${path} - Unknown data format:`, typeof data, data);
+                        this.debugInfo.push(`${path} - Unknown data format: ${typeof data}`);
+                        continue;
+                    }
+                    
+                    if (Array.isArray(teachers) && teachers.length >= 0) {
+                        this.debugInfo.push(`${path} - SUCCESS! Found ${teachers.length} teachers`);
+                        console.log(`SUCCESS: Working API path found: ${path} with ${teachers.length} teachers`);
+                        console.log('Sample teacher data:', teachers[0]);
+                        return { success: true, data: teachers, path: path };
+                    } else {
+                        this.debugInfo.push(`${path} - Invalid data format or no teachers`);
+                        console.log(`${path} - Invalid teachers array:`, teachers);
                     }
                 } else {
                     this.debugInfo.push(`${path} - HTTP ${response.status}: ${response.statusText}`);
@@ -145,42 +166,111 @@ class TeachersManager {
     }
 
     /**
-     * Load teachers from database API
+     * Load teachers from database API - SIMPLIFIED VERSION
      */
     async loadTeachers() {
         try {
             this.showLoading(true);
             this.hideError();
-            this.debugInfo = [];
+            console.log('🔄 Loading teachers from API...');
             
-            console.log('Testing multiple API paths...');
+            // Simple direct API call
+            const response = await fetch('api/teachers.php?limit=100');
+            console.log('API Response status:', response.status);
             
-            const result = await this.testApiPaths();
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
             
-            if (result.success) {
-                this.teachers = result.data;
+            const responseText = await response.text();
+            console.log('Raw API response:', responseText);
+            
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch (jsonError) {
+                console.error('JSON parse error:', jsonError);
+                throw new Error('API returned invalid JSON: ' + responseText.substring(0, 100));
+            }
+            
+            console.log('Parsed API data:', data);
+            
+            // Handle different response formats
+            if (data.error) {
+                throw new Error('API Error: ' + data.error);
+            }
+            
+            if (Array.isArray(data)) {
+                this.teachers = data;
                 this.filteredTeachers = [...this.teachers];
-                console.log('Successfully loaded teachers from database:', this.teachers.length);
-                this.debugInfo.push(`Final result: ${this.teachers.length} teachers loaded successfully`);
+                
+                console.log(`✅ Successfully loaded ${this.teachers.length} teachers`);
                 
                 if (this.teachers.length === 0) {
-                    console.log('Database returned empty results - showing fallback data');
-                    this.teachers = this.getFallbackData();
-                    this.filteredTeachers = [...this.teachers];
+                    this.showNoTeachers('No teachers found in the database. Please add teachers through the admin panel.');
+                } else {
+                    this.hideNoTeachers();
                 }
-                
-                this.hideNoTeachers();
-            } else {
-                console.log('All API paths failed - using fallback data');
-                this.teachers = this.getFallbackData();
+            } else if (data.data && Array.isArray(data.data)) {
+                this.teachers = data.data;
                 this.filteredTeachers = [...this.teachers];
+                
+                console.log(`✅ Successfully loaded ${this.teachers.length} teachers from data.data`);
+                
+                if (this.teachers.length === 0) {
+                    const message = data.message || 'No teachers found in the database. Please add teachers through the admin panel.';
+                    this.showNoTeachers(message);
+                } else {
+                    this.hideNoTeachers();
+                }
+            } else {
+                throw new Error('Unexpected API response format: ' + typeof data);
             }
             
         } catch (error) {
-            console.error('Error loading teachers:', error);
-            this.debugInfo.push(`Final error: ${error.message}`);
-            this.teachers = this.getFallbackData();
-            this.filteredTeachers = [...this.teachers];
+            console.error('❌ Error loading teachers:', error);
+            
+            // Try to get some working data for now
+            console.log('🔄 Attempting to fetch some teachers for display...');
+            
+            // For debugging, let's try a direct database call
+            try {
+                const fallbackResponse = await fetch('test-api-direct.php');
+                if (fallbackResponse.ok) {
+                    const fallbackText = await fallbackResponse.text();
+                    console.log('Fallback API response:', fallbackText);
+                    
+                    try {
+                        const fallbackData = JSON.parse(fallbackText);
+                        if (Array.isArray(fallbackData) && fallbackData.length > 0) {
+                            console.log('✅ Fallback API worked! Using fallback data');
+                            this.teachers = fallbackData;
+                            this.filteredTeachers = [...this.teachers];
+                            this.hideNoTeachers();
+                            this.showLoading(false);
+                            return;
+                        }
+                    } catch (e) {
+                        console.log('Fallback API failed to parse:', e);
+                    }
+                }
+            } catch (fallbackError) {
+                console.log('Fallback API also failed:', fallbackError);
+            }
+            
+            // Last resort: check for inline data
+            if (window.TEACHERS_DATA && Array.isArray(window.TEACHERS_DATA) && window.TEACHERS_DATA.length > 0) {
+                console.log('✅ Using inline teachers data as last resort');
+                this.teachers = window.TEACHERS_DATA;
+                this.filteredTeachers = [...this.teachers];
+                this.hideNoTeachers();
+                this.showLoading(false);
+                return;
+            }
+            
+            this.showError(`Unable to load teachers: ${error.message}. Please check the browser console for more details.`);
+            this.teachers = [];
+            this.filteredTeachers = [];
         } finally {
             this.showLoading(false);
         }
@@ -395,8 +485,13 @@ class TeachersManager {
      * Display teachers in grid
      */
     displayTeachers() {
+        console.log('🎯 displayTeachers() called');
+        console.log('Teachers grid element:', this.teachersGrid);
+        console.log('Total teachers:', this.teachers.length);
+        console.log('Filtered teachers:', this.filteredTeachers.length);
+        
         if (!this.teachersGrid) {
-            console.error('Teachers grid not found');
+            console.error('❌ Teachers grid not found - element with id "teachers-grid" missing');
             return;
         }
 
@@ -404,7 +499,8 @@ class TeachersManager {
         const endIndex = this.currentPage * this.teachersPerPage;
         const teachersToShow = this.filteredTeachers.slice(startIndex, endIndex);
 
-        console.log('Displaying teachers:', teachersToShow.length, 'of', this.filteredTeachers.length);
+        console.log('📊 Displaying teachers:', teachersToShow.length, 'of', this.filteredTeachers.length);
+        console.log('Teachers to show:', teachersToShow);
 
         if (teachersToShow.length === 0) {
             if (this.teachers.length === 0) {

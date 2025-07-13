@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Teachers</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #ffdddd; border: 1px solid #dd0000; }
+        .success { background: #ddffdd; border: 1px solid #00dd00; }
+        .teacher-card { border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Teachers Debug Page</h1>
+    
+    <div id="debug-info" class="debug">
+        <h3>Debug Information</h3>
+        <div id="debug-content">Loading...</div>
+    </div>
+    
+    <div id="api-test" class="debug">
+        <h3>API Test</h3>
+        <button onclick="testAPI()">Test API Directly</button>
+        <div id="api-result"></div>
+    </div>
+    
+    <div id="teachers-container">
+        <h3>Teachers from JavaScript</h3>
+        <div id="teachers-list">Loading...</div>
+    </div>
+
+    <script>
+        // Simple debug version
+        async function testAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                console.log('🔄 Testing API directly...');
+                const response = await fetch('api/teachers.php?limit=10');
+                console.log('Response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Data received:', data);
+                    
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ API Success</h4>
+                            <p>Status: ${response.status}</p>
+                            <p>Teachers found: ${Array.isArray(data) ? data.length : 'Not an array'}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    
+                    if (Array.isArray(data) && data.length > 0) {
+                        displayTeachers(data);
+                    }
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('API Test Error:', error);
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ API Error</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayTeachers(teachers) {
+            const listDiv = document.getElementById('teachers-list');
+            
+            if (!teachers || teachers.length === 0) {
+                listDiv.innerHTML = '<p>No teachers to display</p>';
+                return;
+            }
+            
+            let html = `<p>Found ${teachers.length} teachers:</p>`;
+            
+            teachers.forEach(teacher => {
+                html += `
+                    <div class="teacher-card">
+                        <h4>${teacher.name}</h4>
+                        <p><strong>Subject:</strong> ${teacher.subject}</p>
+                        <p><strong>Department:</strong> ${teacher.department}</p>
+                        <p><strong>Qualification:</strong> ${teacher.qualification}</p>
+                        ${teacher.photo_url ? `<p><strong>Photo:</strong> ${teacher.photo_url}</p>` : ''}
+                    </div>
+                `;
+            });
+            
+            listDiv.innerHTML = html;
+        }
+        
+        // Auto-test on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Debug page loaded');
+            
+            document.getElementById('debug-content').innerHTML = `
+                <p><strong>Current URL:</strong> ${window.location.href}</p>
+                <p><strong>Page loaded at:</strong> ${new Date().toLocaleString()}</p>
+                <p><strong>API URL to test:</strong> api/teachers.php</p>
+            `;
+            
+            // Auto-test API
+            setTimeout(testAPI, 1000);
+        });
+    </script>
+</body>
+</html>

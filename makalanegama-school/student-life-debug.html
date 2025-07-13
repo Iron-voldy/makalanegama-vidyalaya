@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Life Debug - Makalanegama School</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        /* Debug styles */
+        .debug-info {
+            position: fixed;
+            top: 100px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 2000;
+        }
+        
+        .navbar-toggler {
+            border: 3px solid red !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Debug Info -->
+    <div class="debug-info">
+        <div>Screen Width: <span id="screen-width"></span>px</div>
+        <div>Bootstrap Version: 5.3.2</div>
+        <div>Navbar Toggle: <span id="toggle-status">Loading...</span></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School" class="logo">
+                <span class="school-name">
+                    <span class="primary-name">Makalanegama School</span>
+                    <span class="secondary-name">මාකලනේගම විද්‍යාලය</span>
+                </span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">About Us</a></li>
+                            <li><a class="dropdown-item" href="curriculum.html">Curriculum</a></li>
+                            <li><a class="dropdown-item active" href="student-life.html">Student Life</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teachers.html">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="achievements.html">Achievements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admissions.html">Admissions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="header-background">
+            <div class="header-overlay"></div>
+            <div class="header-pattern"></div>
+        </div>
+        
+        <div class="container">
+            <div class="row align-items-center min-vh-50">
+                <div class="col-lg-8">
+                    <div class="header-content">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item"><a href="about.html">About</a></li>
+                                <li class="breadcrumb-item active">Student Life</li>
+                            </ol>
+                        </nav>
+                        
+                        <h1 class="page-title">
+                            Vibrant <span class="text-maroon">Student Life</span>
+                        </h1>
+                        
+                        <h2 class="page-subtitle-sinhala">
+                            ජීවමත් ශිෂ්‍ය ජීවිතය
+                        </h2>
+                        
+                        <p class="page-description">
+                            Experience the rich tapestry of student life at Makalanegama School, where learning extends 
+                            beyond the classroom through diverse activities, clubs, and programs that nurture holistic development.
+                        </p>
+                        
+                        <div class="page-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">7</div>
+                                <div class="stat-label">Clubs & Activities</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">3</div>
+                                <div class="stat-label">Sports Teams</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">25+</div>
+                                <div class="stat-label">Annual Events</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Test Content -->
+    <div class="container mt-5 pt-5">
+        <h2>Navigation Debug Test</h2>
+        <p>This is a debug version of the student-life page to test responsive navigation.</p>
+        
+        <div class="alert alert-info">
+            <h5>Testing Instructions:</h5>
+            <ol>
+                <li>Resize browser window to < 992px width</li>
+                <li>Look for the hamburger menu button (should have red border for visibility)</li>
+                <li>Click the hamburger button</li>
+                <li>Menu should expand/collapse</li>
+                <li>Test dropdown functionality</li>
+            </ol>
+        </div>
+        
+        <div class="alert alert-warning">
+            <h5>What to check:</h5>
+            <ul>
+                <li>✅ Hamburger button is visible in mobile view</li>
+                <li>✅ Button has proper Bootstrap classes</li>
+                <li>✅ Menu expands when clicked</li>
+                <li>✅ Menu closes when item is clicked</li>
+                <li>✅ Dropdown works in mobile view</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        // Debug functionality
+        function updateDebugInfo() {
+            document.getElementById('screen-width').textContent = window.innerWidth;
+            
+            const toggler = document.querySelector('.navbar-toggler');
+            const status = document.getElementById('toggle-status');
+            
+            if (toggler) {
+                const isVisible = window.getComputedStyle(toggler).display !== 'none';
+                status.textContent = isVisible ? 'Visible' : 'Hidden';
+                status.style.color = isVisible ? 'lightgreen' : 'red';
+            } else {
+                status.textContent = 'NOT FOUND';
+                status.style.color = 'red';
+            }
+        }
+        
+        // Update debug info on load and resize
+        updateDebugInfo();
+        window.addEventListener('resize', updateDebugInfo);
+        
+        // Log navbar events
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Student Life Debug page loaded');
+            
+            const toggler = document.querySelector('.navbar-toggler');
+            const collapse = document.querySelector('.navbar-collapse');
+            
+            if (toggler) {
+                toggler.addEventListener('click', function() {
+                    console.log('🍔 Hamburger button clicked');
+                });
+            }
+            
+            if (collapse) {
+                collapse.addEventListener('shown.bs.collapse', function() {
+                    console.log('📱 Mobile menu opened');
+                });
+                
+                collapse.addEventListener('hidden.bs.collapse', function() {
+                    console.log('📱 Mobile menu closed');
+                });
+            }
+            
+            // Test Bootstrap
+            if (typeof bootstrap !== 'undefined') {
+                console.log('✅ Bootstrap JS loaded successfully');
+            } else {
+                console.error('❌ Bootstrap JS not loaded');
+            }
+        });
+    </script>
+</body>
+</html>

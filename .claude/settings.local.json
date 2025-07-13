@@ -10,7 +10,10 @@
       "Bash(curl:*)",
       "Bash(/mnt/c/xampp/php/php.exe test_api.php)",
       "Bash(rm:*)",
-      "Bash(/mnt/c/xampp/php/php.exe:*)"
+      "Bash(/mnt/c/xampp/php/php.exe:*)",
+      "Bash(cp:*)",
+      "Bash(node:*)",
+      "Bash(git restore:*)"
     ],
     "deny": []
   }

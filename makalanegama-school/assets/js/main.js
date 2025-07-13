@@ -100,6 +100,19 @@ function hideLoadingScreen() {
 function initializeNavigation() {
     if (!navbar) return;
     
+    // Ensure navbar is in correct state on page load
+    const navbarCollapse = document.querySelector('.navbar-collapse');
+    if (navbarCollapse) {
+        // Remove any existing show classes on page load
+        navbarCollapse.classList.remove('show');
+        navbarCollapse.style.display = '';
+        
+        // Reset any dropdown states
+        document.querySelectorAll('.dropdown-menu.show').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    }
+    
     // Navbar scroll effect
     window.addEventListener('scroll', () => {
         const scrolled = window.scrollY > 100;
@@ -123,17 +136,80 @@ function initializeNavigation() {
         });
     });
     
-    // Mobile menu close on link click
-    const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-    const navbarCollapse = document.querySelector('.navbar-collapse');
+    // Mobile menu close on link click - Enhanced for dropdowns
+    const navbarToggler = document.querySelector('.navbar-toggler');
     
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
+    // Close menu when clicking on any navigation link (including dropdown items)
+    const allNavLinks = document.querySelectorAll('.navbar-nav .nav-link, .navbar-nav .dropdown-item');
+    
+    allNavLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            // For dropdown toggles, don't close immediately - let Bootstrap handle it
+            if (link.classList.contains('dropdown-toggle')) {
+                return;
+            }
+            
+            // For actual navigation links, close the mobile menu
             if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-                const bsCollapse = new bootstrap.Collapse(navbarCollapse);
-                bsCollapse.hide();
+                setTimeout(() => {
+                    const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: false });
+                    bsCollapse.hide();
+                }, 100); // Small delay to allow navigation to start
             }
         });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+            const clickedInsideNav = navbar.contains(e.target);
+            if (!clickedInsideNav) {
+                const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: false });
+                bsCollapse.hide();
+            }
+        }
+    });
+    
+    // Handle dropdown behavior in mobile
+    const dropdownToggleButtons = document.querySelectorAll('.navbar-nav .dropdown-toggle');
+    dropdownToggleButtons.forEach(toggle => {
+        toggle.addEventListener('click', (e) => {
+            // In mobile view, handle dropdown differently
+            if (window.innerWidth < 992) {
+                e.preventDefault();
+                const dropdownMenu = toggle.nextElementSibling;
+                
+                if (dropdownMenu) {
+                    const isOpen = dropdownMenu.classList.contains('show');
+                    
+                    // Close all other dropdowns first
+                    document.querySelectorAll('.navbar-nav .dropdown-menu.show').forEach(menu => {
+                        if (menu !== dropdownMenu) {
+                            menu.classList.remove('show');
+                        }
+                    });
+                    
+                    // Toggle current dropdown
+                    dropdownMenu.classList.toggle('show', !isOpen);
+                }
+            }
+        });
+    });
+    
+    // Handle window resize to fix navbar state
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 992) {
+            // Desktop view - reset mobile menu state
+            if (navbarCollapse) {
+                navbarCollapse.classList.remove('show');
+                navbarCollapse.style.display = '';
+            }
+            
+            // Reset all dropdown states
+            document.querySelectorAll('.dropdown-menu.show').forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+        }
     });
 }
 

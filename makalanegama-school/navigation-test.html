@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Test - JavaScript Fix Verification</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        .test-results {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 2000;
+            max-width: 300px;
+        }
+        
+        .test-item {
+            margin: 5px 0;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-pass {
+            color: #28a745;
+        }
+        
+        .status-fail {
+            color: #dc3545;
+        }
+        
+        .main-content {
+            margin-top: 150px;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Test Results Display -->
+    <div class="test-results" id="testResults">
+        <div><strong>Navigation Test Results</strong></div>
+        <div id="testOutput">Loading tests...</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School" class="logo">
+                <span class="school-name">
+                    <span class="primary-name">Makalanegama School</span>
+                    <span class="secondary-name">මාකලනේගම විද්‍යාලය</span>
+                </span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">About Us</a></li>
+                            <li><a class="dropdown-item" href="curriculum.html">Curriculum</a></li>
+                            <li><a class="dropdown-item" href="student-life.html">Student Life</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teachers.html">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1>Navigation JavaScript Fix Verification</h1>
+            <p>This page tests whether the JavaScript errors have been resolved.</p>
+            
+            <div class="alert alert-info">
+                <h5>Test Instructions:</h5>
+                <ol>
+                    <li>Check the test results panel on the top right</li>
+                    <li>Resize window to mobile view (&lt; 992px)</li>
+                    <li>Click hamburger menu button</li>
+                    <li>Test dropdown functionality</li>
+                    <li>All tests should pass</li>
+                </ol>
+            </div>
+            
+            <div class="alert alert-success">
+                <h5>Expected Results:</h5>
+                <ul>
+                    <li>✅ No JavaScript console errors</li>
+                    <li>✅ Dynamic loading functions available</li>
+                    <li>✅ Navigation responsive behavior working</li>
+                    <li>✅ Bootstrap components functional</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        // Test Functions
+        function runNavigationTests() {
+            const testOutput = document.getElementById('testOutput');
+            const tests = [];
+            
+            // Test 1: Check if main.js loaded without errors
+            tests.push({
+                name: 'Main.js loaded',
+                status: typeof initializeNavigation === 'function' ? 'pass' : 'fail'
+            });
+            
+            // Test 2: Check dynamic loading functions
+            tests.push({
+                name: 'Dynamic loading functions',
+                status: (typeof loadLatestAchievements === 'function' && 
+                        typeof loadUpcomingEvents === 'function' && 
+                        typeof loadLatestNews === 'function') ? 'pass' : 'fail'
+            });
+            
+            // Test 3: Check Bootstrap is loaded
+            tests.push({
+                name: 'Bootstrap loaded',
+                status: typeof bootstrap !== 'undefined' ? 'pass' : 'fail'
+            });
+            
+            // Test 4: Check navbar elements exist
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            tests.push({
+                name: 'Navbar elements exist',
+                status: (navbarToggler && navbarCollapse) ? 'pass' : 'fail'
+            });
+            
+            // Test 5: Check for JavaScript errors
+            let hasErrors = false;
+            const originalError = window.onerror;
+            window.onerror = function() {
+                hasErrors = true;
+                return false;
+            };
+            
+            setTimeout(() => {
+                tests.push({
+                    name: 'No JavaScript errors',
+                    status: !hasErrors ? 'pass' : 'fail'
+                });
+                
+                window.onerror = originalError;
+                displayTestResults(tests);
+            }, 1000);
+        }
+        
+        function displayTestResults(tests) {
+            const testOutput = document.getElementById('testOutput');
+            let html = '';
+            
+            tests.forEach(test => {
+                const statusClass = test.status === 'pass' ? 'status-pass' : 'status-fail';
+                const icon = test.status === 'pass' ? '✅' : '❌';
+                html += `<div class="test-item">${icon} <span class="${statusClass}">${test.name}</span></div>`;
+            });
+            
+            const passCount = tests.filter(t => t.status === 'pass').length;
+            const totalCount = tests.length;
+            
+            html += `<div class="test-item"><strong>Result: ${passCount}/${totalCount} tests passed</strong></div>`;
+            
+            testOutput.innerHTML = html;
+            
+            // Log to console for debugging
+            console.log('Navigation Test Results:', tests);
+            
+            if (passCount === totalCount) {
+                console.log('🎉 All navigation tests passed! JavaScript errors have been fixed.');
+            } else {
+                console.log('⚠️ Some tests failed. JavaScript issues may still exist.');
+            }
+        }
+        
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Running navigation tests...');
+            setTimeout(runNavigationTests, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Teachers Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .teacher { border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .error { color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; }
+        .success { color: green; background: #e6ffe6; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Simple Teachers Test</h1>
+    <div id="status">Loading...</div>
+    <div id="teachers"></div>
+
+    <script>
+        async function loadTeachers() {
+            const statusDiv = document.getElementById('status');
+            const teachersDiv = document.getElementById('teachers');
+            
+            try {
+                statusDiv.innerHTML = 'Connecting to API...';
+                console.log('Fetching from: api/teachers.php');
+                
+                const response = await fetch('api/teachers.php');
+                console.log('Response status:', response.status);
+                console.log('Response OK:', response.ok);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const text = await response.text();
+                console.log('Raw response:', text);
+                
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    throw new Error('Invalid JSON: ' + text);
+                }
+                
+                console.log('Parsed data:', data);
+                
+                if (Array.isArray(data)) {
+                    statusDiv.innerHTML = `<div class="success">✅ Success! Found ${data.length} teachers</div>`;
+                    
+                    if (data.length === 0) {
+                        teachersDiv.innerHTML = '<p>No teachers found in database.</p>';
+                    } else {
+                        let html = '';
+                        data.forEach(teacher => {
+                            html += `
+                                <div class="teacher">
+                                    <h3>${teacher.name}</h3>
+                                    <p><strong>Subject:</strong> ${teacher.subject}</p>
+                                    <p><strong>Department:</strong> ${teacher.department}</p>
+                                    <p><strong>Qualification:</strong> ${teacher.qualification || 'Not specified'}</p>
+                                    ${teacher.bio ? `<p><strong>Bio:</strong> ${teacher.bio}</p>` : ''}
+                                </div>
+                            `;
+                        });
+                        teachersDiv.innerHTML = html;
+                    }
+                } else if (data.error) {
+                    throw new Error('API Error: ' + data.error);
+                } else {
+                    throw new Error('Unexpected data format');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+                
+                // Try to provide more specific help
+                if (error.message.includes('404')) {
+                    statusDiv.innerHTML += '<p>API file not found. Check if api/teachers.php exists.</p>';
+                } else if (error.message.includes('500')) {
+                    statusDiv.innerHTML += '<p>Server error. Check PHP/MySQL setup.</p>';
+                } else if (error.message.includes('Failed to fetch')) {
+                    statusDiv.innerHTML += '<p>Network error. Make sure server is running.</p>';
+                }
+            }
+        }
+        
+        // Load on page ready
+        loadTeachers();
+    </script>
+</body>
+</html>

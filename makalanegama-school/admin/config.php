@@ -14,13 +14,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Environment settings
-define('ENVIRONMENT', 'development'); // Change to 'production' for live site
+define('ENVIRONMENT', 'development'); // Set to development for local XAMPP
 
-// Database configuration
+// Database configuration for Local XAMPP
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'makalanegama_school');
 define('DB_USER', 'root');
 define('DB_PASS', '2009928');
+define('DB_PORT', 3306);
 
 // File upload settings
 define('UPLOAD_MAX_SIZE', 10 * 1024 * 1024); // 10MB

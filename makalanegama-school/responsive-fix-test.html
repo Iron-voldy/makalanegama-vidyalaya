@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Complete Responsive Navigation Fix Test</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        .test-dashboard {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 11px;
+            z-index: 2000;
+            max-width: 280px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .test-item {
+            margin: 4px 0;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-icon {
+            margin-left: 5px;
+            font-weight: bold;
+        }
+        
+        .status-pass { color: #28a745; }
+        .status-warning { color: #ffc107; }
+        .status-fail { color: #dc3545; }
+        
+        .main-content {
+            margin-top: 120px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        /* Debug overlay */
+        .debug-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1500;
+        }
+        
+        .debug-overlay.show-bounds .navbar-toggler {
+            outline: 3px solid #ff0000 !important;
+            outline-offset: 2px;
+        }
+        
+        .debug-overlay.show-bounds .navbar-brand {
+            outline: 2px solid #00ff00 !important;
+            outline-offset: 1px;
+        }
+        
+        .debug-overlay.show-bounds .navbar-collapse {
+            outline: 2px solid #0099ff !important;
+            outline-offset: 1px;
+        }
+        
+        .test-controls {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .test-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            margin: 2px;
+        }
+        
+        .test-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Test Dashboard -->
+    <div class="test-dashboard" id="testDashboard">
+        <div><strong>🔧 Navigation Fix Test</strong></div>
+        <div id="testResults">Loading tests...</div>
+        
+        <div class="test-controls">
+            <button class="test-btn" onclick="toggleDebugBounds()">Toggle Bounds</button>
+            <button class="test-btn" onclick="testDropdown()">Test Dropdown</button>
+            <button class="test-btn" onclick="refreshTests()">Refresh</button>
+        </div>
+    </div>
+
+    <!-- Debug Overlay -->
+    <div class="debug-overlay" id="debugOverlay"></div>
+
+    <!-- Navigation - Exact copy from index.html -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School" class="logo">
+                <span class="school-name">
+                    <span class="primary-name">Makalanegama School</span>
+                    <span class="secondary-name">මාකලනේගම විද්‍යාලය</span>
+                </span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">About Us</a></li>
+                            <li><a class="dropdown-item" href="curriculum.html">Curriculum</a></li>
+                            <li><a class="dropdown-item" href="student-life.html">Student Life</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teachers.html">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="achievements.html">Achievements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admissions.html">Admissions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1>🎯 Complete Responsive Navigation Fix Test</h1>
+            <p>This page tests all the responsive navigation fixes applied.</p>
+            
+            <div class="alert alert-success">
+                <h5>✅ What Should Work Now:</h5>
+                <ul>
+                    <li><strong>No Swiping:</strong> Toggle button visible immediately without horizontal scroll</li>
+                    <li><strong>Visible Menu:</strong> Dropdown menu text is clearly visible (dark red on white)</li>
+                    <li><strong>Proper Spacing:</strong> Brand text truncates to make room for toggle</li>
+                    <li><strong>Touch Friendly:</strong> Toggle button is 45-50px (accessible size)</li>
+                    <li><strong>All Screen Sizes:</strong> Works on 320px to 991px widths</li>
+                </ul>
+            </div>
+            
+            <div class="alert alert-info">
+                <h5>📱 Testing Instructions:</h5>
+                <ol>
+                    <li>Open developer tools (F12)</li>
+                    <li>Switch to device toolbar (mobile view)</li>
+                    <li>Test these widths: 320px, 375px, 414px, 768px, 991px</li>
+                    <li>Check toggle is always visible on the right</li>
+                    <li>Click toggle to open menu</li>
+                    <li>Verify dropdown items are readable (dark red text)</li>
+                    <li>Test dropdown functionality</li>
+                </ol>
+            </div>
+            
+            <div class="alert alert-warning">
+                <h5>🔍 Debug Features:</h5>
+                <ul>
+                    <li>Use <strong>Toggle Bounds</strong> to see element outlines</li>
+                    <li>Use <strong>Test Dropdown</strong> to programmatically test dropdowns</li>
+                    <li>Check the test dashboard for real-time measurements</li>
+                    <li>Red outline = Toggle button, Green = Brand, Blue = Menu</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        let debugBoundsVisible = false;
+        
+        function runComprehensiveTests() {
+            const testResults = document.getElementById('testResults');
+            const tests = [];
+            
+            const viewport = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+            
+            const navbar = document.querySelector('.navbar .container');
+            const brand = document.querySelector('.navbar-brand');
+            const toggler = document.querySelector('.navbar-toggler');
+            const collapse = document.querySelector('.navbar-collapse');
+            
+            if (!navbar || !brand || !toggler || !collapse) {
+                testResults.innerHTML = '<div class="test-item status-fail">❌ Critical elements missing</div>';
+                return;
+            }
+            
+            const navbarRect = navbar.getBoundingClientRect();
+            const brandRect = brand.getBoundingClientRect();
+            const togglerRect = toggler.getBoundingClientRect();
+            
+            // Test 1: Toggle visibility (no horizontal scroll needed)
+            const toggleVisible = togglerRect.right <= viewport.width;
+            tests.push({
+                name: 'Toggle Visible',
+                status: toggleVisible ? 'pass' : 'fail',
+                value: `${togglerRect.right.toFixed(0)}px ≤ ${viewport.width}px`
+            });
+            
+            // Test 2: No horizontal scroll
+            const hasHorizontalScroll = document.body.scrollWidth > viewport.width;
+            tests.push({
+                name: 'No H-Scroll',
+                status: !hasHorizontalScroll ? 'pass' : 'fail',
+                value: `Body: ${document.body.scrollWidth}px`
+            });
+            
+            // Test 3: Brand truncation working
+            const brandOverflow = brandRect.right > togglerRect.left - 10;
+            tests.push({
+                name: 'Brand Truncated',
+                status: !brandOverflow ? 'pass' : 'warning',
+                value: `Gap: ${(togglerRect.left - brandRect.right).toFixed(0)}px`
+            });
+            
+            // Test 4: Touch target size
+            const touchSize = Math.min(togglerRect.width, togglerRect.height);
+            tests.push({
+                name: 'Touch Target',
+                status: touchSize >= 44 ? 'pass' : 'warning',
+                value: `${touchSize.toFixed(0)}px`
+            });
+            
+            // Test 5: Dropdown menu visibility
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            const firstDropdownStyle = dropdownItems.length > 0 ? 
+                window.getComputedStyle(dropdownItems[0]) : null;
+            const dropdownVisible = firstDropdownStyle && 
+                firstDropdownStyle.color !== firstDropdownStyle.backgroundColor;
+            tests.push({
+                name: 'Menu Colors',
+                status: dropdownVisible ? 'pass' : 'warning',
+                value: firstDropdownStyle ? firstDropdownStyle.color : 'N/A'
+            });
+            
+            // Test 6: Bootstrap functionality
+            tests.push({
+                name: 'Bootstrap OK',
+                status: typeof bootstrap !== 'undefined' ? 'pass' : 'fail',
+                value: typeof bootstrap !== 'undefined' ? 'Loaded' : 'Missing'
+            });
+            
+            // Test 7: JavaScript errors
+            let hasErrors = false;
+            const originalError = window.onerror;
+            window.onerror = function() { hasErrors = true; return false; };
+            
+            setTimeout(() => {
+                tests.push({
+                    name: 'No JS Errors',
+                    status: !hasErrors ? 'pass' : 'fail',
+                    value: hasErrors ? 'Has errors' : 'Clean'
+                });
+                
+                window.onerror = originalError;
+                displayTestResults(tests, viewport);
+            }, 500);
+        }
+        
+        function displayTestResults(tests, viewport) {
+            const testResults = document.getElementById('testResults');
+            let html = `<div class="test-item"><strong>Screen: ${viewport.width}×${viewport.height}</strong></div>`;
+            
+            tests.forEach(test => {
+                const statusClass = `status-${test.status}`;
+                const icon = test.status === 'pass' ? '✅' : 
+                           test.status === 'warning' ? '⚠️' : '❌';
+                html += `<div class="test-item">
+                    <span>${test.name}</span>
+                    <span class="${statusClass}">${icon}</span>
+                </div>`;
+                if (test.value) {
+                    html += `<div style="font-size: 9px; color: #ccc; margin-left: 10px;">${test.value}</div>`;
+                }
+            });
+            
+            const passCount = tests.filter(t => t.status === 'pass').length;
+            const totalCount = tests.length;
+            const overallStatus = passCount === totalCount ? 'pass' : 
+                                passCount >= totalCount - 1 ? 'warning' : 'fail';
+            
+            html += `<div class="test-item status-${overallStatus}">
+                <strong>Result: ${passCount}/${totalCount}</strong>
+                <span class="status-${overallStatus}">${overallStatus === 'pass' ? '🎉' : overallStatus === 'warning' ? '⚠️' : '❌'}</span>
+            </div>`;
+            
+            testResults.innerHTML = html;
+            
+            // Console logging
+            console.log(`🔧 Navigation Test Results (${viewport.width}px):`, tests);
+            if (passCount === totalCount) {
+                console.log('🎉 All responsive navigation issues fixed!');
+            }
+        }
+        
+        function toggleDebugBounds() {
+            debugBoundsVisible = !debugBoundsVisible;
+            const overlay = document.getElementById('debugOverlay');
+            if (debugBoundsVisible) {
+                overlay.classList.add('show-bounds');
+            } else {
+                overlay.classList.remove('show-bounds');
+            }
+        }
+        
+        function testDropdown() {
+            const dropdownToggle = document.querySelector('.dropdown-toggle');
+            if (dropdownToggle) {
+                dropdownToggle.click();
+                console.log('🔽 Dropdown test triggered');
+            }
+        }
+        
+        function refreshTests() {
+            runComprehensiveTests();
+        }
+        
+        // Auto-run tests
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 Starting comprehensive responsive navigation tests...');
+            setTimeout(runComprehensiveTests, 100);
+        });
+        
+        // Re-run on resize
+        window.addEventListener('resize', function() {
+            setTimeout(runComprehensiveTests, 100);
+        });
+        
+        // Test navigation events
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggler = document.querySelector('.navbar-toggler');
+            const collapse = document.querySelector('.navbar-collapse');
+            
+            if (toggler) {
+                toggler.addEventListener('click', function() {
+                    console.log('🍔 Toggle clicked - Position: right=' + 
+                        this.getBoundingClientRect().right + 'px, viewport=' + window.innerWidth + 'px');
+                });
+            }
+            
+            if (collapse) {
+                collapse.addEventListener('shown.bs.collapse', function() {
+                    console.log('📱 Menu opened successfully');
+                });
+                
+                collapse.addEventListener('hidden.bs.collapse', function() {
+                    console.log('📱 Menu closed successfully');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

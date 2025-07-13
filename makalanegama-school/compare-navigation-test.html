@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 Navigation Comparison Test</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --maroon-primary: #800020;
+            --maroon-dark: #5d0017;
+            --white: #ffffff;
+            --medium-gray: #64748b;
+            --dark-gray: #334155;
+            --font-primary: 'Inter', 'Noto Sans Sinhala', sans-serif;
+            --font-sinhala: 'Noto Sans Sinhala', sans-serif;
+            --transition-medium: 0.3s ease-out;
+        }
+        
+        body {
+            font-family: var(--font-primary);
+            color: var(--dark-gray);
+            background-color: var(--white);
+        }
+
+        /* Navigation - Same as achievements.html */
+        .custom-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(128, 0, 32, 0.1);
+            padding: 1rem 0;
+            transition: var(--transition-medium);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-brand .logo {
+            width: 50px;
+            height: 50px;
+        }
+
+        .school-name .primary-name {
+            display: block;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--maroon-primary);
+            line-height: 1.2;
+        }
+
+        .school-name .secondary-name {
+            display: block;
+            font-family: var(--font-sinhala);
+            font-size: 0.875rem;
+            color: var(--medium-gray);
+            line-height: 1.2;
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: var(--dark-gray);
+            padding: 0.5rem 1rem;
+            position: relative;
+            transition: var(--transition-medium);
+        }
+
+        .navbar-nav .nav-link.active,
+        .navbar-nav .nav-link:hover {
+            color: var(--maroon-primary);
+        }
+
+        /* Test Content */
+        .test-content {
+            margin-top: 100px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .test-card {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: #f8f9fa;
+        }
+        
+        .status-good { color: #28a745; }
+        .status-warning { color: #ffc107; }
+        .status-bad { color: #dc3545; }
+        
+        .test-results {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 2000;
+            max-width: 300px;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar-brand .school-name .primary-name {
+                font-size: 1rem;
+            }
+            
+            .navbar-brand .school-name .secondary-name {
+                font-size: 0.75rem;
+            }
+            
+            .navbar-brand .logo {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand .school-name .primary-name {
+                font-size: 0.9rem;
+            }
+            
+            .navbar-brand .school-name .secondary-name {
+                font-size: 0.7rem;
+            }
+            
+            .navbar-brand .logo {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Test Results -->
+    <div class="test-results" id="testResults">
+        <div><strong>🔄 Navigation Comparison</strong></div>
+        <div id="testOutput">Testing...</div>
+    </div>
+
+    <!-- Navigation - Using achievements.html approach -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School" class="logo">
+                <span class="school-name">
+                    <span class="primary-name">Makalanegama School</span>
+                    <span class="secondary-name">මාකලනේගම විද්‍යාලය</span>
+                </span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">About Us</a></li>
+                            <li><a class="dropdown-item" href="curriculum.html">Curriculum</a></li>
+                            <li><a class="dropdown-item" href="student-life.html">Student Life</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teachers.html">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="achievements.html">Achievements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Test Content -->
+    <div class="test-content">
+        <div class="container">
+            <h1>🔄 Navigation Comparison Test</h1>
+            <p>Testing the achievements.html navigation approach vs complex responsive.css overrides</p>
+            
+            <div class="comparison-grid">
+                <div class="test-card">
+                    <h4>✅ This Page (Pure Bootstrap)</h4>
+                    <ul>
+                        <li>Uses Bootstrap 5.3.2 default behavior</li>
+                        <li>Minimal custom CSS (like achievements.html)</li>
+                        <li>No complex responsive overrides</li>
+                        <li>No external CSS files conflicts</li>
+                    </ul>
+                    <div class="mt-3">
+                        <strong>Expected Results:</strong>
+                        <ul>
+                            <li>Toggle visible without swiping</li>
+                            <li>Dropdown menu readable</li>
+                            <li>Responsive works naturally</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="test-card">
+                    <h4>❌ Original index.html (With overrides)</h4>
+                    <ul>
+                        <li>Used external responsive.css file</li>
+                        <li>Complex viewport width calculations</li>
+                        <li>Multiple !important overrides</li>
+                        <li>Fighting Bootstrap's responsive system</li>
+                    </ul>
+                    <div class="mt-3">
+                        <strong>Problems Caused:</strong>
+                        <ul>
+                            <li>Toggle hidden, required swiping</li>
+                            <li>White menu on white background</li>
+                            <li>Horizontal scrolling issues</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-success mt-4">
+                <h5>✅ Solution Applied to index.html:</h5>
+                <ul>
+                    <li><strong>Removed</strong> problematic external CSS files (style.css, responsive.css)</li>
+                    <li><strong>Added</strong> minimal inline CSS (same as achievements.html)</li>
+                    <li><strong>Let Bootstrap handle</strong> responsive behavior naturally</li>
+                    <li><strong>Kept</strong> only essential styling for branding and colors</li>
+                </ul>
+            </div>
+            
+            <div class="alert alert-info mt-4">
+                <h5>📱 Test Instructions:</h5>
+                <ol>
+                    <li>Open developer tools (F12)</li>
+                    <li>Switch to mobile view (Toggle device toolbar)</li>
+                    <li>Test screen widths: 320px, 375px, 414px, 768px</li>
+                    <li>Verify toggle button is immediately visible</li>
+                    <li>Click toggle to test menu expansion</li>
+                    <li>Test dropdown functionality and readability</li>
+                    <li>Compare with achievements.html behavior</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function runComparisonTest() {
+            const testOutput = document.getElementById('testOutput');
+            const viewport = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+            
+            const navbar = document.querySelector('.navbar .container');
+            const brand = document.querySelector('.navbar-brand');
+            const toggler = document.querySelector('.navbar-toggler');
+            
+            if (!navbar || !brand || !toggler) {
+                testOutput.innerHTML = '<div class="status-bad">❌ Elements missing</div>';
+                return;
+            }
+            
+            const navbarRect = navbar.getBoundingClientRect();
+            const brandRect = brand.getBoundingClientRect();
+            const togglerRect = toggler.getBoundingClientRect();
+            
+            let html = `<div>Screen: ${viewport.width}×${viewport.height}</div>`;
+            
+            // Test 1: Toggle visibility
+            const toggleVisible = togglerRect.right <= viewport.width;
+            html += `<div class="${toggleVisible ? 'status-good' : 'status-bad'}">
+                ${toggleVisible ? '✅' : '❌'} Toggle Visible: ${togglerRect.right.toFixed(0)}/${viewport.width}px
+            </div>`;
+            
+            // Test 2: No horizontal scroll
+            const hasHorizontalScroll = document.body.scrollWidth > viewport.width;
+            html += `<div class="${!hasHorizontalScroll ? 'status-good' : 'status-bad'}">
+                ${!hasHorizontalScroll ? '✅' : '❌'} No H-Scroll: ${document.body.scrollWidth}px
+            </div>`;
+            
+            // Test 3: Bootstrap functionality
+            html += `<div class="${typeof bootstrap !== 'undefined' ? 'status-good' : 'status-bad'}">
+                ${typeof bootstrap !== 'undefined' ? '✅' : '❌'} Bootstrap: ${typeof bootstrap !== 'undefined' ? 'OK' : 'Missing'}
+            </div>`;
+            
+            // Test 4: Dropdown visibility
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            const hasDropdownItems = dropdownItems.length > 0;
+            html += `<div class="${hasDropdownItems ? 'status-good' : 'status-warning'}">
+                ${hasDropdownItems ? '✅' : '⚠️'} Dropdown Items: ${dropdownItems.length}
+            </div>`;
+            
+            html += `<div class="mt-2"><small>This should match achievements.html behavior</small></div>`;
+            
+            testOutput.innerHTML = html;
+            
+            console.log('🔄 Comparison Test Results:', {
+                viewport,
+                toggleVisible,
+                hasHorizontalScroll,
+                togglerPosition: togglerRect.right,
+                bodyWidth: document.body.scrollWidth
+            });
+        }
+        
+        // Auto-run tests
+        document.addEventListener('DOMContentLoaded', runComparisonTest);
+        window.addEventListener('resize', runComparisonTest);
+        
+        // Test navigation events
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggler = document.querySelector('.navbar-toggler');
+            const collapse = document.querySelector('.navbar-collapse');
+            
+            if (toggler) {
+                toggler.addEventListener('click', function() {
+                    console.log('🍔 Toggle clicked - Using pure Bootstrap behavior');
+                });
+            }
+            
+            if (collapse) {
+                collapse.addEventListener('shown.bs.collapse', function() {
+                    console.log('📱 Menu opened - Bootstrap working correctly');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

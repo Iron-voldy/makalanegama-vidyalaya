@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Navigation Test</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School" class="logo">
+                <span class="school-name">
+                    <span class="primary-name">Makalanegama School</span>
+                    <span class="secondary-name">මාකලනේගම විද්‍යාලය</span>
+                </span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">About Us</a></li>
+                            <li><a class="dropdown-item" href="curriculum.html">Curriculum</a></li>
+                            <li><a class="dropdown-item" href="student-life.html">Student Life</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teachers.html">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="achievements.html">Achievements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admissions.html">Admissions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Test Content -->
+    <div style="margin-top: 120px; padding: 2rem;">
+        <div class="container">
+            <h1>Mobile Navigation Test</h1>
+            <p>This page is for testing the responsive navigation behavior.</p>
+            
+            <h3>Instructions:</h3>
+            <ol>
+                <li>Resize browser to mobile view (< 992px width)</li>
+                <li>Click the hamburger menu button</li>
+                <li>Click on "About" to open the dropdown</li>
+                <li>Click on any dropdown item (e.g., "About Us")</li>
+                <li>Verify that the menu closes after clicking</li>
+                <li>Test on actual mobile device</li>
+            </ol>
+            
+            <h3>Expected Behavior:</h3>
+            <ul>
+                <li>✅ Mobile menu opens when hamburger is clicked</li>
+                <li>✅ Dropdown shows sub-items when "About" is clicked</li>
+                <li>✅ Menu closes automatically when a dropdown item is clicked</li>
+                <li>✅ Menu closes when clicking outside the navigation</li>
+                <li>✅ Page navigation works correctly</li>
+            </ul>
+            
+            <div class="alert alert-info mt-4">
+                <strong>Debug Console:</strong> Open browser developer tools (F12) to see navigation debug messages.
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        // Additional debug logging
+        console.log('🔧 Mobile test page loaded');
+        
+        // Monitor navbar collapse state
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+        if (navbarCollapse) {
+            navbarCollapse.addEventListener('shown.bs.collapse', () => {
+                console.log('📱 Mobile menu opened');
+            });
+            
+            navbarCollapse.addEventListener('hidden.bs.collapse', () => {
+                console.log('📱 Mobile menu closed');
+            });
+        }
+        
+        // Monitor dropdown clicks
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                console.log('🔗 Dropdown item clicked:', e.target.textContent);
+            });
+        });
+    </script>
+</body>
+</html>

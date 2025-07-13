@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Toggle Position Test</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 2000;
+            max-width: 250px;
+        }
+        
+        .status-item {
+            margin: 5px 0;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-good {
+            color: #28a745;
+        }
+        
+        .status-warning {
+            color: #ffc107;
+        }
+        
+        .status-bad {
+            color: #dc3545;
+        }
+        
+        .main-content {
+            margin-top: 120px;
+            padding: 20px;
+        }
+        
+        /* Visual debugging */
+        .navbar-toggler {
+            outline: 3px solid #ff0000 !important;
+            outline-offset: 2px;
+        }
+        
+        .navbar-brand {
+            outline: 2px solid #00ff00 !important;
+            outline-offset: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debugPanel">
+        <div><strong>🔧 Navbar Toggle Test</strong></div>
+        <div id="debugOutput">Loading...</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School" class="logo">
+                <span class="school-name">
+                    <span class="primary-name">Makalanegama School</span>
+                    <span class="secondary-name">මාකලනේගම විද්‍යාලය</span>
+                </span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">About Us</a></li>
+                            <li><a class="dropdown-item" href="curriculum.html">Curriculum</a></li>
+                            <li><a class="dropdown-item" href="student-life.html">Student Life</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teachers.html">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1>Navbar Toggle Position Test</h1>
+            <p>This page tests the navbar toggle button positioning in responsive view.</p>
+            
+            <div class="alert alert-info">
+                <h5>📱 Testing Instructions:</h5>
+                <ol>
+                    <li>Open browser developer tools (F12)</li>
+                    <li>Switch to mobile view (Toggle device toolbar)</li>
+                    <li>Test different screen sizes: 320px, 375px, 414px, 768px</li>
+                    <li>Check if toggle button is visible without horizontal scrolling</li>
+                    <li>Verify toggle button is clickable and accessible</li>
+                </ol>
+            </div>
+            
+            <div class="alert alert-success">
+                <h5>✅ Expected Results:</h5>
+                <ul>
+                    <li>Toggle button visible at all screen sizes</li>
+                    <li>No horizontal scrolling required to reach toggle</li>
+                    <li>Toggle button has sufficient touch target (44px minimum)</li>
+                    <li>School name truncates gracefully to make room for toggle</li>
+                    <li>Toggle button positioned on the right side</li>
+                </ul>
+            </div>
+            
+            <div class="alert alert-warning">
+                <h5>🎯 Visual Debugging:</h5>
+                <ul>
+                    <li><span style="color: #ff0000;">Red outline</span> = Toggle button area</li>
+                    <li><span style="color: #00ff00;">Green outline</span> = Brand area</li>
+                    <li>Check debug panel for measurements</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="assets/js/main.js"></script>
+    
+    <script>
+        function updateDebugInfo() {
+            const debugOutput = document.getElementById('debugOutput');
+            const navbar = document.querySelector('.navbar .container');
+            const brand = document.querySelector('.navbar-brand');
+            const toggler = document.querySelector('.navbar-toggler');
+            
+            if (!navbar || !brand || !toggler) {
+                debugOutput.innerHTML = '<div class="status-bad">❌ Elements not found</div>';
+                return;
+            }
+            
+            const viewportWidth = window.innerWidth;
+            const navbarRect = navbar.getBoundingClientRect();
+            const brandRect = brand.getBoundingClientRect();
+            const togglerRect = toggler.getBoundingClientRect();
+            
+            const togglerVisible = togglerRect.right <= viewportWidth;
+            const togglerOverlapping = brandRect.right > togglerRect.left;
+            const hasHorizontalScroll = document.body.scrollWidth > viewportWidth;
+            
+            let status = '';
+            
+            // Viewport info
+            status += `<div class="status-item">Screen: ${viewportWidth}px</div>`;
+            
+            // Toggle visibility
+            if (togglerVisible && !hasHorizontalScroll) {
+                status += `<div class="status-item status-good">✅ Toggle visible</div>`;
+            } else {
+                status += `<div class="status-item status-bad">❌ Toggle off-screen</div>`;
+            }
+            
+            // Overlap check
+            if (togglerOverlapping) {
+                status += `<div class="status-item status-warning">⚠️ Brand overlapping</div>`;
+            } else {
+                status += `<div class="status-item status-good">✅ No overlap</div>`;
+            }
+            
+            // Positioning
+            status += `<div class="status-item">Brand width: ${brandRect.width.toFixed(0)}px</div>`;
+            status += `<div class="status-item">Toggle right: ${togglerRect.right.toFixed(0)}px</div>`;
+            status += `<div class="status-item">Viewport: ${viewportWidth}px</div>`;
+            
+            // Touch target size
+            const touchTargetSize = Math.min(togglerRect.width, togglerRect.height);
+            if (touchTargetSize >= 44) {
+                status += `<div class="status-item status-good">✅ Touch target OK (${touchTargetSize.toFixed(0)}px)</div>`;
+            } else {
+                status += `<div class="status-item status-warning">⚠️ Touch target small (${touchTargetSize.toFixed(0)}px)</div>`;
+            }
+            
+            debugOutput.innerHTML = status;
+        }
+        
+        // Update debug info on load and resize
+        document.addEventListener('DOMContentLoaded', updateDebugInfo);
+        window.addEventListener('resize', updateDebugInfo);
+        
+        // Test toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggler = document.querySelector('.navbar-toggler');
+            const collapse = document.querySelector('.navbar-collapse');
+            
+            if (toggler) {
+                toggler.addEventListener('click', function() {
+                    console.log('🍔 Toggle clicked - functionality OK');
+                });
+            }
+            
+            if (collapse) {
+                collapse.addEventListener('shown.bs.collapse', function() {
+                    console.log('📱 Menu opened - Bootstrap OK');
+                });
+                
+                collapse.addEventListener('hidden.bs.collapse', function() {
+                    console.log('📱 Menu closed - Bootstrap OK');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

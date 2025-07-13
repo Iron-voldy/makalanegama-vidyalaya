@@ -31,6 +31,7 @@ try {
     
     // Create database instance
     $db = new Database();
+    error_log("Database connection successful");
     
     // Get parameters
     $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
@@ -117,6 +118,27 @@ try {
     
     // Log the results
     error_log("Found " . count($teachers) . " teachers");
+    
+    // If no teachers found, check if it's because table is empty
+    if (count($teachers) === 0) {
+        // Check if the teachers table exists and has any data at all
+        $checkQuery = "SELECT COUNT(*) as total FROM teachers";
+        $checkStmt = $db->getPDO()->prepare($checkQuery);
+        $checkStmt->execute();
+        $totalTeachers = $checkStmt->fetch()['total'];
+        
+        error_log("Total teachers in database: " . $totalTeachers);
+        
+        if ($totalTeachers === 0) {
+            // Return empty array with a message indicating no teachers exist
+            echo json_encode([
+                'message' => 'No teachers found in database. Please add teachers through the admin panel.',
+                'total_teachers' => 0,
+                'data' => []
+            ], JSON_PRETTY_PRINT);
+            exit;
+        }
+    }
     
     // Format the response
     $response = [];

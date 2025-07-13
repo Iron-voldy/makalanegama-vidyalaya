@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 Navbar Comparison: Index.html vs Achievements.html</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS - Same as index.html now has -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <style>
+        .comparison-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 2000;
+            max-width: 350px;
+        }
+        
+        .status-good { color: #28a745; }
+        .status-warning { color: #ffc107; }
+        .status-bad { color: #dc3545; }
+        
+        .test-content {
+            margin-top: 120px;
+            padding: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Comparison Panel -->
+    <div class="comparison-panel" id="comparisonPanel">
+        <div><strong>🔄 Navbar Comparison Test</strong></div>
+        <div id="comparisonResults">Testing...</div>
+    </div>
+
+    <!-- Navigation - Should now be identical to achievements.html -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/images/logo/logo.png" alt="Makalanegama School" class="logo">
+                <span class="school-name">
+                    <span class="primary-name">Makalanegama School</span>
+                    <span class="secondary-name">මාකලනේගම විද්‍යාලය</span>
+                </span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            About
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="about.html">About Us</a></li>
+                            <li><a class="dropdown-item" href="curriculum.html">Curriculum</a></li>
+                            <li><a class="dropdown-item" href="student-life.html">Student Life</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="teachers.html">Teachers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="achievements.html">Achievements</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="events.html">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="news.html">News</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admissions.html">Admissions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Test Content -->
+    <div class="test-content">
+        <div class="container">
+            <h1>🔄 Navbar Comparison Test</h1>
+            <p>Testing if index.html now has the same navbar behavior as achievements.html</p>
+            
+            <div class="alert alert-info">
+                <h5>✅ Applied from achievements.html:</h5>
+                <ul>
+                    <li><strong>Exact CSS:</strong> Copied `.custom-navbar`, `.navbar-brand`, `.navbar-nav` styles</li>
+                    <li><strong>Responsive breakpoints:</strong> 768px and 576px only (simple approach)</li>
+                    <li><strong>Logo sizing:</strong> 50px → 40px → 35px at breakpoints</li>
+                    <li><strong>Text sizing:</strong> 1.25rem → 1rem → 0.9rem for primary name</li>
+                    <li><strong>Pure Bootstrap behavior:</strong> No complex overrides or !important rules</li>
+                </ul>
+            </div>
+            
+            <div class="alert alert-success">
+                <h5>📱 Test Instructions:</h5>
+                <ol>
+                    <li>Open browser dev tools (F12)</li>
+                    <li>Toggle device toolbar (mobile view)</li>
+                    <li>Test these exact widths: 320px, 375px, 414px, 576px, 768px, 991px</li>
+                    <li>Compare with achievements.html behavior</li>
+                    <li>Verify toggle button is always visible</li>
+                    <li>Check dropdown menu works properly</li>
+                    <li>Confirm no horizontal scrolling</li>
+                </ol>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>✅ Should Work Like achievements.html</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>✅ Toggle immediately visible</li>
+                                <li>✅ No horizontal swiping needed</li>
+                                <li>✅ Smooth responsive transitions</li>
+                                <li>✅ Proper logo scaling</li>
+                                <li>✅ Text readable at all sizes</li>
+                                <li>✅ Dropdown menus functional</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>🔍 Comparison Points</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li><strong>768px:</strong> Logo 40px, primary text 1rem</li>
+                                <li><strong>576px:</strong> Logo 35px, primary text 0.9rem</li>
+                                <li><strong>Colors:</strong> Primary #800020, secondary #64748b</li>
+                                <li><strong>Behavior:</strong> Pure Bootstrap collapse/expand</li>
+                                <li><strong>Overflow:</strong> Prevented with overflow-x: hidden</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function runComparisonTest() {
+            const resultsDiv = document.getElementById('comparisonResults');
+            const viewport = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+            
+            const tests = [];
+            
+            // Get navbar elements
+            const navbar = document.querySelector('.custom-navbar');
+            const brand = document.querySelector('.navbar-brand');
+            const logo = document.querySelector('.navbar-brand .logo');
+            const primaryName = document.querySelector('.school-name .primary-name');
+            const toggler = document.querySelector('.navbar-toggler');
+            
+            if (!navbar || !brand || !logo || !primaryName || !toggler) {
+                resultsDiv.innerHTML = '<div class="status-bad">❌ Navbar elements missing</div>';
+                return;
+            }
+            
+            // Test 1: CSS Properties Match achievements.html
+            const navbarStyle = window.getComputedStyle(navbar);
+            const hasCorrectBackground = navbarStyle.backgroundColor.includes('255, 255, 255');
+            tests.push({
+                name: 'Navbar Background',
+                status: hasCorrectBackground ? 'good' : 'warning',
+                value: hasCorrectBackground ? 'rgba(255,255,255,0.95)' : 'Different'
+            });
+            
+            // Test 2: Logo Size Based on Viewport
+            const logoStyle = window.getComputedStyle(logo);
+            const logoSize = parseInt(logoStyle.width);
+            let expectedSize = 50; // Default
+            if (viewport.width <= 576) expectedSize = 35;
+            else if (viewport.width <= 768) expectedSize = 40;
+            
+            tests.push({
+                name: 'Logo Size',
+                status: Math.abs(logoSize - expectedSize) <= 2 ? 'good' : 'warning',
+                value: `${logoSize}px (expected ${expectedSize}px)`
+            });
+            
+            // Test 3: Primary Name Font Size
+            const primaryStyle = window.getComputedStyle(primaryName);
+            const fontSize = parseInt(primaryStyle.fontSize);
+            let expectedFontSize = 20; // 1.25rem = 20px
+            if (viewport.width <= 576) expectedFontSize = 14; // 0.9rem ≈ 14px
+            else if (viewport.width <= 768) expectedFontSize = 16; // 1rem = 16px
+            
+            tests.push({
+                name: 'Primary Text Size',
+                status: Math.abs(fontSize - expectedFontSize) <= 2 ? 'good' : 'warning',
+                value: `${fontSize}px (expected ${expectedFontSize}px)`
+            });
+            
+            // Test 4: Toggle Visibility
+            const togglerRect = toggler.getBoundingClientRect();
+            const toggleVisible = togglerRect.right <= viewport.width;
+            tests.push({
+                name: 'Toggle Visible',
+                status: toggleVisible ? 'good' : 'bad',
+                value: `${togglerRect.right.toFixed(0)}px / ${viewport.width}px`
+            });
+            
+            // Test 5: No Horizontal Overflow
+            const hasHorizontalScroll = document.body.scrollWidth > viewport.width;
+            tests.push({
+                name: 'No H-Scroll',
+                status: !hasHorizontalScroll ? 'good' : 'bad',
+                value: `Body: ${document.body.scrollWidth}px`
+            });
+            
+            // Test 6: Brand Color
+            const primaryColor = window.getComputedStyle(primaryName).color;
+            const hasCorrectColor = primaryColor.includes('128, 0, 32') || primaryColor.includes('#800020');
+            tests.push({
+                name: 'Brand Color',
+                status: hasCorrectColor ? 'good' : 'warning',
+                value: hasCorrectColor ? '#800020' : 'Different'
+            });
+            
+            // Display results
+            let html = `<div>Screen: ${viewport.width}×${viewport.height}</div>`;
+            
+            tests.forEach(test => {
+                const statusClass = `status-${test.status}`;
+                const icon = test.status === 'good' ? '✅' : 
+                           test.status === 'warning' ? '⚠️' : '❌';
+                html += `<div class="${statusClass}">${icon} ${test.name}</div>`;
+                html += `<div style="font-size: 10px; color: #ccc; margin-left: 15px;">${test.value}</div>`;
+            });
+            
+            const passCount = tests.filter(t => t.status === 'good').length;
+            const totalCount = tests.length;
+            
+            html += `<div class="mt-2 ${passCount >= totalCount - 1 ? 'status-good' : 'status-warning'}">
+                <strong>Match: ${passCount}/${totalCount} ${passCount >= totalCount - 1 ? '🎉' : '⚠️'}</strong>
+            </div>`;
+            
+            resultsDiv.innerHTML = html;
+            
+            console.log('🔄 Navbar Comparison Results:', tests);
+            
+            if (passCount >= totalCount - 1) {
+                console.log('🎉 Success! Index.html navbar now matches achievements.html behavior');
+            }
+        }
+        
+        // Auto-run tests
+        document.addEventListener('DOMContentLoaded', runComparisonTest);
+        window.addEventListener('resize', runComparisonTest);
+        
+        // Test navigation events
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggler = document.querySelector('.navbar-toggler');
+            
+            if (toggler) {
+                toggler.addEventListener('click', function() {
+                    console.log('🍔 Toggle clicked - Should behave like achievements.html');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
